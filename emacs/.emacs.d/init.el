@@ -55,8 +55,12 @@
   (windmove-default-keybindings)
   (menu-bar-mode -1)
   (tool-bar-mode -1)
+  (scroll-bar-mode -1)
   (set-language-environment "UTF-8")
   (set-default-coding-systems 'utf-8))
+
+(use-package autorevert
+  :diminish auto-revert-mode)
 
 ;;; auth
 (use-package pinentry
@@ -255,6 +259,12 @@
         ediff-split-window-function 'split-window-horizontally
         ediff-diff-options "-w"))
 
+;;; programming docs
+(use-package zeal-at-point
+  :ensure t
+  :bind
+  ("C-c d d" . zeal-at-point))
+
 ;; editor
 (use-package expand-region
   :ensure t
@@ -369,6 +379,7 @@
 
 (use-package yasnippet
   :ensure t
+  :diminish yas-minor-mode
   :hook (prog-mode . yas-minor-mode))
 
 (use-package java-snippets :ensure t)
