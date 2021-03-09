@@ -1,5 +1,10 @@
 niceties/
-emacs.d/org-roam.db
-emacs.d/eclipse.jdt.ls
-emacs.d/forge-database.sqlite
-emacs.d/org-roam.db
+emacs/.emacs.d/org-roam.db
+emacs/.emacs.d/eclipse.jdt.ls
+emacs/.emacs.d/forge-database.sqlite
+emacs/.emacs.d/org-roam.db
+emacs/.emacs.d/eln-cache
+emacs/.emacs.d/elpa
+emacs/.emacs.d/recentf
+emacs/.emacs.d/transient
+emacs/.emacs.d/auto-save-list/
