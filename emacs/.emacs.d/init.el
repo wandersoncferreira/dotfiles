@@ -107,9 +107,36 @@
   :config
   (recentf-mode +1))
 
+(use-package imenu
+  :config
+  (setq imenu-auto-rescan 1
+        imenu-auto-rescan-maxout 600000
+        imenu-max-item-length 600
+        imenu-use-markers t
+        imenu-max-items 200)
+  :bind
+  ("C-c i" . imenu))
+
+(defun bk/occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
+(use-package replace
+  :bind
+  ("C-c o" . #'bk/occur-dwim))
+
 (use-package uniquify
   :config
-  (setq uniquify-buffer-name-style 'post-forward
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets
         uniquify-separator " * "
         uniquify-after-kill-buffer-p t
         uniquify-strip-common-suffix t
@@ -128,10 +155,19 @@
 (use-package eldoc
   :diminish eldoc-mode)
 
+(defun bk/dired-directories-first ()
+  "Sorted dired listings with directories first."
+  (save-excursion
+    (let (buffer-read-only)
+      (forward-line 2)
+      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+    (set-buffer-modified-p nil)))
+
 (use-package dired
   :config
   (require 'dired-x)
-  (setq dired-dwim-target t))
+  (setq dired-dwim-target t)
+  (advice-add 'dired-readin :after #'bk/dired-directories-first))
 
 (use-package winner
   :init
