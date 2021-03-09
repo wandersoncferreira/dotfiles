@@ -4,7 +4,12 @@
 	signingkey = 56840A614DBE37AE
 [init]
 	defaultBranch = main
+[core]
+	editor = emacs
+	quotepath = false
 [github]
 	user = wandersoncferreira
 [commit]
 	gpgsign = true
+[pull]
+	rebase = false
