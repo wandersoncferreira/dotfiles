@@ -70,7 +70,7 @@
   :init
   (setq epa-pinentry-mode 'loopback
 	auth-source-debug t
-	auth-sources '((:source "~/.niceties/secrets/authinfo.gpg")))
+	auth-sources '((:source "~/.secrets/authinfo.gpg")))
   :config
   (pinentry-start))
 
@@ -201,13 +201,13 @@
     (set-face-attribute 'default nil :font "Consolas" :height font-size)))
 
 (use-package simple
-  :disabled t
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black"))))
   :config
   (set-face-attribute 'lazy-highlight nil :background "light green")
   (set-face-attribute 'isearch nil :background "khaki1")
-  (set-face-attribute 'region nil :background "khaki1"))
+  (set-face-attribute 'region nil :background "khaki1")
+  (bk/set-consolas-font 110))
 
 ;; (set-background-color "honeydew")
 ;; (set-face-attribute 'default nil :height 110)
@@ -215,19 +215,6 @@
 ;; (set-face-attribute 'isearch nil :background "khaki1")
 ;; (set-face-attribute 'region nil :background "khaki1")
 ;; (bk/set-hack-font 100)
-
-(use-package vscode-dark-plus-theme
-  :ensure t
-  :disabled t
-  :config
-  (load-theme 'vscode-dark-plus t)
-  (bk/set-consolas-font 110))
-
-(use-package doom-themes
-  :ensure t
-  :config
-  (load-theme 'doom-dark+ t)
-  (bk/set-consolas-font 110))
 
 ;;; experiment with transparent sessions
 

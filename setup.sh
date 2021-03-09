@@ -5,6 +5,7 @@ directories=(
     clojure
     gpg
     emacs
+    git
 )
 
 stowit() {
