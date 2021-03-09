@@ -1,32 +1,27 @@
 #!/usr/bin/env bash
 
-# all the symlinks will overwrite current existing ones
+directories=(
+    zsh
+    clojure
+    gpg
+    emacs
+)
 
-# emacs
-ln -sfnv $PWD/emacs.d $HOME/.emacs.d
+stowit() {
+    usr=$1
+    app=$2
+    # -v verbose
+    # -R recursive
+    # -t target
+    stow -v -R -t ${usr} ${app}
+}
 
-# kondo
-ln -sfnv $PWD/clj-kondo $HOME/.config/clj-kondo
+echo ""
+echo "Stowing apps for user: ${whoami}"
 
-# gitconfig
-ln -sfnv $PWD/.gitconfig  $HOME
+for app in ${directories[@]}; do
+    stowit "${HOME}" $app
+done
 
-# zshrc
-ln -sfnv $PWD/zshrc $HOME/.zshrc
-
-# gpg
-ln -sfnv $PWD/gpg-agent.conf $HOME/.gnupg/gpg-agent.conf
-
-# if gpg-agent is not running you can start it with
-# gpg-agent --daemon
-
-# ledger
-cd ..
-ln -sfnv $PWD/ledger $HOME/ledger
-cd configs
-
-# files
-gpg -d -o myFiles.tar.gz $PWD/files.tar.gz.gpg
-tar -xvf $PWD/myFiles.tar.gz --one-top-level=niceties
-ln -sfnv $PWD/niceties $HOME/.niceties
-rm -f $PWD/myFiles.tar.gz
+echo ""
+echo "##### ALL DONE"
