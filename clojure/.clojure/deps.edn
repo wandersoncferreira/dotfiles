@@ -1,0 +1,26 @@
+{:aliases
+ {;; creante an application project
+  ;; clj -X:new :template app :name myname/myapp
+  :new
+  {:extra-deps {com.github.seancorfield/clj-new {:mvn/version "1.1.264"}}
+   :exec-fn clj-new/create
+   :exec-args {:template lib}}
+
+  :check
+  {:extra-deps {athos/clj-check {:git/url "https://github.com/athos/clj-check"
+                                 :sha "cd1f25456de5eebda0a69602dd3445905382b3a4"}}
+   :main-opts ["-m" "clj-check.check"]}
+
+  ;; - see https://github.com/hugoduncan/criterium/
+  ;; - (require '[criterium.core :refer [bench]])
+  ;; - (bench (your-expression))
+  :bench
+  {:extra-deps {criterium/criterium {:mvn/version "0.4.6"}}}
+
+  ;; - see https://github.com/clojure-goes-fast/clj-memory-meter
+  ;; - (require '[clj-memory-meter.core :as mm])
+  ;; - (mm/measure (your-expression))
+  :measure
+  {:extra-deps {com.clojure-goes-fast/clj-memory-meter {:mvn/version "0.1.3"}}}
+
+  }}
