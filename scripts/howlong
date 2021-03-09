@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+logdate=`head -1 /var/log/pacman.log | awk '{ print $1}'`
+install_date=${logdate:1}
+date_now=$(date '+%Y-%m-%d')
+
+echo "Installation date: $install_date"
+echo "Days since: " $(( ($(date -d $date_now +%s) - $(date -d $install_date +%s)) / 86400 )) days

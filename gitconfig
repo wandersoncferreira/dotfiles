@@ -1,0 +1,10 @@
+[user]
+	email = wand@hey.com
+	name = Wanderson Ferreira
+	signingkey = 56840A614DBE37AE
+[init]
+	defaultBranch = main
+[github]
+	user = wandersoncferreira
+[commit]
+	gpgsign = true
