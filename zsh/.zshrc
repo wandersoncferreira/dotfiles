@@ -4,7 +4,6 @@
 # Path to your oh-my-zsh installation.
 export ZSH="/home/wanderson/.oh-my-zsh"
 
-
 ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
@@ -82,3 +81,6 @@ fastkeys
 
 # enable gpg
 export GPG_TTY=$(tty)
+
+# source aliases
+source $HOME/.aliases.zsh 
