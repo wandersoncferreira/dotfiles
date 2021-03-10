@@ -56,7 +56,8 @@
   (tool-bar-mode -1)
   (scroll-bar-mode -1)
   (set-language-environment "UTF-8")
-  (set-default-coding-systems 'utf-8))
+  (set-default-coding-systems 'utf-8)
+  (display-line-numbers-mode t))
 
 (use-package autorevert
   :diminish auto-revert-mode)
@@ -190,6 +191,7 @@
 (use-package ido
   :init
   (setq ido-enable-flex-matching t
+	    ido-use-virtual-buffers t
 	    ido-everywhere t
 	    ido-show-dot-for-dired t
 	    ido-create-new-buffer 'always
@@ -401,7 +403,8 @@
   (setq forge-topic-list-limit '(10 . -1))
   :bind
   ("C-c f r" . forge-list-requested-reviews)
-  ("C-c f p" . forge-list-authored-pullreqs))
+  ("C-c f p" . forge-list-authored-pullreqs)
+  ("C-c f c" . forge-create-pullreq))
 
 (use-package company
   :ensure t
@@ -757,7 +760,8 @@ Please run M-x cider or M-x cider-jack-in to connect"))
    'org-babel-load-languages
    '((emacs-lisp . t)
      (ledger . t)
-     (clojure . t))))
+     (clojure . t)))
+
   (setq org-capture-templates
 	    '(
 	      ("t" "Todo" entry (file+headline "~/arch/agenda/todo.org" "Task")

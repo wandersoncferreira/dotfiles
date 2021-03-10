@@ -27,5 +27,6 @@
     (end-of-line)
     (kaocha-runner--recenter-top)))
 
+
 (provide 'patch-kaocha-runner)
 ;;; patch-kaocha-runner.el ends here
