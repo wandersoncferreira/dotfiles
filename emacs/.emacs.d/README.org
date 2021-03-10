@@ -25,7 +25,7 @@ need to impose some constraints to this project:
 Ok, let's keep track of each of these categories.
 
 
-* Next steps [13/16]
+* Next steps [14/16]
   - [X] Create more custom keymaps for common operations on Clojure-LSP
     #+begin_src elisp
       (define-key lsp-command-map (kbd "ra") 'lsp-clojure-add-missing-libspec)
@@ -57,7 +57,7 @@ Ok, let's keep track of each of these categories.
   - [X] Get images from the web and paste directly into Org-mode (org-download)
   - [X] Make org-mode play nice with Shift-<arrows> movements
   - [X] Create function on emacs to produce UUID (=bk/uuid=)
-  - [ ] Setup docker
+  - [X] Setup docker
   - [ ] Learn more about refactoring using lsp-mode and refactor.el
   - [ ] Run over typescript setup and cleanup eventual problems
   - [X] Setup to open GPG encrypted file easily
