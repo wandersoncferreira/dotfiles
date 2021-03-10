@@ -163,7 +163,40 @@
       (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
     (set-buffer-modified-p nil)))
 
+(defun bk/dired-xdg-open ()
+  "Open the file at point with xdg-open."
+  (interactive)
+  (let ((file (dired-get-filename nil t)))
+    (message "Openning %s..." file)
+    (call-process "xdg-open" nil 0 nil file)
+    (message "Opening %s done" file)))
+
+(defun bk/dired-back-to-start-of-files ()
+  "Move to start of line."
+  (interactive)
+  (backward-char (- (current-column) 2)))
+
+(defun bk/dired-back-to-top ()
+  "Go back to correct position at the top."
+  (interactive)
+  (goto-char (point-min))
+  (forward-line 2)
+  (bk/dired-back-to-start-of-files))
+
+(defun bk/dired-back-to-bottom ()
+  "Go back to correct position at the bottom."
+  (interactive)
+  (goto-char (point-max))
+  (forward-line -1)
+  (bk/dired-back-to-start-of-files))
+
 (use-package dired
+  :bind
+  (:map dired-mode-map
+        ("O" . bk/dired-xdg-open)
+        ("M-p" . bk/dired-back-to-top)
+        ("M-n" .  bk/dired-back-to-bottom)
+        ("C-a" .  bk/dired-back-to-start-of-files))
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
