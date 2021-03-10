@@ -20,8 +20,7 @@
 (add-to-list 'load-path lisps-dir)
 
 ;;; register shortcuts
-(set-register ?t '(file . "/home/wanderson/agenda/todo.org"))
-(set-register ?h '(file . "/home/wanderson/agenda/habits.org"))
+(set-register ?t '(file . "/home/wanderson/arch/agenda/todo.org"))
 (set-register ?l '(file . "/home/wanderson/ledger"))
 (set-register ?e '(file . "/home/wanderson/.emacs.d/init.el"))
 
@@ -737,7 +736,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (setq org-return-follows-link t
 	    org-confirm-babel-evaluate nil
 	    org-src-fontify-natively t
-	    org-src-tab-acts-natively t)
+	    org-src-tab-acts-natively t
+	    org-agenda-files (list "~/arch/agenda/todo.org"))
+  :bind
+  (("C-c c" . org-capture)
+   ("C-c a" . org-agenda))
   :config
   (require 'ob-clojure)
   (require 'org-tempo)
@@ -755,6 +758,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
    '((emacs-lisp . t)
      (ledger . t)
      (clojure . t))))
+  (setq org-capture-templates
+	    '(
+	      ("t" "Todo" entry (file+headline "~/arch/agenda/todo.org" "Task")
+	       "* TODO %^{Title}\n %i" :clock-in t :clock-resume t))
+	    ))
 
 (use-package org-download
   :ensure t
@@ -775,6 +783,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 
 (use-package org-roam-server
   :ensure t
+  :commands (org-roam-server-mode)
   :init
   (setq org-roam-server-port 17042)
   :config
