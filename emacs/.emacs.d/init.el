@@ -867,6 +867,20 @@ Please run M-x cider or M-x cider-jack-in to connect"))
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)"))))
 
+;;; docker
+(use-package dockerfile-mode
+  :ensure t
+  :mode ("Dockerfile" . dockerfile-mode)
+  :config
+  (put 'dockerfile-image-name 'safe-local-variable-p #'stringp))
+
+(use-package docker-compose-mode :ensure t)
+
+(use-package docker
+  :ensure t
+  :bind
+  ("C-c d d" . docker))
+
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars unresolved)
 ;; End:
