@@ -21,7 +21,7 @@
 
 ;;; register shortcuts
 (set-register ?t '(file . "/home/wanderson/arch/agenda/todo.org"))
-(set-register ?l '(file . "/home/wanderson/ledger"))
+(set-register ?l '(file . "/home/wanderson/arch/ledger"))
 (set-register ?e '(file . "/home/wanderson/.emacs.d/init.el"))
 
 (defun bk/eval-buffer ()
@@ -282,12 +282,19 @@
     (set-face-attribute 'default nil :font "Consolas" :height font-size)))
 
 (use-package simple
+  :disabled t
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black"))))
   :config
   (set-face-attribute 'lazy-highlight nil :background "light green")
   (set-face-attribute 'isearch nil :background "khaki1")
   (set-face-attribute 'region nil :background "khaki1")
+  (bk/set-consolas-font 110))
+
+(use-package zenburn-theme
+  :ensure t
+  :config
+  (load-theme 'zenburn t)
   (bk/set-consolas-font 110))
 
 ;; (set-background-color "honeydew")
@@ -521,7 +528,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 	
         lsp-enable-indentation t
         lsp-completion-enable t
-	lsp-lens-enable t
+	lsp-lens-enable nil
 	lsp-ui-doc-enable t
 	lsp-eldoc-enable-hover t
 
@@ -874,20 +881,20 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :mode ("ledger" . ledger-mode)
   :custom
   (ledger-reports
-   '(("netcash" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -R -X R$ --current bal ^assets:bank ^assets:crypto liabilities:card")
-     ("sports" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:sports")
-     ("doctor" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:doctor")
-     ("apartamento-mae" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ -S date --current -w reg ^liabilities:apartment:mother")
-     ("apartamento-misce" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ -S date --current -w reg ^liabilities:apartment:misce")
-     ("eas-profit" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --invert --current bal ^expenses:eval ^income:eval")
-     ("food" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:food")
-     ("donation" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:donation")
-     ("apartamento-morumbi" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:house")
-     ("creta" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:car:creta ^equity:car:creta")
-     ("networth" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^assets:bank liabilities equity:apartment")
-     ("spent-vs-earned" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger bal -X BRL --period=\"last 4 weeks\" ^Expenses ^Income --invert -S amount")
-     ("budget" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^assets:bank:checking:budget liabilities:card")
-     ("taxes" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -R -X R$ --current bal ^expenses:taxes")
+   '(("netcash" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -R -X R$ --current bal ^assets:bank ^assets:crypto liabilities:card")
+     ("sports" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --current bal ^expenses:sports")
+     ("doctor" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --current bal ^expenses:doctor")
+     ("apartamento-mae" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ -S date --current -w reg ^liabilities:apartment:mother")
+     ("apartamento-misce" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ -S date --current -w reg ^liabilities:apartment:misce")
+     ("eas-profit" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --invert --current bal ^expenses:eval ^income:eval")
+     ("food" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --current bal ^expenses:food")
+     ("donation" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --current bal ^expenses:donation")
+     ("apartamento-morumbi" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --current bal ^expenses:house")
+     ("creta" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --current bal ^expenses:car:creta ^equity:car:creta")
+     ("networth" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --current bal ^assets:bank liabilities equity:apartment")
+     ("spent-vs-earned" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger bal -X BRL --period=\"last 4 weeks\" ^Expenses ^Income --invert -S amount")
+     ("budget" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -X R$ --current bal ^assets:bank:checking:budget liabilities:card")
+     ("taxes" "ledger [[ledger-mode-flags]] -f /home/wanderson/arch/ledger -R -X R$ --current bal ^expenses:taxes")
      ("bal" "%(binary) -f %(ledger-file) bal")
      ("reg" "%(binary) -f %(ledger-file) reg")
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
