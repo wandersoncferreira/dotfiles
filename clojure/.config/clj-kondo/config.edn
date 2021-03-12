@@ -1,4 +1,4 @@
-{:linters {:missing-docstring {:level :warning}
+{:linters {:missing-docstring {:level :off}
            :unsorted-required-namespaces {:level :error}
            :refer {:level :warning}
            :refer-all {:level :warning}
@@ -9,6 +9,7 @@
            :missing-test-assertion {:level :error}
            :single-operand-comparison {:level :error}
            :unused-binding {:level :error}
+           :unused-public-var {:level :off}
            :unused-import {:level :error}
            :consistent-alias {:aliases {clojure.string str}}}
  :skip-comments true}
