@@ -228,6 +228,21 @@
   (global-set-key (kbd "C-x 4 u") 'winner-undo)
   (global-set-key (kbd "C-x 4 U") 'winner-redo))
 
+;;; bookmark
+(use-package bm
+  :ensure t
+  :custom-face
+  (bm-persistent-face ((t (:background "khaki2"))))
+  :init
+  (setq bm-restore-repository-on-load t
+	bm-repository-file "~/.emacs.d/bm-repository"
+	bm-buffer-persistence t
+	bm-cycle-all-buffers t)
+  :bind
+  (("C-c b n" . bm-next)
+   ("C-c b p" . bm-previous)
+   ("C-c b b" . bm-toggle)))
+
 (use-package ido
   :init
   (setq ido-enable-flex-matching t
@@ -452,6 +467,42 @@
   ("C-c f r" . forge-list-requested-reviews)
   ("C-c f p" . forge-list-authored-pullreqs)
   ("C-c f c" . forge-create-pullreq))
+
+(use-package diff-hl
+  :ensure t
+  :init
+  (setq diff-hl-side 'left)
+  :custom-face
+  (diff-hl-change ((t (:background "#3a81c3"))))
+  (diff-hl-insert ((t (:background "#7ccd7c"))))
+  (diff-hl-delete ((t (:background "#ee6363"))))
+  :config
+  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
+  (diff-hl-flydiff-mode)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (global-diff-hl-mode))
+
+(use-package git-timemachine :ensure t)
+
+(use-package gitconfig-mode
+  :ensure t
+  :config
+  (require 'gitconfig-mode))
+
+(use-package gitignore-mode
+  :ensure t
+  :config
+  (require 'gitignore-mode))
+
+(use-package gitignore-templates
+  :ensure t)
+
+(use-package browse-at-remote
+  :ensure t)
+
+(use-package gist
+  :ensure t
+  :commands (gist-region-or-buffer))
 
 (use-package company
   :ensure t
@@ -913,6 +964,44 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :ensure t
   :bind
   ("C-c d d" . docker))
+
+(use-package nxml-mode
+  :init
+  (setq nxml-child-indent 4)
+  :config
+  (push '("<\\?xml" . nxml-mode) magic-mode-alist)
+  (add-to-list 'auto-mode-alist '("\\.pom$" . nxml-mode)))
+
+(use-package sql-indent
+  :ensure t
+  :config
+  (add-hook 'sql-mode-hook 'sqlind-minor-mode))
+
+;;; ripgrep
+(use-package rg
+  :ensure t
+  :commands (bk/search-git-root-or-dir)
+  :config
+  (rg-define-search bk/search-git-root-or-dir
+    :query ask
+    :format regexp
+    :files "everything"
+    :dir (let ((vc (vc-root-dir)))
+	   (if vc vc default-directory))
+    :confirm prefix
+    :flags ("--hidden -g !.git")))
+
+;;; wgrep
+(use-package wgrep :ensure t)
+
+;;; pomodor
+(use-package pomidor
+  :ensure t
+  :bind
+  ("<f12>" . pomidor)
+  :config
+  (setq pomidor-sound-tick nil
+	pomidor-sound-tack nil))
 
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars unresolved)
