@@ -48,6 +48,14 @@
 	 :map emacs-lisp-mode-map
 	 ("<f5>" . bk/eval-buffer)))
 
+(use-package ibuffer-vc
+  :ensure t
+  :bind
+  (:map ibuffer-mode-map
+	("/ V" . ibuffer-vc-set-filter-groups-by-vc-root)))
+
+(use-package vlf :ensure t)
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (show-paren-mode)
@@ -160,7 +168,12 @@
   (add-hook 'compilation-filter-hook 'bk/ansi-colorize-buffer))
 
 (use-package eldoc
-  :diminish eldoc-mode)
+  :diminish eldoc-mode
+  :init
+  (setq eldoc-idle-delay 0.1
+	eldoc-echo-area-use-multiline-p nil)
+  :config
+  (global-eldoc-mode +1))
 
 (defun bk/dired-directories-first ()
   "Sorted dired listings with directories first."
@@ -455,8 +468,6 @@
 
 (use-package magit
   :ensure t
-  :init
-  (setq magit-diff-refine-hunk t)
   :bind ("C-c g s" . magit-status))
 
 (use-package forge
@@ -526,8 +537,9 @@
 (use-package flycheck
   :ensure t
   :hook (prog-mode . flycheck-mode)
-  :init
-  (setq flycheck-check-syntax-automatically '(mode-enabled save)))
+  :config
+  (setq flycheck-check-syntax-automatically '(save)
+	flycheck-checker-error-threshold 4000))
 
 ;; lisps
 (use-package paredit
@@ -568,7 +580,18 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 	("C-c k w" . kaocha-runner-show-warnings)
 	("C-c k h" . kaocha-runner-hide-windows)))
 
-(use-package cider :ensure t)
+(defvar bk--toggle-docs-clj nil)
+
+(defun bk/toggle-docs-clj ()
+  "Show docs."
+  (interactive)
+  (if bk--toggle-docs-clj
+      (progn
+	(setq bk--toggle-docs-clj nil)
+	(lsp-ui-doc-hide))
+    (progn
+      (setq bk--toggle-docs-clj t)
+      (lsp-ui-doc-show))))
 
 (use-package lsp-mode
   :ensure t
@@ -580,8 +603,12 @@ Please run M-x cider or M-x cider-jack-in to connect"))
         lsp-enable-indentation t
         lsp-completion-enable t
 	lsp-lens-enable nil
-	lsp-ui-doc-enable t
-	lsp-eldoc-enable-hover t
+	lsp-eldoc-enable-hover nil
+
+	lsp-ui-doc-enable nil
+	lsp-ui-doc-position 'at-point
+	lsp-ui-doc-include-signature t
+	lsp-ui-doc-header t
 
 	lsp-ui-sideline-enable t
 	lsp-ui-sideline-show-diagnostics t
@@ -607,7 +634,14 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (define-key lsp-command-map (kbd "pd") 'lsp-ui-peek-find-definitions)
   (define-key lsp-command-map (kbd "pi") 'lsp-ui-peek-find-implementation)
   (define-key lsp-command-map (kbd "pw") 'lsp-ui-peek-find-workspace-symbol)
+  (define-key lsp-command-map (kbd "d") 'bk/toggle-docs-clj)
   (require 'lsp-ido))
+
+(use-package cider
+  :ensure t)
+
+(eval-after-load 'cider
+  (setq lsp-enable-xref nil))
 
 (eval-after-load 'projectile
   '(progn
