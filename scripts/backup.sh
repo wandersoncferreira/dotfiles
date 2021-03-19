@@ -17,4 +17,5 @@ rsync -ahzP \
       --exclude="eln-cache" \
       --exclude="workspace" \
       --delete \
+      --ignore-existing \
       /home/wanderson/arch/ /run/media/wanderson/Backup/28_02_2021_rsync_backup

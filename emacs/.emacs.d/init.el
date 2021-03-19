@@ -401,7 +401,8 @@
 (use-package multiple-cursors
   :ensure t
   :bind (("C-c >" . mc/mark-next-like-this)
-         ("C-c <" . mc/mark-previous-like-this)))
+         ("C-c <" . mc/mark-previous-like-this)
+	 ("<mouse-3>" . mc/toggle-cursor-on-click)))
 
 (use-package move-text
   :ensure t
@@ -540,6 +541,18 @@
   :config
   (setq flycheck-check-syntax-automatically '(save)
 	flycheck-checker-error-threshold 4000))
+
+(use-package flycheck-projectile
+  :ensure t)
+
+(use-package popwin
+  :ensure t
+  :config
+  (popwin-mode +1)
+  (add-to-list 'popwin:special-display-config
+	       `(,flycheck-projectile-error-list-buffer
+		 :regexp nil :dedicated t :position bottom :stick t
+		 :noselect nil)))
 
 ;; lisps
 (use-package paredit

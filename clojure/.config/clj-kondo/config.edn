@@ -1,15 +1,22 @@
-{:linters {:missing-docstring {:level :off}
+{:output {:exclude-files ["env/local/src/user.clj"]}
+ :linters {:missing-docstring {:level :off}
            :unsorted-required-namespaces {:level :error}
-           :refer {:level :warning}
+           :unresolved-var {:exclude [clojure.spec.gen.alpha]}
+           :not-empty? {:leve :off}
+           :unused-referred-var {:exclude {clojure.test [are is testing deftest use-fixtures]}}
+           :type-mismatch {:level :warning}
+           :refer {:level :off}
            :refer-all {:level :warning}
            :use {:level :error}
            :single-key-in {:level :error}
-           :shadowed-var {:level :error}
+           :shadowed-var {:level :off}
            :inline-def {:level :error}
            :missing-test-assertion {:level :error}
            :single-operand-comparison {:level :error}
            :unused-binding {:level :error}
-           :unused-public-var {:level :off}
            :unused-import {:level :error}
-           :consistent-alias {:aliases {clojure.string str}}}
+           :consistent-alias {:aliases {clojure.string str
+                                        clojure.spec.alpha s}}
+           :unused-public-var {:level :off
+                               :exclude #{user}}}
  :skip-comments true}
