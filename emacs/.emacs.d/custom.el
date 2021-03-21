@@ -5,9 +5,19 @@
  ;; If there is more than one, they won't work right.
  '(org-agenda-files '("~/arch/zettelkasten/20201215010543-informations.org"))
  '(package-selected-packages
-   '(popwin flycheck-projectile system-packages vlf ibuffer-vc browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine diff-hl bm pomidor gist rg sql-indent zenburn-theme docker docker-compose-mode dockerfile-mode zeal-at-point org-roam typescript-mode clojure-mode flycheck yasnippet magit expand-region pinentry ob-clojure popup google-translate langtool uuidgen uuidgen-el org-download org-noter google-this clj-refactor neotree vterm which-key vscode-dark-plus-theme use-package tide smex quickrun projectile prettier-js paredit org-roam-server multiple-cursors move-text modus-themes lsp-ui lsp-java ledger-mode kaocha-runner jump-char java-snippets ido-completing-read+ forge fix-word doom-themes diminish company clojure-snippets change-inner add-node-modules-path))
+   '(toggle-test company-quickhelp popwin flycheck-projectile system-packages vlf ibuffer-vc browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine diff-hl bm pomidor gist rg sql-indent zenburn-theme docker docker-compose-mode dockerfile-mode zeal-at-point org-roam typescript-mode clojure-mode flycheck yasnippet magit expand-region pinentry ob-clojure popup google-translate langtool uuidgen uuidgen-el org-download org-noter google-this clj-refactor neotree vterm which-key vscode-dark-plus-theme use-package tide smex quickrun projectile prettier-js paredit org-roam-server multiple-cursors move-text modus-themes lsp-ui lsp-java ledger-mode kaocha-runner jump-char java-snippets ido-completing-read+ forge fix-word doom-themes diminish company clojure-snippets change-inner add-node-modules-path))
  '(safe-local-variable-values
    '((tgt-projects
+      ((:root-dir "/home/wanderson/arch/study/parens-of-the-dead")
+       (:src-dirs "src")
+       (:test-dirs "test")
+       (:test-suffixes "_test")))
+     (cider-ns-refresh-before-fn . "user/stop")
+     (cider-ns-refresh-after-fn . "user/go")
+     (cider-known-endpoints
+      ("localhost" "8777"))
+     (cider-pprint-fn . zprint)
+     (tgt-projects
       ((:root-dir "/home/wand/platform/seu-barriga")
        (:src-dirs "src")
        (:test-dirs "test")
