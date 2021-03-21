@@ -660,7 +660,6 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 
 (use-package lsp-mode
   :ensure t
-  :disabled t
   :init
   (setq lsp-keymap-prefix "C-c l"
 	    lsp-enable-file-watchers nil
@@ -719,7 +718,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :ensure t
   :init
   (setq cljr-warn-on-eval nil
-        cljr-eagerly-build-asts-on-startup t
+        cljr-eagerly-build-asts-on-startup nil
         cljr-favor-prefix-notation nil
 	    cljr-favor-private-functions nil
         cljr-magic-require-namespaces
@@ -733,7 +732,25 @@ Please run M-x cider or M-x cider-jack-in to connect"))
           ("json" . "cheshire.core")))
   :config
   (cljr-add-keybindings-with-prefix "C-c C-m")
-  (add-hook 'cider-mode-hook 'clj-refactor-mode))
+  (add-hook 'cider-mode-hook 'clj-refactor-mode)
+
+  ;; refactor functionalities available in clojure mode will be added here too
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "aa") 'clojure-add-arity)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "c!") 'clojure-cycle-not)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "cw") 'clojure-cycle-when)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ra") 'clojure-rename-ns-alias)
+
+  ;; I would like to use lsp-mode for features that clj-refactor require ASTs evaluation
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fu") 'lsp-ui-peek-find-references)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fr") 'lsp-find-references)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "rs") 'lsp-rename)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ef") 'lsp-clojure-extract-function)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "is") 'lsp-clojure-inline-symbol)
+  ;; missing:
+  ;; promote-function
+  ;; rename-file-or-dir
+  )
+
 
 ;; Experimental configuration to hotload refactor
 ;; using Pomegranate from Cemerick

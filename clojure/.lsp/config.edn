@@ -1,6 +1,6 @@
 {:keep-require-at-start? true
  :show-docs-arity-on-same-line? true
- :auto-add-ns-to-new-files? true
+ :auto-add-ns-to-new-files? false
  :semantic-tokens? true
  :cljfmt {:indentation? true
           :remove-surrounding-whitespace? true
