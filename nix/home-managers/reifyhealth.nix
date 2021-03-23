@@ -12,7 +12,7 @@ in {
   home.stateVersion = "21.03";
   
   nixpkgs.config.allowUnfree = true;
-  
+
   imports = [
     ./common/programs.nix
   ];
@@ -20,21 +20,17 @@ in {
   home = {
     packages = with pkgs; [
       (import ../configurations/custom/clojure.nix)
-      clojure-lsp
+      master.clojure-lsp
       postman
       zoom-us
-      slack
       awscli
       yarn
+      direnv
+      nodejs-slim-14_x
     ];
 
     activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
 
     '';
-  };
-
-  programs.direnv = {
-    enable = true;
-    enableZshIntegration = true;
   };
 }
