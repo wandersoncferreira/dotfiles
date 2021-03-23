@@ -20,6 +20,7 @@ in {
       master.docker-compose
       pgadmin
       emacsPackage
+      plantuml
     ];
 
   virtualisation.docker = {

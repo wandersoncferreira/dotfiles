@@ -9,6 +9,8 @@
     slack
     vlc
     spotify
+    libreoffice
+    gparted
   ];
 
 }

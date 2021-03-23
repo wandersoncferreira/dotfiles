@@ -13,6 +13,7 @@
 
   time.timeZone = "America/Sao_Paulo";
 
+  programs.dconf.enable = true;
 
   services = {
     xserver = {
@@ -32,17 +33,21 @@
     };
   };
 
-  environment.systemPackages = with pkgs;
-    [
-      gnome3.gnome-tweak-tool
-      gparted
-    ];
+  environment.systemPackages = with pkgs; [
+    # Apps
+    gnome3.gnome-tweak-tool
+    gnome3.gnome-sound-recorder
+    # Extensions
+    gnomeExtensions.paperwm
+    gnomeExtensions.appindicator
+  ];
 
   fonts = {
     fonts = with pkgs; [
       emacs-all-the-icons-fonts
+      fira-code
+      fira-code-symbols
       hack-font
-      roboto
     ];
   };
 }

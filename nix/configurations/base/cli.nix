@@ -23,6 +23,7 @@
     wget
     xclip
     xsel
+    youtube-dl
   ];
 
   services.openssh.enable = true;
