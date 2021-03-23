@@ -79,3 +79,6 @@ export GPG_TTY=$(tty)
 
 # source aliases
 source $HOME/.aliases.zsh 
+
+# enable direnv
+eval "$(direnv hook zsh)"
