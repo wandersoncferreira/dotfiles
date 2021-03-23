@@ -19,10 +19,20 @@ in {
 
   home = {
     packages = with pkgs; [
+      (import ../configurations/custom/clojure.nix)
+      clojure-lsp
       postman
       zoom-us
       slack
+      awscli
+      yarn
     ];
+
+    programs.direnv = {
+      enable = true;
+      enableZshIntegration = true;
+    };
+    
     activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
 
     '';

@@ -5,19 +5,7 @@ let
     epkgs.vterm
   ]));
 
-  unstableTarball =
-    fetchTarball
-      https://github.com/NixOS/nixpkgs-channels/archive/nixos-unstable.tar.gz;
-
 in {
-
-  nixpkgs.config = {
-    packageOverrides = pkgs: {
-      unstable = import unstableTarball {
-        config = config.nixpkgs.config;
-      };
-    };
-  };
 
   # I need this for pgadmin 3
   nixpkgs.config.permittedInsecurePackages = [
@@ -27,11 +15,19 @@ in {
 
   environment.systemPackages = with pkgs;
     [
-      (import ./custom/clojure.nix)
       docker-compose
       pgadmin
       emacsPackage
     ];
+
+  virtualisation.docker = {
+    enable = true;
+    autoPrune = {
+      dates = "weekly";
+      enable = true;
+      flags = [ "--all" ];
+    };
+  };
 
   programs = {
     java = {
@@ -40,5 +36,11 @@ in {
     };
 
     adb.enable = true;
+  };
+
+  services.emacs = with pkgs; {
+    enable = true;
+    defaultEditor = true;
+    package = emacsPackage;
   };
 }

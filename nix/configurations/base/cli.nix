@@ -3,15 +3,12 @@
 {
   environment.systemPackages = with pkgs;
   [
-    ag
     aspell
     aspellDicts.en
     aspellDicts.en-computers
     curl
-    git
     gnumake
     gnupg
-    gotop
     home-manager
     binutils
     stow
@@ -22,13 +19,10 @@
     ripgrep
     tree
     unzip
-    usbutils
     vim
     wget
     xclip
     xsel
-    direnv
-    yarn
   ];
 
   services.openssh.enable = true;
@@ -58,7 +52,4 @@
     bash.enableCompletion = true;
 
   };
-
-
-
 }
