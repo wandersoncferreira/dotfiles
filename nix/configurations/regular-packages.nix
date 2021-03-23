@@ -7,6 +7,7 @@
     google-chrome
     chromium
     slack
+    zulip
     vlc
     spotify
     libreoffice
