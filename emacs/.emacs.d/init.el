@@ -41,26 +41,26 @@
 (use-package emacs
   :init
   (setq tab-always-indent 'complete
-	    ring-bell-function 'ignore
-	    create-lockfiles nil
-	    custom-safe-themes t
-	    indent-tabs-mode nil
-	    tab-width 4
-	    make-backup-files nil
-	    gc-cons-threshold (* 100 1024 1024)
-	    read-process-output-max (* 4 1024 1024)
-	    custom-file (expand-file-name "custom.el" user-emacs-directory))
+	ring-bell-function 'ignore
+	create-lockfiles nil
+	custom-safe-themes t
+	indent-tabs-mode nil
+	tab-width 4
+	make-backup-files nil
+	gc-cons-threshold (* 100 1024 1024)
+	read-process-output-max (* 4 1024 1024)
+	custom-file (expand-file-name "custom.el" user-emacs-directory))
   :bind (("C-x p" . pop-to-mark-command)
-	     ("C-x C-b" . ibuffer)
-	     ("C-x e" . eshell)
-	     :map emacs-lisp-mode-map
-	     ("<f5>" . bk/eval-buffer)))
+	 ("C-x C-b" . ibuffer)
+	 ("C-x e" . eshell)
+	 :map emacs-lisp-mode-map
+	 ("<f5>" . bk/eval-buffer)))
 
 (use-package ibuffer-vc
   :ensure t
   :bind
   (:map ibuffer-mode-map
-	    ("/ V" . ibuffer-vc-set-filter-groups-by-vc-root)))
+	("/ V" . ibuffer-vc-set-filter-groups-by-vc-root)))
 
 (use-package vlf :ensure t)
 
@@ -91,14 +91,14 @@
   :ensure t
   :config
   (setq epg-gpg-program "gpg"
-	    epa-file-cache-passphrase-for-symmetric-encryption t))
+	epa-file-cache-passphrase-for-symmetric-encryption t))
 
 (use-package epa
   :ensure nil
   :init
   (setq epa-pinentry-mode 'loopback
-	    auth-source-debug t
-	    auth-sources '((:source "~/.secrets/authinfo.gpg")))
+	auth-source-debug t
+	auth-sources '((:source "~/.secrets/authinfo.gpg")))
   :config
   (pinentry-start))
 
@@ -180,7 +180,7 @@
   :diminish eldoc-mode
   :init
   (setq eldoc-idle-delay 0.1
-	    eldoc-echo-area-use-multiline-p nil)
+	eldoc-echo-area-use-multiline-p nil)
   :config
   (global-eldoc-mode +1))
 
@@ -257,9 +257,9 @@
   (bm-persistent-face ((t (:background "khaki2"))))
   :init
   (setq bm-restore-repository-on-load t
-	    bm-repository-file "~/.emacs.d/bm-repository"
-	    bm-buffer-persistence t
-	    bm-cycle-all-buffers t)
+	bm-repository-file "~/.emacs.d/bm-repository"
+	bm-buffer-persistence t
+	bm-cycle-all-buffers t)
   :bind
   (("C-c b n" . bm-next)
    ("C-c b p" . bm-previous)
@@ -268,24 +268,24 @@
 (use-package ido
   :init
   (setq ido-enable-flex-matching t
-	    ido-use-virtual-buffers t
-	    ido-everywhere t
-	    ido-show-dot-for-dired t
-	    ido-create-new-buffer 'always
+	ido-use-virtual-buffers t
+	ido-everywhere t
+	ido-show-dot-for-dired t
+	ido-create-new-buffer 'always
         confirm-nonexistent-file-or-buffer nil
         ido-auto-merge-work-directories-length -1
-	    ido-confirm-unique-completion t
-	    ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
+	ido-confirm-unique-completion t
+	ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
   [No match]" " [Matched]" " [Not readable]" " [Too big]" "
   [Confirm]"))
-	    confirm-nonexistent-file-or-buffer nil
-	    )
+	confirm-nonexistent-file-or-buffer nil
+	)
   :bind (:map ido-file-completion-map
-	          ("C-n" . ido-next-match)
-	          ("C-p" . ido-prev-match)
-	          :map ido-common-completion-map
-	          ("SPC" . self-insert-command)
-	          ("M-SPC" . just-one-space))
+	      ("C-n" . ido-next-match)
+	      ("C-p" . ido-prev-match)
+	      :map ido-common-completion-map
+	      ("SPC" . self-insert-command)
+	      ("M-SPC" . just-one-space))
   :config
   (ido-mode +1)
   (add-to-list 'ido-ignore-directories "target")
@@ -295,7 +295,7 @@
 (use-package smex
   :ensure t
   :bind (("M-x" . smex)
-	     ("C-x C-m" . smex)))
+	 ("C-x C-m" . smex)))
 
 (use-package ido-completing-read+
   :ensure t
@@ -368,8 +368,8 @@
   (interactive)
   (if bk--toggle-transparency
       (progn
-	    (set-frame-parameter (selected-frame) 'alpha 100)
-	    (setq bk--toggle-transparency nil))
+	(set-frame-parameter (selected-frame) 'alpha 100)
+	(setq bk--toggle-transparency nil))
     (progn
       (set-frame-parameter (selected-frame) 'alpha 90)
       (setq bk--toggle-transparency t))))
@@ -386,8 +386,8 @@
         projectile-globally-ignored-files '(".DS_Store" "TAGS" "ido.last" "recentf" "smex-items"))
   :bind (("C-c p p" . projectile-switch-project)
          ("C-c p f" . projectile-find-file)
-	     :map projectile-mode-map
-	     ("C-c p" . projectile-command-map))
+	 :map projectile-mode-map
+	 ("C-c p" . projectile-command-map))
   :config
   (require 'subr-x)
   (projectile-mode +1))
@@ -429,7 +429,7 @@
   :ensure t
   :bind (("C-c >" . mc/mark-next-like-this)
          ("C-c <" . mc/mark-previous-like-this)
-	     ("<mouse-3>" . mc/toggle-cursor-on-click)))
+	 ("<mouse-3>" . mc/toggle-cursor-on-click)))
 
 (use-package move-text
   :ensure t
@@ -549,7 +549,7 @@
   :init
   (setq company-show-numbers t
         company-minimum-prefix-length 1
-	    company-idle-delay 0.25)
+	company-idle-delay 0.25)
   :config
   (global-company-mode))
 
@@ -576,7 +576,7 @@
   :hook (prog-mode . flycheck-mode)
   :config
   (setq flycheck-check-syntax-automatically '(save)
-	    flycheck-checker-error-threshold 4000))
+	flycheck-checker-error-threshold 4000))
 
 (use-package flycheck-projectile
   :ensure t)
@@ -586,9 +586,9 @@
   :config
   (popwin-mode +1)
   (add-to-list 'popwin:special-display-config
-	           `(,flycheck-projectile-error-list-buffer
-		         :regexp nil :dedicated t :position bottom :stick t
-		         :noselect nil)))
+	       `(,flycheck-projectile-error-list-buffer
+		 :regexp nil :dedicated t :position bottom :stick t
+		 :noselect nil)))
 
 ;; lisps
 (use-package paredit
@@ -631,11 +631,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (require 'patch-kaocha-runner)
   :bind
   (:map clojure-mode-map
-	    ("C-c k t" . kaocha-runner-run-test-at-point)
-	    ("C-c k r" . kaocha-runner-run-tests)
-	    ("C-c k a" . kaocha-runner-run-all-tests)
-	    ("C-c k w" . kaocha-runner-show-warnings)
-	    ("C-c k h" . kaocha-runner-hide-windows)))
+	("C-c k t" . kaocha-runner-run-test-at-point)
+	("C-c k r" . kaocha-runner-run-tests)
+	("C-c k a" . kaocha-runner-run-all-tests)
+	("C-c k w" . kaocha-runner-show-warnings)
+	("C-c k h" . kaocha-runner-hide-windows)))
 
 (use-package toggle-test
   :ensure t
@@ -652,8 +652,8 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (interactive)
   (if bk--toggle-docs-clj
       (progn
-	    (setq bk--toggle-docs-clj nil)
-	    (lsp-ui-doc-hide))
+	(setq bk--toggle-docs-clj nil)
+	(lsp-ui-doc-hide))
     (progn
       (setq bk--toggle-docs-clj t)
       (lsp-ui-doc-show))))
@@ -662,36 +662,36 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :ensure t
   :init
   (setq lsp-keymap-prefix "C-c l"
-	    lsp-enable-file-watchers nil
-	    lsp-signature-render-documentation nil
-	    
+	lsp-enable-file-watchers nil
+	lsp-signature-render-documentation nil
+	
         lsp-enable-indentation t
         lsp-completion-enable t
-	    lsp-lens-enable nil
-	    lsp-eldoc-enable-hover nil
+	lsp-lens-enable nil
+	lsp-eldoc-enable-hover nil
 
-	    lsp-ui-doc-enable nil
-	    lsp-ui-doc-position 'at-point
-	    lsp-ui-doc-include-signature t
-	    lsp-ui-doc-header t
+	lsp-ui-doc-enable nil
+	lsp-ui-doc-position 'at-point
+	lsp-ui-doc-include-signature t
+	lsp-ui-doc-header t
 
-	    lsp-ui-sideline-enable t
-	    lsp-ui-sideline-show-diagnostics t
-	    lsp-ui-sideline-show-code-actions nil
-	    lsp-ui-sideline-show-hover nil
-	    lsp-ui-sideline-show-symbol nil
-	    
-	    lsp-headerline-breadcrumb-enable t
-	    lsp-headerline-breadcrumb-enable-diagnostics nil
+	lsp-ui-sideline-enable t
+	lsp-ui-sideline-show-diagnostics t
+	lsp-ui-sideline-show-code-actions nil
+	lsp-ui-sideline-show-hover nil
+	lsp-ui-sideline-show-symbol nil
+	
+	lsp-headerline-breadcrumb-enable t
+	lsp-headerline-breadcrumb-enable-diagnostics nil
         lsp-intelephense-multi-root nil
 
-	    lsp-modeline-code-actions-enable nil
-	    lsp-modeline-diagnostics-enable nil
+	lsp-modeline-code-actions-enable nil
+	lsp-modeline-diagnostics-enable nil
         )
   :hook ((clojure-mode . lsp)
-	     (clojurescript-mode . lsp)
-	     (clojurec-mode . lsp)
-	     (java-mode . lsp)
+	 (clojurescript-mode . lsp)
+	 (clojurec-mode . lsp)
+	 (java-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
   :config
   (define-key lsp-command-map (kbd "ra") 'lsp-clojure-add-missing-libspec)
@@ -720,7 +720,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (setq cljr-warn-on-eval nil
         cljr-eagerly-build-asts-on-startup nil
         cljr-favor-prefix-notation nil
-	    cljr-favor-private-functions nil
+	cljr-favor-private-functions nil
         cljr-magic-require-namespaces
         '(("io" . "clojure.java.io")
           ("set" . "clojure.set")
@@ -764,47 +764,47 @@ Please run M-x cider or M-x cider-jack-in to connect"))
        (goto-char cider-repl-input-start-mark)
        (delete-region (point) (point-max))
        (save-excursion
-	     (insert sexp)
-	     (when (equal (char-before) ?\n)
-	       (delete-char -1))
-	     (cider-repl--send-input t))
+	 (insert sexp)
+	 (when (equal (char-before) ?\n)
+	   (delete-char -1))
+	 (cider-repl--send-input t))
        (delete-region (point) (point-max)))
 
      (defun bk/pomegranate-dep (dep)
        (concat
-	    (format
-	     "%s"
-	     `(use '[cemerick.pomegranate :only (add-dependencies)]))
-	    (s-replace-all
-	     `(("\\." . ".")
-	       ("mydep" . ,dep))
-	     (format
-	      "%S"
-	      `(add-dependencies :coordinates '[mydep]
+	(format
+	 "%s"
+	 `(use '[cemerick.pomegranate :only (add-dependencies)]))
+	(s-replace-all
+	 `(("\\." . ".")
+	   ("mydep" . ,dep))
+	 (format
+	  "%S"
+	  `(add-dependencies :coordinates '[mydep]
                              :repositories (merge cemerick.pomegranate.aether/maven-central
-						                          {"clojars" "https://clojars.org/repo"}))))))
+						  {"clojars" "https://clojars.org/repo"}))))))
 
      (setq cljr-hotload-dependencies t)
 
      (defun cljr-hotload-dependency (artifact version &optional dep ns)
        (bk/send-to-repl
-	    (bk/pomegranate-dep (format "[%s \"%s\"]" artifact version))
-	    t ns))
+	(bk/pomegranate-dep (format "[%s \"%s\"]" artifact version))
+	t ns))
 
      (defun cljr--add-project-dependency (artifact version)
        (let* ((project-file (cljr--project-file))
               (deps (cljr--project-with-deps-p project-file)))
-	     (cljr--update-file project-file
-	       (goto-char (point-min))
-	       (if deps
+	 (cljr--update-file project-file
+	   (goto-char (point-min))
+	   (if deps
                (cljr--insert-into-clj-dependencies artifact version)
              (cljr--insert-into-leiningen-dependencies artifact version))
-	       (cljr--post-command-message "Added %s version %s as a project dependency" artifact version))
-	     (when cljr-hotload-dependencies
-	       (if deps
+	   (cljr--post-command-message "Added %s version %s as a project dependency" artifact version))
+	 (when cljr-hotload-dependencies
+	   (if deps
                (back-to-indentation)
              (paredit-backward-down))
-	       (cljr-hotload-dependency artifact version))))))
+	   (cljr-hotload-dependency artifact version))))))
 
 (eval-after-load 'cider
   (setq lsp-enable-xref nil))
@@ -850,11 +850,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :ensure t
   :init
   (setq tide-completion-detailed t
-	    tide-always-show-documentation t
-	    tide-server-max-response-length 524288)
+	tide-always-show-documentation t
+	tide-server-max-response-length 524288)
   :hook ((js-mode . bk/setup-tide-mode)
-	     (js2-mode . bk/setup-tide-mode)
-	     (typescript-mode . bk/setup-tide-mode)))
+	 (js2-mode . bk/setup-tide-mode)
+	 (typescript-mode . bk/setup-tide-mode)))
 
 (eval-after-load 'projectile
   '(progn
@@ -977,10 +977,10 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   "Help development on multiple branches."
   (interactive)
   (let* ((root-proj (projectile-project-root))
-	     (proj-name (car (cdr (nreverse (split-string root-proj "/")))))
-	     (dest-dir (file-name-directory (directory-file-name root-proj)))
-	     (branch (ido-completing-read "Choose the branch: " (magit-list-local-branch-names)))
-	     (worktree-path (concat dest-dir proj-name "-wt-" branch)))
+	 (proj-name (car (cdr (nreverse (split-string root-proj "/")))))
+	 (dest-dir (file-name-directory (directory-file-name root-proj)))
+	 (branch (ido-completing-read "Choose the branch: " (magit-list-local-branch-names)))
+	 (worktree-path (concat dest-dir proj-name "-wt-" branch)))
     (magit-worktree-checkout worktree-path branch)
     (projectile-find-file)))
 
@@ -989,11 +989,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (interactive)
   (let ((worktree (ido-completing-read "Choose worktree: " (magit-list-worktrees))))
     (mapc (lambda (buffer)
-	        (with-current-buffer buffer
-	          (let ((worktree-name (file-name-base worktree)))
-		        (when (string-equal (projectile-project-name) worktree-name)
-		          (kill-buffer buffer)))))
-	      (buffer-list))
+	    (with-current-buffer buffer
+	      (let ((worktree-name (file-name-base worktree)))
+		(when (string-equal (projectile-project-name) worktree-name)
+		  (kill-buffer buffer)))))
+	  (buffer-list))
     (magit-worktree-delete worktree)))
 
 (defun bk/spell-buffer-pt-BR ()
@@ -1016,7 +1016,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :ensure t
   :config
   (setq langtool-language-tool-jar
-	    "~/.emacs.d/bin/languagetool-commandline.jar"))
+	"~/.emacs.d/bin/languagetool-commandline.jar"))
 
 (use-package popup :ensure t)
 
@@ -1030,8 +1030,8 @@ Please run M-x cider or M-x cider-jack-in to connect"))
     (google-translate-smooth-translate))
   :config
   (setq google-translate-backend-method 'curl
-	    google-translate-translation-directions-alist '(("en" . "en")
-							                            ("en" . "pt")))
+	google-translate-translation-directions-alist '(("en" . "en")
+							("en" . "pt")))
   (defun google-translate--search-tkk ()
     "Fixing bug."
     (list 430675 2721866130)))
@@ -1043,10 +1043,10 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :ensure nil
   :init
   (setq org-return-follows-link t
-	    org-confirm-babel-evaluate nil
-	    org-src-fontify-natively t
-	    org-src-tab-acts-natively t
-	    org-agenda-files (list "~/arch/agenda/todo.org"))
+	org-confirm-babel-evaluate nil
+	org-src-fontify-natively t
+	org-src-tab-acts-natively t
+	org-agenda-files (list "~/arch/agenda/todo.org"))
   :bind
   (("C-c c" . org-capture)
    ("C-c a" . org-agenda))
@@ -1069,10 +1069,10 @@ Please run M-x cider or M-x cider-jack-in to connect"))
      (clojure . t)))
 
   (setq org-capture-templates
-	    '(
-	      ("t" "Todo" entry (file+headline "~/arch/agenda/todo.org" "Task")
-	       "* TODO %^{Title}\n %i" :clock-in t :clock-resume t))
-	    ))
+	'(
+	  ("t" "Todo" entry (file+headline "~/arch/agenda/todo.org" "Task")
+	   "* TODO %^{Title}\n %i" :clock-in t :clock-resume t))
+	))
 
 (use-package org-download
   :ensure t
@@ -1084,10 +1084,10 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :diminish org-roam-mode
   :init
   (setq org-roam-directory bk-zettelkasten-dir
-	    org-roam-completion-system 'ido)
+	org-roam-completion-system 'ido)
   :bind (("C-c z f" . org-roam-find-file)
-	     ("C-c z i" . org-roam-insert)
-	     ("C-c z I" . org-roam-insert-immediate))
+	 ("C-c z i" . org-roam-insert)
+	 ("C-c z I" . org-roam-insert-immediate))
   :config
   (org-roam-mode +1))
 
@@ -1176,7 +1176,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
     :format regexp
     :files "everything"
     :dir (let ((vc (vc-root-dir)))
-	       (if vc vc default-directory))
+	   (if vc vc default-directory))
     :confirm prefix
     :flags ("--hidden -g !.git")))
 
@@ -1190,7 +1190,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   ("<f12>" . pomidor)
   :config
   (setq pomidor-sound-tick nil
-	    pomidor-sound-tack nil))
+	pomidor-sound-tack nil))
 
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars unresolved)
