@@ -16,7 +16,7 @@ stdenv.mkDerivation rec {
 
   installPhase =
     let
-      binPath = lib.makeBinPath [ rlwrap jdk ];
+      binPath = lib.makeBinPath [ rlwrap jdk11 ];
     in
       ''
       runHook preInstall
