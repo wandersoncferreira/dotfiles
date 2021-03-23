@@ -8,6 +8,7 @@
       ./configurations/base/cli.nix
       ./configurations/regular-packages.nix
       ./configurations/desktop.nix
+      ./configurations/services.nix
     ];
 
   nixpkgs.overlays = import ./configurations/overlays.nix;

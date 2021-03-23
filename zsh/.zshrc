@@ -1,9 +1,6 @@
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
-# Path to your oh-my-zsh installation.
-export ZSH="/home/wanderson/.oh-my-zsh"
-
 ZSH_THEME="robbyrussell"
 
 # Uncomment the following line to use case-sensitive completion.
@@ -56,8 +53,6 @@ plugins=(git
 # aliases for git plugin
 # https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/git
 
-source $ZSH/oh-my-zsh.sh
-
 export MANPATH="/usr/local/man:$MANPATH"
 export LANG=en_US.UTF-8
 
@@ -74,7 +69,7 @@ alias reifykey="ssh-add ~/.secrets/keys/id_rsa"
 alias appsaucekey="ssh-add ~/.secrets/keys/app_saude_rsa"
 alias flexianakey="ssh-add ~/.secrets/keys/flexiana_key"
 
-export PATH="/home/wanderson/arch/configs/scripts:$PATH"
+export PATH="/home/wanderson/repos/personal/dotfiles/scripts:$PATH"
 
 # enable fastkeys
 fastkeys

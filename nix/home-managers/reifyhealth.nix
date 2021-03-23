@@ -28,13 +28,13 @@ in {
       yarn
     ];
 
-    programs.direnv = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-    
     activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
 
     '';
+  };
+
+  programs.direnv = {
+    enable = true;
+    enableZshIntegration = true;
   };
 }

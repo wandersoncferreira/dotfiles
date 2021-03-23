@@ -1,2 +1,2 @@
-alias esource="cd ~/arch/work/code/reify/esource-documents/"
-alias study-sheet="cd ~/arch/work/code/reify/study-sheet/"
+alias esource="cd ~/repos/reifyhealth/esource-service/"
+alias study-sheet="cd ~/repos/reifyhealth/study-sheet/"
