@@ -5,17 +5,19 @@ let
     epkgs.vterm
   ]));
 
+  master = import (fetchTarball https://github.com/NixOS/nixpkgs/archive/master.tar.gz) {
+    config = config.nixpkgs.config;
+  };
+
 in {
 
-  # I need this for pgadmin 3
   nixpkgs.config.permittedInsecurePackages = [
-    "openssl-1.0.2u"
-  ];
-
+        "openssl-1.0.2u"
+      ];
 
   environment.systemPackages = with pkgs;
     [
-      docker-compose
+      master.docker-compose
       pgadmin
       emacsPackage
     ];
