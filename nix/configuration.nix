@@ -29,7 +29,7 @@
   users.users.wanderson = {
     isNormalUser = true;
     home = "/home/wanderson";
-    description = "Main user to admin my computers";
+    description = "@bartuka";
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "networkmanager" "docker"];
   };
