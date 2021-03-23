@@ -350,7 +350,7 @@
   :disabled t
   :config
   (load-theme 'doom-dark+ t)
-  (bk/fira-code-font 100))
+  (bk/fira-code-font 110))
 
 ;; (set-background-color "honeydew")
 ;; (set-face-attribute 'default nil :height 110)
