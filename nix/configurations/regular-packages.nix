@@ -5,7 +5,10 @@
   [
     tdesktop
     google-chrome
+    chromium
+    slack
     vlc
+    spotify
   ];
 
 }
