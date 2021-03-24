@@ -1180,6 +1180,25 @@ Please run M-x cider or M-x cider-jack-in to connect"))
     :confirm prefix
     :flags ("--hidden -g !.git")))
 
+;;; nixOS
+
+(use-package nix-mode :ensure t)
+(use-package nixpkgs-fmt :ensure t)
+(use-package nix-sandbox :ensure t)
+(use-package nix-buffer :ensure t)
+(use-package nixos-options :ensure t)
+
+(use-package company-nixos-options
+  :ensure t
+  :config
+  (with-eval-after-load 'company-nixos-options
+    (defun company-nixos--in-nix-context-p ()
+      (unless (executable-find "nix-build")
+	(or (derived-mode-p 'nix-mode 'nix-repl-mode)
+	    (let ((file-name (buffer-file-name (current-buffer))))
+	      (and file-name (equal "nix" (file-name-extension file-name))))))))
+  (add-to-list 'company-backends 'company-nixos-options))
+
 ;;; wgrep
 (use-package wgrep :ensure t)
 

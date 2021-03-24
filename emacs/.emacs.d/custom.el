@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(company-nixos-options nix-mode pomidor rg sql-indent docker docker-compose-mode dockerfile-mode ledger-mode google-this uuidgen org-roam-server org-roam org-download google-translate popup langtool which-key tide add-node-modules-path prettier-js typescript-mode lsp-java lsp-ui clj-refactor lsp-mode toggle-test kaocha-runner clojure-mode paredit popwin flycheck-projectile flycheck quickrun clojure-snippets java-snippets yasnippet company-quickhelp company gist browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine diff-hl forge magit move-text multiple-cursors jump-char fix-word change-inner expand-region zeal-at-point projectile vlf ibuffer-vc diminish use-package vterm))
+   '(nix-buffer nix-sandbox nixpkgs-fmt company-nixos-options nix-mode pomidor rg sql-indent docker docker-compose-mode dockerfile-mode ledger-mode google-this uuidgen org-roam-server org-roam org-download google-translate popup langtool which-key tide add-node-modules-path prettier-js typescript-mode lsp-java lsp-ui clj-refactor lsp-mode toggle-test kaocha-runner clojure-mode paredit popwin flycheck-projectile flycheck quickrun clojure-snippets java-snippets yasnippet company-quickhelp company gist browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine diff-hl forge magit move-text multiple-cursors jump-char fix-word change-inner expand-region zeal-at-point projectile vlf ibuffer-vc diminish use-package vterm))
  '(warning-suppress-types '((comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
