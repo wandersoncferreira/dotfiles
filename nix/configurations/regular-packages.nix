@@ -12,6 +12,7 @@
     spotify
     libreoffice
     gparted
+    simplescreenrecorder
   ];
 
 }

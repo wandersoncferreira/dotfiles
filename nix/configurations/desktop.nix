@@ -20,9 +20,9 @@
       enable = true;
       layout = "us,br";
 
-      displayManager.gdm.enable = true;
-      displayManager.gdm.wayland = true;
-      desktopManager.gnome3.enable = true;
+      displayManager.sddm.enable = true;
+      desktopManager.plasma5.enable = true;
+      desktopManager.default = "plasma5";
       
       xkbVariant = "intl,abnt2";
       xkbOptions = "ctrl:nocaps";
@@ -34,12 +34,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    # Apps
-    gnome3.gnome-tweak-tool
-    gnome3.gnome-sound-recorder
-    # Extensions
-    gnomeExtensions.paperwm
-    gnomeExtensions.appindicator
   ];
 
   fonts = {

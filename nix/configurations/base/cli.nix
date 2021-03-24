@@ -25,6 +25,9 @@
     xsel
     youtube-dl
     sqlite
+    file
+    patchelf
+    ffmpeg
   ];
 
   services.openssh.enable = true;

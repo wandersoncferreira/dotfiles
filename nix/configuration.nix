@@ -26,6 +26,10 @@
   sound.enable = true;
   hardware.pulseaudio.enable = true;
 
+  nixpkgs.config.packageOverrides = pkgs: {
+    vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
+  };
+
   users.users.wanderson = {
     isNormalUser = true;
     home = "/home/wanderson";
