@@ -24,6 +24,7 @@
     xclip
     xsel
     youtube-dl
+    sqlite
   ];
 
   services.openssh.enable = true;
