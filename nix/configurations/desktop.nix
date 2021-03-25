@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, config, ... }:
 
 {
   nixpkgs.config.allowBroken = true;
@@ -34,6 +34,7 @@
   };
 
   environment.systemPackages = with pkgs; [
+    ksshaskpass
   ];
 
   fonts = {

@@ -31,7 +31,7 @@ in {
     ];
 
     activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
-
+    ln -sf ${dotfilesDir}/face.icon ~/.face.icon
     '';
   };
 }

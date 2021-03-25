@@ -18,7 +18,7 @@ in {
   environment.systemPackages = with pkgs;
     [
       master.docker-compose
-      pgadmin
+      jetbrains.datagrip
       emacsPackage
       plantuml
     ];

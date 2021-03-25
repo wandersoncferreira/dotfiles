@@ -8,9 +8,7 @@
     slack
     zulip
     vlc
-    spotify
     libreoffice
-    gparted
     simplescreenrecorder
   ];
 

@@ -26,9 +26,9 @@
         commit = {
           gpgsign = true;
         };
-        pull = { rebase = true; };
+        pull = { rebase = false; };
         rebase = {
-          autoStash = true;
+          autoStash = false;
           autoSquash = false;
           abbreviateCommands = true;
           missingCommitsCheck = "warn";
