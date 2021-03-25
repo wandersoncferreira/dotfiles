@@ -3,20 +3,17 @@
 {
   imports =
     [
-      ./configurations/hardware-configuration.nix
       ./configurations/base/dev.nix
       ./configurations/base/cli.nix
       ./configurations/regular-packages.nix
       ./configurations/desktop.nix
       ./configurations/services.nix
+      ./configurations/hardware/x1-carbon-6th-gen.nix
     ];
 
   nixpkgs.overlays = import ./configurations/overlays.nix;
 
   nixpkgs.config.allowUnfree = true; 
-
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.useDHCP = false;
   networking.interfaces.enp0s31f6.useDHCP = true;
@@ -24,7 +21,6 @@
   networking.networkmanager.enable = true;
 
   sound.enable = true;
-  hardware.pulseaudio.enable = true;
 
   nixpkgs.config.packageOverrides = pkgs: {
     vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
@@ -37,7 +33,7 @@
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "networkmanager" "docker"];
   };
-    
+  
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave

@@ -5,7 +5,6 @@
   [
     tdesktop
     google-chrome
-    chromium
     slack
     zulip
     vlc

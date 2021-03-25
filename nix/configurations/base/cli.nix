@@ -28,6 +28,7 @@
     file
     patchelf
     ffmpeg
+    dmidecode
   ];
 
   services.openssh.enable = true;

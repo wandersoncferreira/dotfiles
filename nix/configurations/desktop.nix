@@ -22,7 +22,7 @@
 
       displayManager.sddm.enable = true;
       desktopManager.plasma5.enable = true;
-      desktopManager.default = "plasma5";
+      displayManager.defaultSession = "plasma5";
       
       xkbVariant = "intl,abnt2";
       xkbOptions = "ctrl:nocaps";
@@ -41,7 +41,6 @@
       emacs-all-the-icons-fonts
       fira-code
       fira-code-symbols
-      hack-font
     ];
   };
 }
