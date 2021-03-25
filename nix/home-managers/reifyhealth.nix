@@ -15,6 +15,7 @@ in {
 
   imports = [
     ./common/programs.nix
+    ./common/home.nix
   ];
 
   home = {

@@ -1,7 +1,6 @@
 { pkgs, ... }:
 
 {
-  # home.stateVersion = "20.09";
   programs = {
     home-manager.enable = true;
 
@@ -11,12 +10,33 @@
       userName = "Wanderson Ferreira";
       userEmail = "wand@hey.com";
       signing = {
-        key = "wand@hey.com";
+        key = "56840A614DBE37AE";
         signByDefault = true;
+      };
+      extraConfig = {
+        init = { defaultBranch = "main"; };
+        core = {
+          editor = "emacs";
+          quotepath = false;
+        };
+        github = {
+          user = "wandersoncferreira";
+          oauth-token = "b35352a796fc41f724a6588e4ca19fc2a0cbf068";
+        };
+        commit = {
+          gpgsign = true;
+        };
+        pull = { rebase = true; };
+        rebase = {
+          autoStash = true;
+          autoSquash = false;
+          abbreviateCommands = true;
+          missingCommitsCheck = "warn";
+        };
       };
     };
 
-    programs.command-not-found.enable = true;
+    command-not-found.enable = true;
 
   };
 }
