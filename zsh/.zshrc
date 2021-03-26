@@ -71,9 +71,6 @@ alias flexianakey="ssh-add ~/.secrets/keys/flexiana_key"
 
 export PATH="/home/wanderson/repos/personal/dotfiles/scripts:$PATH"
 
-# enable fastkeys
-fastkeys
-
 # enable gpg
 export GPG_TTY=$(tty)
 
