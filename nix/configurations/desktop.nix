@@ -33,7 +33,11 @@
     };
   };
 
+  security.pam.services.sddm.enableKwallet = true;
+  security.pam.services.sddm.sshAgentAuth = true;
+
   environment.systemPackages = with pkgs; [
+    kwalletmanager
     ksshaskpass
   ];
 
