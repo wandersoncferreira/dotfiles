@@ -10,6 +10,7 @@
     vlc
     libreoffice
     simplescreenrecorder
+    bitwarden
   ];
 
 }
