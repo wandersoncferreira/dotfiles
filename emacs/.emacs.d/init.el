@@ -84,7 +84,9 @@
 (delete-selection-mode +1)
 
 (use-package autorevert
-  :diminish auto-revert-mode)
+  :diminish auto-revert-mode
+  :config
+  (global-auto-revert-mode +1))
 
 ;;; auth
 (use-package pinentry
@@ -496,7 +498,8 @@
 
 (use-package magit
   :ensure t
-  :bind ("C-c g s" . magit-status))
+  :bind (("C-c g s" . magit-status)
+	 ("C-c g b" . magit-blame)))
 
 (use-package forge
   :ensure t
@@ -1210,6 +1213,32 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :config
   (setq pomidor-sound-tick nil
 	pomidor-sound-tack nil))
+
+
+;;; reify health
+
+(defun reifyhealth/cider-connect ()
+  "Connect into eSource."
+  (interactive)
+  (cider-connect-clj (list :host "localhost" :port 12344)))
+
+(defun reifyhealth ()
+  "Open file notes from work."
+  (interactive)
+  (find-file "~/repos/reifyhealth/work.org"))
+
+(defun work-new-day ()
+  "Create entry into org file for bookkeeping."
+  (interactive)
+  (end-of-buffer)
+  (org-insert-heading-respect-content)
+  (org-metaright)
+  (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)"))
+  (org-metaleft)
+  (reindent-then-newline-and-indent)
+  (reindent-then-newline-and-indent)
+  (org-cycle)
+  (insert "- "))
 
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars unresolved)
