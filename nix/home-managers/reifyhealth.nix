@@ -57,13 +57,13 @@ in {
 
     # shortcuts
     kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group krunner.desktop --key "_launch" "none"
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "FullScreenScreenShot" "none"
+    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "FullScreenScreenShot" "none,none,Capture Entire Desktop"
     kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "_launch" "none,none,Launch Spectacle"
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "RectangularRegionScreenShot" "Shift+Print"
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "CurrentMonitorScreenShot" "Print"
+    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "RectangularRegionScreenShot" "Shift+Print,Shift+Print,Capture Rectangular Region"
+    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "CurrentMonitorScreenShot" "Print,Print,Capture Current Monitor"
 
     # disable shortcuts in conflict with Emacs
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group kwin --key "Activate Window Demanding Attention" "none"
+    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group kwin --key "Activate Window Demanding Attention" "none,none,Activate Window Demanding Attention"
 
     '';
   };
