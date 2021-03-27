@@ -18,6 +18,7 @@
         core = {
           editor = "emacs";
           quotepath = false;
+          askpass="${pkgs.ksshaskpass}/bin/ksshaskpass";
         };
         github = {
           user = "wandersoncferreira";
@@ -35,6 +36,5 @@
         };
       };
     };
-
   };
 }

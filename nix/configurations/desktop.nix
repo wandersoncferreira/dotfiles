@@ -7,6 +7,10 @@
     DOTFILES = "$HOME/repos/personal/dotfiles";
   };
 
+  environment.shellAliases = {
+    ls = "ls --color=tty --si";
+  };
+
   i18n = {
     defaultLocale = "en_US.UTF-8";
   };
@@ -30,8 +34,12 @@
 
       modules = [ pkgs.xorg.xf86inputlibinput ];
 
+      libinput = {
+        enable = true;
+      };
     };
   };
+
 
   security.pam.services.sddm.enableKwallet = true;
   security.pam.services.sddm.sshAgentAuth = true;
@@ -39,7 +47,13 @@
   environment.systemPackages = with pkgs; [
     kwalletmanager
     ksshaskpass
+    ktorrent
+    gwenview
     okular
+    kcalc
+    kgpg
+    partition-manager
+    plasma-workspace-wallpapers
   ];
 
   fonts = {

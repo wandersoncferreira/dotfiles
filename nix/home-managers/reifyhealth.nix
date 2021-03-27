@@ -31,4 +31,10 @@ in {
       nodejs-slim-14_x
     ];
   };
+
+  programs.zsh.shellAliases = {
+    esource = "cd ~/repos/reifyhealth/esource-service/";
+    study-sheet = "cd ~/repos/reifyhealth/study-sheet/";
+    reifykey = "ssh-add ~/.secrets/keys/id_rsa";
+  };
 }

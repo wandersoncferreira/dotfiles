@@ -65,7 +65,6 @@ fi
 
 # aliases
 alias sz="source ~/.zshrc"
-alias reifykey="ssh-add ~/.secrets/keys/id_rsa"
 alias appsaucekey="ssh-add ~/.secrets/keys/app_saude_rsa"
 alias flexianakey="ssh-add ~/.secrets/keys/flexiana_key"
 
@@ -73,9 +72,6 @@ export PATH="/home/wanderson/repos/personal/dotfiles/scripts:$PATH"
 
 # enable gpg
 export GPG_TTY=$(tty)
-
-# source aliases
-source $HOME/.aliases.zsh 
 
 # enable direnv
 eval "$(direnv hook zsh)"

@@ -14,13 +14,24 @@
   boot.initrd.availableKernelModules = [ "xhci_pci" "nvme" "usbhid" "usb_storage" "sd_mod" ];
   boot.initrd.kernelModules = [ "i915" ];
   boot.kernelModules = [ "kvm-intel" "acpi_call" "tp_smapi"];
+  boot.kernelPackages = pkgs.linuxPackagesFor (pkgs.linux_5_4.override {
+    argsOverride = {
+      version = "5.4.107";
+    };
+  });
   boot.extraModulePackages = with config.boot.kernelPackages; [ acpi_call tp_smapi ];
   boot.blacklistedKernelModules = lib.optionals (!config.hardware.enableRedistributableFirmware) [
     "ath3k"
   ];
 
+  boot.cleanTmpDir = false;
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
+  # SMART
+  services.smartd.enable = true;
+  services.smartd.notifications.x11.enable = true;
 
   # ssd
   boot.kernel.sysctl = {

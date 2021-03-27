@@ -8,7 +8,7 @@ in {
   
   home.sessionVariables = { BROWSER = "google-chrome"; };
 
-  activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
+  home.activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
     ln -sf ${dotfilesDir}/face.icon ~/.face.icon
 
     export GIT_ASKPASS=$SSH_ASKPASS
@@ -23,7 +23,7 @@ in {
     kwriteconfig5 --file $HOME/.config/baloofilerc --group "Basic Settings" --key Indexing-Enabled "false"
 
     #touchpad
-    kwriteconfig5 --file $HOME/.config/touchpadxlibinputrc --group "SynPS/2 Synaptics TouchPad" --key tapToClick "false"
+    kwriteconfig5 --file $HOME/.config/touchpadxlibinputrc --group "Synaptics TM3289-021" --key tapToClick "false"
 
     #hide files and folders on desktop
     sed -i 's/plugin=org.kde.plasma.folder/plugin=org.kde.desktopcontainment/g' $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc
