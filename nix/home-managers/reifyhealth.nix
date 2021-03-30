@@ -62,6 +62,7 @@ in {
     stateVersion = "21.03";
     packages = with pkgs; [
       (import ../configurations/custom/clojure.nix)
+      (import ../configurations/custom/hey.nix)
       master.whatsapp-for-linux
       master.clojure-lsp
       zoom-us
@@ -166,7 +167,6 @@ in {
       ln -sf ${dotfilesDir}/clojure/clj-kondo/config.edn $HOME/.config/clj-kondo/config.edn
       ln -sf ${dotfilesDir}/clojure/lsp/config.edn $HOME/.lsp/config.edn
 
-      # add reifykey to session
       ssh-add $HOME/.secrets/keys/id_rsa
     '';
   };

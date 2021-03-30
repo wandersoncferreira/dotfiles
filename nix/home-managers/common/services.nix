@@ -9,12 +9,13 @@ in {
 
   services.gpg-agent = {
     enable = true;
-    enableSshSupport = true;
     extraConfig = ''
-    allow-emacs-pinentry
-    allow-loopback-pinentry
+      pinentry-program ${pkgs.pinentry}/bin/pinentry-gtk-2
+      allow-emacs-pinentry
     '';
     maxCacheTtl = 34560000;
     defaultCacheTtl = 34560000;
   };
+
+  systemd.user.startServices = true;
 }

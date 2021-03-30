@@ -3,23 +3,27 @@
 {
   imports =
     [
-      ./configurations/base/dev.nix
-      ./configurations/base/cli.nix
-      ./configurations/regular-packages.nix
-      ./configurations/desktop.nix
-      ./configurations/services.nix
-      ./configurations/hardware/x1-carbon-6th-gen.nix
+      ../../configurations/base/dev.nix
+      ../../configurations/base/cli.nix
+      ../../configurations/regular-packages.nix
+      ../../configurations/desktop.nix
+      ../../configurations/services.nix
+      ../../configurations/hardware/x1-carbon-6th-gen.nix
     ];
 
-  nixpkgs.overlays = import ./configurations/overlays.nix;
+  nixpkgs.overlays = import ../../configurations/overlays.nix;
 
   nixpkgs.config.allowUnfree = true; 
 
-  networking.useDHCP = false;
-  networking.interfaces.enp0s31f6.useDHCP = true;
-  networking.interfaces.wlp2s0.useDHCP = true;
-  networking.networkmanager.enable = true;
-  networking.resolvconf.dnsExtensionMechanism = false;
+  networking = {
+    useDHCP = false;
+    networkmanager.enable = true;
+    resolvconf.dnsExtensionMechanism = false;
+    interfaces = {
+      enp0s31f6.useDHCP = true;
+      wlp2s0.useDHCP = true;
+    };
+  };
 
   sound.enable = true;
 

@@ -70,7 +70,6 @@
 
     # Extensions
     gnomeExtensions.appindicator
-    gnomeExtensions.sound-output-device-chooser
   ];
 
   fonts = {

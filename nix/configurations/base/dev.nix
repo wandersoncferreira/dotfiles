@@ -21,6 +21,7 @@ in {
       jetbrains.datagrip
       emacsPackage
       plantuml
+      clang
     ];
 
   virtualisation.docker = {

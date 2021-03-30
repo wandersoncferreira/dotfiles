@@ -43,11 +43,13 @@
   fileSystems."/" =
     { device = "/dev/disk/by-uuid/f77a2026-788a-4fe9-9331-9be1e4ac3bca";
       fsType = "ext4";
+      options = [ "noatime" "discard" ];
     };
 
   fileSystems."/boot" =
     { device = "/dev/disk/by-uuid/F088-98CB";
       fsType = "vfat";
+      options = [ "noatime" "discard" ];
     };
 
   swapDevices = [ ];

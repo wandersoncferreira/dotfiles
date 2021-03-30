@@ -91,15 +91,17 @@
 ;;; auth
 (use-package pinentry
   :ensure t
-  :config
+  :init
   (setq epg-gpg-program "gpg"
-	epa-file-cache-passphrase-for-symmetric-encryption t))
+	epa-file-cache-passphrase-for-symmetric-encryption t
+	epa-pinentry-mode 'loopback)
+  :config
+  (pinentry-start))
 
 (use-package epa
   :ensure nil
   :init
-  (setq epa-pinentry-mode 'loopback
-	auth-source-debug t
+  (setq auth-source-debug t
 	auth-sources '((:source "~/.secrets/authinfo.gpg")))
   :config
   (pinentry-start))
@@ -498,6 +500,8 @@
 
 (use-package magit
   :ensure t
+  :init
+  (setq magit-log-show-gpg-status t)
   :bind (("C-c g s" . magit-status)
 	 ("C-c g b" . magit-blame)))
 
@@ -552,7 +556,6 @@
   :init
   (setq company-show-numbers t
         company-minimum-prefix-length 1
-	company-format-margin-function #'company-vscode-light-icons-margin
 	company-idle-delay 0.25)
   :config
   (global-company-mode))

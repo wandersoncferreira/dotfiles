@@ -24,20 +24,9 @@ in {
     };
   };
 
-  services.gpg-agent = {
-    enable = true;
-    enableSshSupport = true;
-    extraConfig = ''
-    allow-emacs-pinentry
-    allow-loopback-pinentry
-    '';
-    maxCacheTtl = 34560000;
-    defaultCacheTtl = 34560000;
-  };
-
   home.activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
-    ln -sf ${dotfilesDir}/emacs.d/ $HOME/.emacs.d
-    '';
+    ln -sf ${dotfilesDir}/.emacs.d $HOME;
+  '';
 
   dconf.settings = {
     "apps/seahorse/windows/key-manager" = {
@@ -46,7 +35,7 @@ in {
     };
 
     "org/gnome/desktop/input-sources" = {
-      current = "uint32 0";
+      current = "uint32 1";
       sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "br" ]) ];
       xkb-options = [ "ctrl:nocaps" ];
     };
@@ -82,6 +71,20 @@ in {
     
     "org/gnome/desktop/wm/keybindings" = {
       activate-window-menu=[];
+    };
+
+    "org/gnome/deja-dup" = {
+      exclude-list = ["$TRASH" "$DOWNLOAD" "/home/wanderson/repos"];
+      periodic = true;
+      periodic-period = 1;
+      delete-after = 365;
+      backend = "drive";
+    };
+
+    "org/gnome/deja-dup/drive" = {
+      folder = "wand-x1";
+      name = "backup";
+      uuid = "F399-1C89";
     };
   };
 }

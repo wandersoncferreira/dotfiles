@@ -1,0 +1,32 @@
+* NixOS configuration
+
+NixOS is an advanced GNU/Linux distribution featuring declarative
+configuration and atomic upgrades. You can learn more on [[https://nixos.org/][nixos.org]].
+
+In this repository are the configurations of my NixOS machines.
+
+You can find the configurations from other people in the [[https://nixos.wiki/wiki/Configuration_Collection][nixos.wiki]].
+
+
+** Usage
+
+** Structure
+
+*** machines
+
+    Here are the =configuration.nix= files for my machines.
+
+
+*** configurations
+
+    Every machine is composed with a set of modules:
+
+    * hardware:           video, disks, boot, etc.
+    * desktop:            Gnome 3
+    * regular packages    default packages
+    * services            postgres, etc
+
+
+*** home-manager
+
+    User specific configuration using [[https://github.com/nix-community/home-manager][Home Manager]].
