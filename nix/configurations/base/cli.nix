@@ -37,6 +37,7 @@
     ssh.startAgent = false;
     gnupg.agent.enable = true;
     gnupg.agent.enableSSHSupport = true;
+    gnupg.dirmngr.enable = true;
 
     zsh = {
       enable = true;

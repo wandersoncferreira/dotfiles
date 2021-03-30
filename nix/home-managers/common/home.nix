@@ -1,47 +1,87 @@
-{ config, pkgs, ... }:
+{ lib, config, pkgs, ... }:
 
 let
 
   dotfilesDir = "$HOME/repos/personal/dotfiles";
+  mkTuple = lib.hm.gvariant.mkTuple;
 
 in {
-  
-  home.sessionVariables = { BROWSER = "google-chrome"; };
+
+  programs.home-manager.enable = true;
+
+  home.sessionVariables = { BROWSER = "google-chrome-stable"; };
+
+  xdg.mimeApps = {
+    enable = true;
+    associations.added = {
+      "text/html" = "google-chrome.desktop";
+      "x-scheme-handler/http" = "google-chrome.desktop";
+      "x-scheme-handler/https" = "google-chrome.desktop";
+      "x-scheme-handler/mailto" = "hey-mail.desktop";
+      "x-scheme-handler/slack" = "slack.desktop";
+      "application/pdf" = "org.gnome.Evince.desktop";
+      "image/png" = "org.gnome.eog.desktop";
+    };
+  };
+
+  services.gpg-agent = {
+    enable = true;
+    enableSshSupport = true;
+    extraConfig = ''
+    allow-emacs-pinentry
+    allow-loopback-pinentry
+    '';
+    maxCacheTtl = 34560000;
+    defaultCacheTtl = 34560000;
+  };
 
   home.activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
-    ln -sf ${dotfilesDir}/face.icon ~/.face.icon
-
-    export GIT_ASKPASS=$SSH_ASKPASS
-
-    #disable annoying notification when changing volume
-    kwriteconfig5 --file $HOME/.config/plasmarc --group OSD --key Enabled "false"
-
-    #do not restore desktop session
-    kwriteconfig5 --file $HOME/.config/ksmserverrc --group General --key loginMode "default"
-
-    #disable file somthing...
-    kwriteconfig5 --file $HOME/.config/baloofilerc --group "Basic Settings" --key Indexing-Enabled "false"
-
-    #touchpad
-    kwriteconfig5 --file $HOME/.config/touchpadxlibinputrc --group "Synaptics TM3289-021" --key tapToClick "false"
-
-    #hide files and folders on desktop
-    sed -i 's/plugin=org.kde.plasma.folder/plugin=org.kde.desktopcontainment/g' $HOME/.config/plasma-org.kde.plasma.desktop-appletsrc
-
-    # fast keys
-    kwriteconfig5 --file $HOME/.config/kcminputrc --group Keyboard --key KeyboardRepeating "0"
-    kwriteconfig5 --file $HOME/.config/kcminputrc --group Keyboard --key RepeatDelay "300"
-    kwriteconfig5 --file $HOME/.config/kcminputrc --group Keyboard --key RepeatRate "40"
-
-    # shortcuts
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group krunner.desktop --key "_launch" "none"
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "FullScreenScreenShot" "none,none,Capture Entire Desktop"
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "_launch" "none,none,Launch Spectacle"
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "RectangularRegionScreenShot" "Shift+Print,Shift+Print,Capture Rectangular Region"
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group org.kde.spectacle.desktop --key "CurrentMonitorScreenShot" "Print,Print,Capture Current Monitor"
-
-    # disable shortcuts in conflict with Emacs
-    kwriteconfig5 --file $HOME/.config/kglobalshortcutsrc --group kwin --key "Activate Window Demanding Attention" "none,none,Activate Window Demanding Attention"
-
+    ln -sf ${dotfilesDir}/emacs.d $HOME/.emacs.d
     '';
+
+  dconf.settings = {
+    "apps/seahorse/windows/key-manager" = {
+      height = 476;
+      width = 600;
+    };
+
+    "org/gnome/desktop/input-sources" = {
+      current = "uint32 0";
+      sources = [ (mkTuple [ "xkb" "us" ]) (mkTuple [ "xkb" "br" ]) ];
+      xkb-options = [ "ctrl:nocaps" ];
+    };
+
+    "org/gnome/desktop/privacy" = {
+      disable-microphone = false;
+      report-technical-problems = false;
+    };
+
+    "org/gnome/desktop/wm/preferences" = {
+      button-layout = "icon:minimize,maximize,close";
+    };
+
+    "org/gnome/nautilus/preferences" = {
+      default-folder-viewer = "list-view";
+      search-filter-time-type = "last_modified";
+    };
+
+    "org/gnome/settings-daemon/plugins/xsettings" = {
+      antialiasing = "grayscale";
+      hinting = "slight";
+    };
+
+    "org/gnome/system/location" = {
+      enabled = true;
+    };
+
+    "org/gnome/desktop/peripherals/keyboard" = {
+      repeat-interval = 30;
+      repeat = true;
+      delay = 400;
+    };
+    
+    "org/gnome/desktop/wm/keybindings" = {
+      activate-window-menu=[];
+    };
+  };
 }

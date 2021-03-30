@@ -326,7 +326,6 @@
     (set-face-attribute 'default nil :font "Fira Code" :height font-size)))
 
 (use-package simple
-  :disabled t
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black"))))
   :config
@@ -336,6 +335,7 @@
   (bk/fira-code-font 100))
 
 (use-package simple
+  :disabled t
   :config
   (load-theme 'default-black t)
   (bk/fira-code-font 100))
@@ -552,6 +552,7 @@
   :init
   (setq company-show-numbers t
         company-minimum-prefix-length 1
+	company-format-margin-function #'company-vscode-light-icons-margin
 	company-idle-delay 0.25)
   :config
   (global-company-mode))

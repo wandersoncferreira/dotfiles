@@ -19,6 +19,7 @@
   networking.interfaces.enp0s31f6.useDHCP = true;
   networking.interfaces.wlp2s0.useDHCP = true;
   networking.networkmanager.enable = true;
+  networking.resolvconf.dnsExtensionMechanism = false;
 
   sound.enable = true;
 
