@@ -165,6 +165,9 @@ in {
       ln -sf ${dotfilesDir}/clojure/rebl-0.9.242.jar $HOME/.clojure/rebl-0.9.242.jar
       ln -sf ${dotfilesDir}/clojure/clj-kondo/config.edn $HOME/.config/clj-kondo/config.edn
       ln -sf ${dotfilesDir}/clojure/lsp/config.edn $HOME/.lsp/config.edn
+
+      # add reifykey to session
+      ssh-add $HOME/.secrets/keys/id_rsa
     '';
   };
 }
