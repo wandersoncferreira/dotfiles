@@ -36,7 +36,7 @@ in {
   };
 
   home.activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
-    ln -sf ${dotfilesDir}/emacs.d $HOME/.emacs.d
+    ln -sf ${dotfilesDir}/emacs.d/ $HOME/.emacs.d
     '';
 
   dconf.settings = {
