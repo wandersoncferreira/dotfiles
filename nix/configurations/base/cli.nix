@@ -11,7 +11,6 @@
     gnupg
     home-manager
     binutils
-    stow
     htop
     openssl
     oh-my-zsh
@@ -19,10 +18,8 @@
     ripgrep
     tree
     unzip
-    vim
     wget
     xclip
-    xsel
     youtube-dl
     sqlite
     file

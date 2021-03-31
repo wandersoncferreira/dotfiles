@@ -12,7 +12,6 @@
     simplescreenrecorder
     bitwarden
     texlive.combined.scheme-medium
-    p7zip
     dconf
     deja-dup
   ];

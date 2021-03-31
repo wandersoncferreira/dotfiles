@@ -1104,10 +1104,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :init
   (setq org-roam-server-port 17042)
   :config
-  (require 'server)
-  (unless (server-running-p)
-    (server-start))
   (require 'org-roam-protocol))
+
+(require 'server)
+(unless (server-running-p)
+  (server-start))
 
 ;;; uuids
 (use-package uuidgen
