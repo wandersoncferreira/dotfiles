@@ -23,3 +23,4 @@ niceties/
 .emacs.d/nix-buffer/trusted-exprs
 clojure/.cpcache
 clojure/lsp/sqlite.db
+.emacs.d/session.*

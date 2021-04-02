@@ -327,10 +327,13 @@
   (when (member "Fira Code" (font-family-list))
     (set-face-attribute 'default nil :font "Fira Code" :height font-size)))
 
+(setq inhibit-startup-screen nil)
+
 (use-package simple
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black"))))
   :config
+  (load-theme 'tsdh-light t)
   (set-face-attribute 'lazy-highlight nil :background "light green")
   (set-face-attribute 'isearch nil :background "khaki1")
   (set-face-attribute 'region nil :background "khaki1")

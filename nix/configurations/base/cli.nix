@@ -22,6 +22,7 @@
     xclip
     youtube-dl
     sqlite
+    ledger
     file
     patchelf
     ffmpeg

@@ -8,7 +8,7 @@
       ../../configurations/regular-packages.nix
       ../../configurations/desktop.nix
       ../../configurations/services.nix
-      ../../configurations/hardware/x1-carbon-6th-gen.nix
+      ./hardware.nix
     ];
 
   nixpkgs.overlays = import ../../configurations/overlays.nix;
@@ -38,6 +38,18 @@
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "networkmanager" "docker"];
   };
+
+
+  programs.steam.enable = true;
+  
+  users.users.gamer = {
+    isNormalUser = true;
+    home = "/home/gamer";
+    description = "@gamer";
+    shell = pkgs.bash;
+    extraGroups = [ "wheel" "networkmanager" ];
+  };
+
   
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
