@@ -56,6 +56,7 @@ in {
     };
   };
 
+
   home = {
     username = "wanderson";
     homeDirectory = "/home/wanderson";
@@ -68,7 +69,7 @@ in {
       zoom-us
       yarn
       direnv
-      nodejs-slim-14_x
+      nodejs-14_x
     ];
   };
 
@@ -76,7 +77,7 @@ in {
 
     "org/gnome/desktop/background" = {
       picture-options = "zoom";
-      picture-uri = "file:///nix/store/8yzca1b0bwdxy65gfxhxlp88i40hxmws-gnome-backgrounds-3.36.0/share/backgrounds/gnome/Acrylic.jpg";
+      picture-uri = "file:///home/wanderson/Pictures/pexels-pixabay-50594.jpg";
       primary-color = "#ffffff";
       secondary-color = "#000000";
     };

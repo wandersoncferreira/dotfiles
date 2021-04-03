@@ -42,9 +42,4 @@ in {
     adb.enable = true;
   };
 
-  services.emacs = with pkgs; {
-    enable = true;
-    defaultEditor = true;
-    package = emacsPackage;
-  };
 }

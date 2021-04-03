@@ -56,8 +56,7 @@
   };
 
   programs.gnome-terminal.enable = true;
-
-
+  
   environment.systemPackages = with pkgs; [
     # Apps
     gnome3.evince

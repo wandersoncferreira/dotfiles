@@ -21,6 +21,7 @@ in {
       "x-scheme-handler/slack" = "slack.desktop";
       "application/pdf" = "org.gnome.Evince.desktop";
       "image/png" = "org.gnome.eog.desktop";
+      "image/jpg" = "org.gnome.eog.desktop";
     };
   };
 

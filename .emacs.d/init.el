@@ -330,6 +330,7 @@
 (setq inhibit-startup-screen nil)
 
 (use-package simple
+  :disabled t
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black"))))
   :config
@@ -338,6 +339,12 @@
   (set-face-attribute 'isearch nil :background "khaki1")
   (set-face-attribute 'region nil :background "khaki1")
   (bk/fira-code-font 100))
+
+(use-package plan9-theme
+  :ensure t
+  :config
+  (load-theme 'plan9 t)
+  (bk/fira-code-font 110))
 
 (use-package simple
   :disabled t
