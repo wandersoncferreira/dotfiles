@@ -8,8 +8,6 @@
     slack
     zulip
     vlc
-    libreoffice
-    simplescreenrecorder
     bitwarden
     texlive.combined.scheme-medium
     dconf

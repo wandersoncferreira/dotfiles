@@ -330,21 +330,13 @@
 (setq inhibit-startup-screen nil)
 
 (use-package simple
-  :disabled t
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black"))))
   :config
-  (load-theme 'tsdh-light t)
   (set-face-attribute 'lazy-highlight nil :background "light green")
   (set-face-attribute 'isearch nil :background "khaki1")
   (set-face-attribute 'region nil :background "khaki1")
   (bk/fira-code-font 100))
-
-(use-package plan9-theme
-  :ensure t
-  :config
-  (load-theme 'plan9 t)
-  (bk/fira-code-font 110))
 
 (use-package simple
   :disabled t
@@ -570,15 +562,6 @@
   :config
   (global-company-mode))
 
-(use-package company-quickhelp
-  :ensure t
-  :after company
-  :init
-  (setq company-quickhelp-delay nil)
-  :config
-  (company-quickhelp-mode 1)
-  (define-key company-active-map (kbd "C-c h") #'company-quickhelp-manual-begin))
-
 (use-package yasnippet
   :ensure t
   :diminish yas-minor-mode
@@ -726,10 +709,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
         cider-print-options
         '(("length" 80)
           ("level" 20)
-          ("right-margin" 80)))
-  :config
-  (add-hook 'cider-repl-mode-hook #'cider-company-enable-fuzzy-completion)
-  (add-hook 'cider-mode-hook #'cider-company-enable-fuzzy-completion))
+          ("right-margin" 80))))
 
 (use-package clj-refactor
   :ensure t
@@ -977,6 +957,14 @@ Please run M-x cider or M-x cider-jack-in to connect"))
       (forward-sentence)
       (kill-ring-save beg (point))))
   (yank))
+
+(defun bk/clean-ledger ()
+  "Bring back timeline structure to the whole file."
+  (interactive)
+  (if (eq major-mode 'ledger-mode)
+      (let ((curr-line (line-number-at-pos)))
+        (ledger-mode-clean-buffer)
+        (line-move (- curr-line 1)))))
 
 (defun bk/generate-password ()
   "Generate a 16-digit password."
