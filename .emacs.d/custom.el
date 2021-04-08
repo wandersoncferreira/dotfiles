@@ -4,19 +4,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(plan9-theme nixos-options nix-update nix-buffer nix-sandbox nixpkgs-fmt company-nixos-options nix-mode pomidor rg sql-indent docker docker-compose-mode dockerfile-mode ledger-mode google-this uuidgen org-roam-server org-roam org-download google-translate popup langtool which-key tide add-node-modules-path prettier-js typescript-mode lsp-java lsp-ui clj-refactor lsp-mode toggle-test kaocha-runner clojure-mode paredit popwin flycheck-projectile flycheck quickrun clojure-snippets java-snippets yasnippet company-quickhelp company gist browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine diff-hl forge magit move-text multiple-cursors jump-char fix-word change-inner expand-region zeal-at-point projectile vlf ibuffer-vc diminish use-package vterm))
+   '(zenburn-theme pomidor company-nixos-options nixos-options nix-buffer nix-sandbox nixpkgs-fmt nix-mode rg sql-indent docker docker-compose-mode dockerfile-mode ledger-mode google-this uuidgen org-roam-server org-roam org-download google-translate popup langtool which-key tide add-node-modules-path prettier-js typescript-mode lsp-java lsp-ui clj-refactor toggle-test kaocha-runner clojure-mode paredit flycheck-projectile flycheck quickrun clojure-snippets java-snippets yasnippet company gist browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine forge magit move-text multiple-cursors jump-char fix-word change-inner expand-region zeal-at-point projectile ido-completing-read+ smex pinentry vlf ibuffer-vc diminish use-package))
  '(safe-local-variable-values
-   '((cider-cljs-lein-repl . "(do (user/go) (user/cljs-repl))")
+   '((cider-docker-translations
+      ("/app/src" . "/home/wand/secland/src")
+      ("/app/test" . "/home/wand/secland/test"))
+     (cider-cljs-lein-repl . "(do (user/go) (user/cljs-repl))")
      (cider-ns-refresh-after-fn . "reloaded.repl/resume")
      (cider-ns-refresh-before-fn . "reloaded.repl/suspend")))
  '(warning-suppress-types '((comp))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(bm-persistent-face ((t (:background "khaki2"))))
- '(diff-hl-change ((t (:background "#3a81c3"))))
- '(diff-hl-delete ((t (:background "#ee6363"))))
- '(diff-hl-insert ((t (:background "#7ccd7c"))))
- '(mode-line ((t (:background "grey75" :foreground "black")))))

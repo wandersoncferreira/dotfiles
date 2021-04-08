@@ -79,8 +79,6 @@
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
 
-(global-display-line-numbers-mode +1)
-
 (delete-selection-mode +1)
 
 (use-package autorevert
@@ -254,21 +252,6 @@
   (global-set-key (kbd "C-x 4 u") 'winner-undo)
   (global-set-key (kbd "C-x 4 U") 'winner-redo))
 
-;;; bookmark
-(use-package bm
-  :ensure t
-  :custom-face
-  (bm-persistent-face ((t (:background "khaki2"))))
-  :init
-  (setq bm-restore-repository-on-load t
-	bm-repository-file "~/.emacs.d/bm-repository"
-	bm-buffer-persistence t
-	bm-cycle-all-buffers t)
-  :bind
-  (("C-c b n" . bm-next)
-   ("C-c b p" . bm-previous)
-   ("C-c b b" . bm-toggle)))
-
 (use-package ido
   :init
   (setq ido-enable-flex-matching t
@@ -330,6 +313,7 @@
 (setq inhibit-startup-screen nil)
 
 (use-package simple
+  :disabled t
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black"))))
   :config
@@ -345,11 +329,10 @@
   (bk/fira-code-font 100))
 
 (use-package zenburn-theme
-  :ensure t
   :disabled t
+  :ensure t
   :config
-  (load-theme 'zenburn t)
-  (bk/set-consolas-font 110))
+  (load-theme 'zenburn t))
 
 (use-package doom-themes
   :ensure t
@@ -358,15 +341,14 @@
   (load-theme 'doom-dark+ t)
   (bk/fira-code-font 110))
 
-;; (set-background-color "honeydew")
-;; (set-face-attribute 'default nil :height 110)
-;; (set-face-attribute 'lazy-highlight nil :background "khaki1")
-;; (set-face-attribute 'isearch nil :background "khaki1")
-;; (set-face-attribute 'region nil :background "khaki1")
-;; (bk/set-hack-font 100)
+(set-background-color "honeydew")
+(set-face-attribute 'default nil :height 110)
+(set-face-attribute 'lazy-highlight nil :background "khaki1")
+(set-face-attribute 'isearch nil :background "khaki1")
+(set-face-attribute 'region nil :background "khaki1")
+
 
 ;;; experiment with transparent sessions
-
 (defvar bk--toggle-transparency nil)
 
 (defun bk/toggle-transparency ()
@@ -516,20 +498,6 @@
   ("C-c f p" . forge-list-authored-pullreqs)
   ("C-c f c" . forge-create-pullreq))
 
-(use-package diff-hl
-  :ensure t
-  :init
-  (setq diff-hl-side 'left)
-  :custom-face
-  (diff-hl-change ((t (:background "#3a81c3"))))
-  (diff-hl-insert ((t (:background "#7ccd7c"))))
-  (diff-hl-delete ((t (:background "#ee6363"))))
-  :config
-  (add-hook 'dired-mode-hook 'diff-hl-dired-mode)
-  (diff-hl-flydiff-mode)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-  (global-diff-hl-mode))
-
 (use-package git-timemachine :ensure t)
 
 (use-package gitconfig-mode
@@ -580,15 +548,6 @@
 
 (use-package flycheck-projectile
   :ensure t)
-
-(use-package popwin
-  :ensure t
-  :config
-  (popwin-mode +1)
-  (add-to-list 'popwin:special-display-config
-	       `(,flycheck-projectile-error-list-buffer
-		 :regexp nil :dedicated t :position bottom :stick t
-		 :noselect nil)))
 
 ;; lisps
 (use-package paredit
@@ -660,6 +619,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 
 (use-package lsp-mode
   :ensure t
+  :disabled t
   :init
   (setq lsp-keymap-prefix "C-c l"
 	lsp-enable-file-watchers nil
@@ -738,11 +698,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ra") 'clojure-rename-ns-alias)
 
   ;; I would like to use lsp-mode for features that clj-refactor require ASTs evaluation
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fu") 'lsp-ui-peek-find-references)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fr") 'lsp-find-references)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "rs") 'lsp-rename)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ef") 'lsp-clojure-extract-function)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "is") 'lsp-clojure-inline-symbol)
+  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fu") 'lsp-ui-peek-find-references)
+  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fr") 'lsp-find-references)
+  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "rs") 'lsp-rename)
+  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ef") 'lsp-clojure-extract-function)
+  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "is") 'lsp-clojure-inline-symbol)
   ;; missing:
   ;; promote-function
   ;; rename-file-or-dir
@@ -803,16 +763,9 @@ Please run M-x cider or M-x cider-jack-in to connect"))
              (paredit-backward-down))
 	   (cljr-hotload-dependency artifact version))))))
 
-(eval-after-load 'cider
-  (setq lsp-enable-xref nil))
-
 (eval-after-load 'projectile
   '(progn
      (pushnew! projectile-globally-ignored-directories ".cpcache")))
-
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode)
 
 ;;; java
 (use-package lsp-java
