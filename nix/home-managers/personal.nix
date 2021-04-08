@@ -10,7 +10,6 @@ let
 in {
 
   imports = [
-    ./common/programs.nix
     ./common/home.nix
   ];
 
@@ -45,8 +44,7 @@ in {
     stateVersion = "21.03";
     packages = with pkgs; [
       (import ../configurations/custom/hey.nix)
-      master.whatsapp-for-linux
-      master.clojure-lsp
+      whatsapp-for-linux
       transmission-gtk3
       libreoffice
     ];

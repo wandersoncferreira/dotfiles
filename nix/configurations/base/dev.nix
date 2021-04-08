@@ -1,9 +1,6 @@
 { config, stdenv, fetchFromGitHub, pkgs, ... }:
 
 let
-  emacsPackage = ((pkgs.emacsPackagesGen pkgs.emacsGcc).emacsWithPackages (epkgs: [
-    epkgs.vterm
-  ]));
 
   master = import (fetchTarball https://github.com/NixOS/nixpkgs/archive/master.tar.gz) {
     config = config.nixpkgs.config;
@@ -19,7 +16,7 @@ in {
     [
       master.docker-compose
       jetbrains.datagrip
-      emacsPackage
+      emacsGcc
       plantuml
       clang
     ];

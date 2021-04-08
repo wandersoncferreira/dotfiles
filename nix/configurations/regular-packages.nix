@@ -10,7 +10,6 @@
     vlc
     bitwarden
     texlive.combined.scheme-medium
-    dconf
     deja-dup
   ];
 
