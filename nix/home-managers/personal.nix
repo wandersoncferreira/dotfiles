@@ -45,7 +45,7 @@ in {
     packages = with pkgs; [
       (import ../configurations/custom/hey.nix)
       whatsapp-for-linux
-      transmission-gtk3
+      transmission-qt
       libreoffice
     ];
   };

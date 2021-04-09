@@ -11,6 +11,7 @@
     bitwarden
     texlive.combined.scheme-medium
     deja-dup
+    simplescreenrecorder
   ];
 
 }

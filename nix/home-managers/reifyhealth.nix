@@ -73,102 +73,22 @@ in {
     ];
   };
 
-  dconf.settings = {
+  home.activation.linkFiles = config.lib.dag.entryAfter ["writeBoundary"] ''
+    ln -sf ${dotfilesDir}/face.icon ~/.face.icon
+    
+    mkdir -p $HOME/.clojure
+    mkdir -p $HOME/.config/clj-kondo
+    mkdir -p $HOME/.lsp
 
-    "org/gnome/desktop/background" = {
-      picture-options = "zoom";
-      picture-uri = "file:///home/wanderson/Pictures/pexels-pixabay-50594.jpg";
-      primary-color = "#ffffff";
-      secondary-color = "#000000";
-    };
+    ln -sf ${dotfilesDir}/clojure/deps.edn $HOME/.clojure/deps.edn
+    ln -sf ${dotfilesDir}/clojure/rebl-0.9.242.jar $HOME/.clojure/rebl-0.9.242.jar
+    ln -sf ${dotfilesDir}/clojure/clj-kondo/config.edn $HOME/.config/clj-kondo/config.edn
+    ln -sf ${dotfilesDir}/clojure/lsp/config.edn $HOME/.lsp/config.edn
 
-    "org/gnome/desktop/interface" = {
-      cursor-theme = "breeze_cursors";
-      enable-animations = false;
-      font-name = "Noto Sans,  10";
-      gtk-im-module = "gtk-im-context-simple";
-      gtk-key-theme = "Emacs";
-      gtk-theme = "Adwaita";
-      icon-theme = "breeze";
-      toolbar-style = "both-horiz";
-    };
+    export GIT_ASKPASS=$SSH_ASKPASS
 
-    "org/gnome/desktop/notifications" = {
-      application-children = [ "google-chrome" "gnome-power-panel" "gnome-network-panel" ];
-      show-banners = false;
-    };
+    ssh-add $HOME/.secrets/keys/id_rsa
 
-    "org/gnome/desktop/notifications/application/gnome-network-panel" = {
-      application-id = "gnome-network-panel.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/gnome-power-panel" = {
-      application-id = "gnome-power-panel.desktop";
-    };
-
-    "org/gnome/desktop/notifications/application/google-chrome" = {
-      application-id = "google-chrome.desktop";
-    };
-
-    "org/gnome/desktop/screensaver" = {
-      picture-options = "zoom";
-      picture-uri = "file:///nix/store/8yzca1b0bwdxy65gfxhxlp88i40hxmws-gnome-backgrounds-3.36.0/share/backgrounds/gnome/Acrylic.jpg";
-      primary-color = "#ffffff";
-      secondary-color = "#000000";
-    };
-
-    "org/gnome/desktop/search-providers" = {
-      disable-external = true;
-      sort-order = [ "org.gnome.Documents.desktop" "org.gnome.Nautilus.desktop" ];
-    };
-
-    "org/gnome/nautilus/window-state" = {
-      initial-size = mkTuple [ 1280 1333 ];
-      maximized = false;
-    };
-
-    "org/gnome/settings-daemon/plugins/power" = {
-      sleep-inactive-ac-type = "nothing";
-    };
-
-    "org/gnome/shell" = {
-      enabled-extensions = [
-        "window-list@gnome-shell-extensions.gcampax.github.com"
-        "drive-menu@gnome-shell-extensions.gcampax.github.com"
-        "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
-      ];
-
-      command-history = [ "gnome-tweaks" ];
-      favorite-apps = [
-        "emacs.desktop"
-        "google-chrome.desktop"
-        "terminal.desktop"
-        "slack.desktop"
-        "Zoom.desktop"
-      ];
-    };
-
-    "org/gnome/shell/extensions/window-list" = {
-      display-all-workspaces = false;
-      show-on-all-monitors = true;
-      grouping-mode = "auto";
-    };
-  };
-
-  home.activation = {
-    defineBookmarks = config.lib.dag.entryAfter ["writeBoundary"] ''
-      ln -sf ${dotfilesDir}/config/gtk-3.0/bookmarks $HOME/.config/gtk-3.0/bookmarks
-
-      mkdir -p $HOME/.clojure
-      mkdir -p $HOME/.config/clj-kondo
-      mkdir -p $HOME/.lsp
-
-      ln -sf ${dotfilesDir}/clojure/deps.edn $HOME/.clojure/deps.edn
-      ln -sf ${dotfilesDir}/clojure/rebl-0.9.242.jar $HOME/.clojure/rebl-0.9.242.jar
-      ln -sf ${dotfilesDir}/clojure/clj-kondo/config.edn $HOME/.config/clj-kondo/config.edn
-      ln -sf ${dotfilesDir}/clojure/lsp/config.edn $HOME/.lsp/config.edn
-
-      ssh-add $HOME/.secrets/keys/id_rsa
     '';
-  };
+
 }

@@ -24,9 +24,9 @@
       enable = true;
       layout = "us,br";
 
-      displayManager.gdm.enable = true;
-      displayManager.gdm.wayland = true;
-      desktopManager.gnome3.enable = true;
+      displayManager.sddm.enable = true;
+      displayManager.defaultSession = "plasma5";
+      desktopManager.plasma5.enable = true;
 
       xkbVariant = "intl,abnt2";
       xkbOptions = "ctrl:nocaps";
@@ -44,36 +44,22 @@
   security.hideProcessInformation = false;
   security.pam.services.sddm.sshAgentAuth = true;
 
-  services = {
-    dbus.packages = [ pkgs.gnome3.dconf ];
-    udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
-  };
-
-  services.gnome3 = {
-    core-shell.enable = true;
-    core-utilities.enable = false;
-    games.enable = false;
-  };
-
-  programs.gnome-terminal.enable = true;
-  
   environment.systemPackages = with pkgs; [
-    # Apps
-    gnome3.evince
-    gnome3.gnome-tweak-tool
-    gnome3.gnome-terminal
-    gnome3.nautilus
-    gnome3.file-roller
-    gnome3.eog
-    gnome3.gnome-calculator
-
-    # Extensions
-    gnomeExtensions.appindicator
+    kwalletmanager
+    ksshaskpass
+    ksysguard
+    kwallet-pam
+    plasma-vault
+    ktorrent
+    gwenview
+    okular
+    kcalc
+    kgpg
+    partition-manager
   ];
 
   fonts = {
     fonts = with pkgs; [
-      emacs-all-the-icons-fonts
       fira-code
       fira-code-symbols
     ];
