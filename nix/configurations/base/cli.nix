@@ -32,10 +32,13 @@
   services.openssh.enable = true;
 
   programs = {
-    ssh.startAgent = false;
+    ssh.startAgent = true;
+    ssh.askPassword = "${pkgs.ksshaskpass}/bin/ksshaskpass";
+
     gnupg.agent.enable = true;
-    gnupg.agent.enableSSHSupport = true;
+    gnupg.agent.enableSSHSupport = false;
     gnupg.dirmngr.enable = true;
+    gnupg.agent.pinentryFlavor = "qt";
 
     zsh = {
       enable = true;

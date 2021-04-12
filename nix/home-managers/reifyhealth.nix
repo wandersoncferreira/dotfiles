@@ -64,7 +64,7 @@ in {
     packages = with pkgs; [
       (import ../configurations/custom/clojure.nix)
       (import ../configurations/custom/hey.nix)
-      master.whatsapp-for-linux
+      (import ../configurations/custom/whatsapp-for-linux.nix)
       master.clojure-lsp
       zoom-us
       yarn

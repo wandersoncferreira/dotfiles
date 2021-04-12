@@ -342,7 +342,7 @@
   (bk/fira-code-font 110))
 
 (set-background-color "honeydew")
-(set-face-attribute 'default nil :height 110)
+(set-face-attribute 'default nil :height 100)
 (set-face-attribute 'lazy-highlight nil :background "khaki1")
 (set-face-attribute 'isearch nil :background "khaki1")
 (set-face-attribute 'region nil :background "khaki1")
@@ -571,6 +571,18 @@
   (message "Oops! You're not connected to an nREPL server.
 Please run M-x cider or M-x cider-jack-in to connect"))
 
+(defun bk/cider-quit-all ()
+  "Iterate over all CIDER buffers and close them all."
+  (interactive)
+  (let ((repl-buffers (seq-filter (lambda (b)
+				    (with-current-buffer b
+				      (eq major-mode 'cider-repl-mode)))
+				  (buffer-list))))
+    (dolist (buf repl-buffers)
+      (cider--close-connection buf)
+      (kill-buffer buf))
+    (message "All CIDER buffers were closed.")))
+
 ;;; symbol focus
 (use-package symbol-focus
   :load-path "~/.emacs.d/lisps"
@@ -619,7 +631,6 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 
 (use-package lsp-mode
   :ensure t
-  :disabled t
   :init
   (setq lsp-keymap-prefix "C-c l"
 	lsp-enable-file-watchers nil
@@ -674,10 +685,10 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 (use-package clj-refactor
   :ensure t
   :init
-  (setq cljr-warn-on-eval nil
-        cljr-eagerly-build-asts-on-startup nil
+  (setq cljr-warn-on-eval t
+        cljr-eagerly-build-asts-on-startup t
         cljr-favor-prefix-notation nil
-	cljr-favor-private-functions nil
+	cljr-favor-private-functions t
         cljr-magic-require-namespaces
         '(("io" . "clojure.java.io")
           ("set" . "clojure.set")
@@ -686,7 +697,9 @@ Please run M-x cider or M-x cider-jack-in to connect"))
           ("zip" . "clojure.zip")
           ("time" . "clj-time.core")
           ("log" . "clojure.tools.logging")
-          ("json" . "cheshire.core")))
+          ("json" . "cheshire.core")
+	  ("antd" . "\"antd\""))
+	cljr-clojure-test-declaration "[clojure.test :refer [deftest testing is]]")
   :config
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (add-hook 'cider-mode-hook 'clj-refactor-mode)
@@ -698,14 +711,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ra") 'clojure-rename-ns-alias)
 
   ;; I would like to use lsp-mode for features that clj-refactor require ASTs evaluation
-  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fu") 'lsp-ui-peek-find-references)
-  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fr") 'lsp-find-references)
-  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "rs") 'lsp-rename)
-  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ef") 'lsp-clojure-extract-function)
-  ;; (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "is") 'lsp-clojure-inline-symbol)
-  ;; missing:
-  ;; promote-function
-  ;; rename-file-or-dir
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fu") 'lsp-ui-peek-find-references)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fr") 'lsp-find-references)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "rs") 'lsp-rename)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ef") 'lsp-clojure-extract-function)
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "is") 'lsp-clojure-inline-symbol)
   )
 
 
@@ -1170,6 +1180,13 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (setq pomidor-sound-tick nil
 	pomidor-sound-tack nil))
 
+(defun my-gpg ()
+  "My gpg."
+  (interactive)
+  (kill-new
+   (with-temp-buffer
+     (insert-file-contents "~/.secrets/pwd/gpg.txt")
+     (buffer-string))))
 
 ;;; reify health
 
@@ -1186,7 +1203,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 (defun work-new-day ()
   "Create entry into org file for bookkeeping."
   (interactive)
-  (end-of-buffer)
+  (goto-char (point-max))
   (org-insert-heading-respect-content)
   (org-metaright)
   (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)"))

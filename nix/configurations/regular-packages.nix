@@ -12,6 +12,9 @@
     texlive.combined.scheme-medium
     deja-dup
     simplescreenrecorder
+    transmission-qt
+    p7zip
+    libreoffice
   ];
 
 }

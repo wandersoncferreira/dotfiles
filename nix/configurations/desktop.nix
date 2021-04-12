@@ -43,19 +43,23 @@
 
   security.hideProcessInformation = false;
   security.pam.services.sddm.sshAgentAuth = true;
+  security.pam.services.sddm.enableKwallet = true;
+  security.pam.services.kwallet = {
+    name = "kwallet";
+    enableKwallet = true;
+  };
 
   environment.systemPackages = with pkgs; [
     kwalletmanager
     ksshaskpass
+    libsForQt5.kwallet
+    ark
     ksysguard
     kwallet-pam
-    plasma-vault
-    ktorrent
     gwenview
     okular
     kcalc
     kgpg
-    partition-manager
   ];
 
   fonts = {
