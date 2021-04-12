@@ -34,6 +34,15 @@
           abbreviateCommands = true;
           missingCommitsCheck = "warn";
         };
+        alias = {
+          lg = "log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%an, %cr)%Creset' --abbrev-commit --date=relative";
+          st = "status";
+          undo = "reset HEAD~1 --mixed";
+          done = "!git push origin HEAD";
+          wip = "!git add -u && git commit -m \"WIP\"";
+          amend = "commit -a --amend";
+          search = "!git rev-list --all | xargs git grep -F";
+        };
       };
     };
   };

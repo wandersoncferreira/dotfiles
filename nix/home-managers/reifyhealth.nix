@@ -66,6 +66,7 @@ in {
       (import ../configurations/custom/hey.nix)
       (import ../configurations/custom/whatsapp-for-linux.nix)
       master.clojure-lsp
+      master.babashka
       zoom-us
       yarn
       direnv

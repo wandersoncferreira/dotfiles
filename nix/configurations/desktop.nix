@@ -8,7 +8,10 @@
   };
 
   environment.shellAliases = {
+    rebuild = "sudo nixos-rebuild switch";
     ls = "ls --color=tty --si";
+    ll = "ls -l";
+    pl = "ps aux | grep ";
   };
 
   i18n = {
