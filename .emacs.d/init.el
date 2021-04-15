@@ -341,11 +341,12 @@
   (load-theme 'doom-dark+ t)
   (bk/fira-code-font 110))
 
-(set-background-color "honeydew")
-(set-face-attribute 'default nil :height 100)
-(set-face-attribute 'lazy-highlight nil :background "khaki1")
-(set-face-attribute 'isearch nil :background "khaki1")
-(set-face-attribute 'region nil :background "khaki1")
+(load-theme 'deeper-blue t)
+;; (set-background-color "honeydew")
+;; (set-face-attribute 'default nil :height 100)
+;; (set-face-attribute 'lazy-highlight nil :background "khaki1")
+;; (set-face-attribute 'isearch nil :background "khaki1")
+;; (set-face-attribute 'region nil :background "khaki1")
 
 
 ;;; experiment with transparent sessions
@@ -530,10 +531,22 @@
   :config
   (global-company-mode))
 
+(use-package buffer-move
+  :ensure t
+  :bind
+  (("s-<up>" . buf-move-up)
+   ("s-<down>" . buf-move-down)
+   ("s-<left>" . buf-move-left)
+   ("s-<right>" . buf-move-right)))
+
 (use-package yasnippet
   :ensure t
   :diminish yas-minor-mode
-  :hook (prog-mode . yas-minor-mode))
+  :hook (prog-mode . yas-minor-mode)
+  :bind
+  (("C-x y" . yas-expand)
+   ("C-c y" . yas-expand)
+   ("C-c t" . yas-describe-tables)))
 
 (use-package java-snippets :ensure t)
 (use-package clojure-snippets :ensure t)
@@ -583,7 +596,6 @@ Please run M-x cider or M-x cider-jack-in to connect"))
       (kill-buffer buf))
     (message "All CIDER buffers were closed.")))
 
-;;; symbol focus
 (use-package symbol-focus
   :load-path "~/.emacs.d/lisps"
   :bind
@@ -591,7 +603,10 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :config
   (symbol-focus-mode +1))
 
-(use-package clojure-mode :ensure t)
+(use-package clojure-mode
+  :ensure t
+  :config
+  (setq clojure-toplevel-inside-comment-form t))
 
 (use-package kaocha-runner
   :ensure t
@@ -677,6 +692,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :ensure t
   :init
   (setq cider-save-file-on-load t
+	cider-prompt-for-symbol nil
         cider-print-options
         '(("length" 80)
           ("level" 20)
