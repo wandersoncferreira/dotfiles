@@ -56,12 +56,6 @@
 	 :map emacs-lisp-mode-map
 	 ("<f5>" . bk/eval-buffer)))
 
-(use-package ibuffer-vc
-  :ensure t
-  :bind
-  (:map ibuffer-mode-map
-	("/ V" . ibuffer-vc-set-filter-groups-by-vc-root)))
-
 (use-package vlf :ensure t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -262,9 +256,9 @@
         confirm-nonexistent-file-or-buffer nil
         ido-auto-merge-work-directories-length -1
 	ido-confirm-unique-completion t
-	ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
-  [No match]" " [Matched]" " [Not readable]" " [Too big]" "
-  [Confirm]"))
+	;; ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
+  ;; [No match]" " [Matched]" " [Not readable]" " [Too big]" "
+  ;; [Confirm]"))
 	confirm-nonexistent-file-or-buffer nil
 	)
   :bind (:map ido-file-completion-map
@@ -290,37 +284,7 @@
   :config
   (ido-ubiquitous-mode +1))
 
-(defun bk/set-monaco-font (font-size)
-  "Set the desired FONT-SIZE for Monaco."
-  (when (member "Monaco" (font-family-list))
-    (set-face-attribute 'default nil :font "Monaco" :height font-size)))
-
-(defun bk/set-hack-font (font-size)
-  "Set the desired FONT-SIZE for Hack."
-  (when (member "Hack" (font-family-list))
-    (set-face-attribute 'default nil :font "Hack" :height font-size)))
-
-(defun bk/set-consolas-font (font-size)
-  "Set the desired FONT-SIZE for Consolas."
-  (when (member "Consolas" (font-family-list))
-    (set-face-attribute 'default nil :font "Consolas" :height font-size)))
-
-(defun bk/fira-code-font (font-size)
-  "Set the desired FONT-SIZE for Fira."
-  (when (member "Fira Code" (font-family-list))
-    (set-face-attribute 'default nil :font "Fira Code" :height font-size)))
-
 (setq inhibit-startup-screen nil)
-
-(use-package simple
-  :disabled t
-  :custom-face
-  (mode-line ((t (:background "grey75" :foreground "black"))))
-  :config
-  (set-face-attribute 'lazy-highlight nil :background "light green")
-  (set-face-attribute 'isearch nil :background "khaki1")
-  (set-face-attribute 'region nil :background "khaki1")
-  (bk/fira-code-font 100))
 
 (use-package simple
   :disabled t
@@ -328,26 +292,11 @@
   (load-theme 'default-black t)
   (bk/fira-code-font 100))
 
-(use-package zenburn-theme
-  :disabled t
-  :ensure t
-  :config
-  (load-theme 'zenburn t))
-
-(use-package doom-themes
-  :ensure t
-  :disabled t
-  :config
-  (load-theme 'doom-dark+ t)
-  (bk/fira-code-font 110))
-
-(load-theme 'deeper-blue t)
-;; (set-background-color "honeydew")
-;; (set-face-attribute 'default nil :height 100)
-;; (set-face-attribute 'lazy-highlight nil :background "khaki1")
-;; (set-face-attribute 'isearch nil :background "khaki1")
-;; (set-face-attribute 'region nil :background "khaki1")
-
+(set-background-color "honeydew")
+(set-face-attribute 'default nil :font "IBM Plex Mono" :height 100)
+(set-face-attribute 'lazy-highlight nil :background "khaki1")
+(set-face-attribute 'isearch nil :background "khaki1")
+(set-face-attribute 'region nil :background "khaki1")
 
 ;;; experiment with transparent sessions
 (defvar bk--toggle-transparency nil)
@@ -386,12 +335,6 @@
   (setq ediff-window-setup-function 'ediff-setup-windows-plain
         ediff-split-window-function 'split-window-horizontally
         ediff-diff-options "-w"))
-
-;;; programming docs
-(use-package zeal-at-point
-  :ensure t
-  :bind
-  ("C-c d d" . zeal-at-point))
 
 ;; editor
 (use-package expand-region
@@ -527,9 +470,9 @@
   :init
   (setq company-show-numbers t
         company-minimum-prefix-length 1
-	company-idle-delay 0.25)
+	company-idle-delay 0.15)
   :config
-  (global-company-mode))
+  (global-company-mode +1))
 
 (use-package buffer-move
   :ensure t
@@ -558,9 +501,6 @@
   :config
   (setq flycheck-check-syntax-automatically '(save)
 	flycheck-checker-error-threshold 4000))
-
-(use-package flycheck-projectile
-  :ensure t)
 
 ;; lisps
 (use-package paredit
@@ -647,12 +587,11 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 (use-package lsp-mode
   :ensure t
   :init
-  (setq lsp-keymap-prefix "C-c l"
-	lsp-enable-file-watchers nil
+  (setq lsp-enable-file-watchers nil
 	lsp-signature-render-documentation nil
 	
         lsp-enable-indentation t
-        lsp-completion-enable t
+        lsp-completion-enable nil
 	lsp-lens-enable nil
 	lsp-eldoc-enable-hover nil
 
@@ -667,7 +606,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 	lsp-ui-sideline-show-hover nil
 	lsp-ui-sideline-show-symbol nil
 	
-	lsp-headerline-breadcrumb-enable t
+	lsp-headerline-breadcrumb-enable nil
 	lsp-headerline-breadcrumb-enable-diagnostics nil
         lsp-intelephense-multi-root nil
 
@@ -680,17 +619,12 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 	 (java-mode . lsp)
          (lsp-mode . lsp-enable-which-key-integration))
   :config
-  (define-key lsp-command-map (kbd "ra") 'lsp-clojure-add-missing-libspec)
-  (define-key lsp-command-map (kbd "pr") 'lsp-ui-peek-find-references)
-  (define-key lsp-command-map (kbd "pd") 'lsp-ui-peek-find-definitions)
-  (define-key lsp-command-map (kbd "pi") 'lsp-ui-peek-find-implementation)
-  (define-key lsp-command-map (kbd "pw") 'lsp-ui-peek-find-workspace-symbol)
   (define-key lsp-command-map (kbd "d") 'bk/toggle-docs-clj)
   (require 'lsp-ido))
 
 (use-package cider
   :ensure t
-  :init
+  :config
   (setq cider-save-file-on-load t
 	cider-prompt-for-symbol nil
         cider-print-options
@@ -727,7 +661,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ra") 'clojure-rename-ns-alias)
 
   ;; I would like to use lsp-mode for features that clj-refactor require ASTs evaluation
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fu") 'lsp-ui-peek-find-references)
+    (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fu") 'lsp-ui-peek-find-references)
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fr") 'lsp-find-references)
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "rs") 'lsp-rename)
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ef") 'lsp-clojure-extract-function)
@@ -1004,22 +938,6 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 
 (use-package popup :ensure t)
 
-(use-package google-translate
-  :ensure t
-  :commands (google-translate-smooth-translate)
-  :preface
-  (defun bk/translate ()
-    "Translate."
-    (interactive)
-    (google-translate-smooth-translate))
-  :config
-  (setq google-translate-backend-method 'curl
-	google-translate-translation-directions-alist '(("en" . "en")
-							("en" . "pt")))
-  (defun google-translate--search-tkk ()
-    "Fixing bug."
-    (list 430675 2721866130)))
-
 ;; zettelkasten
 (defvar bk-zettelkasten-dir "/home/wanderson/zettelkasten")
 
@@ -1168,33 +1086,9 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 ;;; nixOS
 
 (use-package nix-mode :ensure t)
-(use-package nixpkgs-fmt :ensure t)
-(use-package nix-sandbox :ensure t)
-(use-package nix-buffer :ensure t)
-(use-package nixos-options :ensure t)
-
-(use-package company-nixos-options
-  :ensure t
-  :config
-  (with-eval-after-load 'company-nixos-options
-    (defun company-nixos--in-nix-context-p ()
-      (unless (executable-find "nix-build")
-	(or (derived-mode-p 'nix-mode 'nix-repl-mode)
-	    (let ((file-name (buffer-file-name (current-buffer))))
-	      (and file-name (equal "nix" (file-name-extension file-name))))))))
-  (add-to-list 'company-backends 'company-nixos-options))
 
 ;;; wgrep
 (use-package wgrep :ensure t)
-
-;;; pomodor
-(use-package pomidor
-  :ensure t
-  :bind
-  ("<f12>" . pomidor)
-  :config
-  (setq pomidor-sound-tick nil
-	pomidor-sound-tack nil))
 
 (defun my-gpg ()
   "My gpg."
