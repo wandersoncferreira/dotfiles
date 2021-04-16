@@ -9,7 +9,7 @@
     zulip
     vlc
     bitwarden
-    texlive.combined.scheme-medium
+    texlive.combined.scheme-full
     deja-dup
     simplescreenrecorder
     transmission-qt

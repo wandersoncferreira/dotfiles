@@ -67,8 +67,9 @@
 
   fonts = {
     fonts = with pkgs; [
-      fira-code
-      fira-code-symbols
+      hack-font
+      ibm-plex
+      roboto-mono
     ];
   };
 }
