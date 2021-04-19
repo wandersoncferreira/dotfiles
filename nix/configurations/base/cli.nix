@@ -27,6 +27,7 @@
     patchelf
     ffmpeg
     dmidecode
+    dtrx
   ];
 
   services.openssh.enable = true;

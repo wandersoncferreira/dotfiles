@@ -3,7 +3,7 @@ with import <nixpkgs> {};
 stdenv.mkDerivation rec {
 
   pname = "whatsapp-for-linux";
-  version = "1.1.5";
+  version = "1.1.6";
 
   src = fetchFromGitHub {
     owner = "eneshecan";

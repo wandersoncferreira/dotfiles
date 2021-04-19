@@ -2,11 +2,6 @@
 
 {
   nixpkgs.config.allowBroken = true;
-
-  environment.variables = {
-    DOTFILES = "$HOME/repos/personal/dotfiles";
-  };
-
   environment.shellAliases = {
     rebuild = "sudo nixos-rebuild switch";
     ls = "ls --color=tty --si";
@@ -19,7 +14,6 @@
   };
 
   time.timeZone = "America/Sao_Paulo";
-
   programs.dconf.enable = true;
 
   services = {

@@ -64,13 +64,14 @@ in {
     packages = with pkgs; [
       (import ../configurations/custom/clojure.nix)
       (import ../configurations/custom/hey.nix)
-      (import ../configurations/custom/whatsapp-for-linux.nix)
       master.clojure-lsp
       master.babashka
+      master.clj-kondo
       zoom-us
       yarn
       direnv
       nodejs-14_x
+      python3
     ];
   };
 

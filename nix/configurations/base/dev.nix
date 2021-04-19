@@ -19,6 +19,7 @@ in {
       emacsGcc
       plantuml
       clang
+      zeal
     ];
 
   virtualisation.docker = {
@@ -37,6 +38,18 @@ in {
     };
 
     adb.enable = true;
+  };
+
+  systemd.user.services.emacs = {
+    enable = true;
+    wantedBy = ["default.target"];
+    description = "Emacs: the extensible, self-documenting text editor";
+    serviceConfig = {
+      Type = "forking";
+      ExecStart = "${pkgs.bash}/bin/bash -c 'source ${config.system.build.setEnvironment}; exec ${pkgs.emacsGcc}/bin/emacs --daemon'";
+      ExecStop = "${pkgs.emacsGcc}/bin/emacsclient --eval (kill-emacs)";
+      Restart = "always";
+    };
   };
 
 }
