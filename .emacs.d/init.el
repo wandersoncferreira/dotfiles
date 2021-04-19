@@ -66,7 +66,6 @@
 
 (windmove-default-keybindings)
 
-(menu-bar-mode -1)
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
@@ -256,9 +255,9 @@
         confirm-nonexistent-file-or-buffer nil
         ido-auto-merge-work-directories-length -1
 	ido-confirm-unique-completion t
-	;; ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
-  ;; [No match]" " [Matched]" " [Not readable]" " [Too big]" "
-  ;; [Confirm]"))
+	ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
+  [No match]" " [Matched]" " [Not readable]" " [Too big]" "
+  [Confirm]"))
 	confirm-nonexistent-file-or-buffer nil
 	)
   :bind (:map ido-file-completion-map
@@ -284,19 +283,21 @@
   :config
   (ido-ubiquitous-mode +1))
 
-(setq inhibit-startup-screen nil)
-
 (use-package simple
-  :disabled t
+  :init
+  (setq inhibit-startup-screen nil)
   :config
-  (load-theme 'default-black t)
-  (bk/fira-code-font 100))
+  (set-face-attribute 'lazy-highlight nil :background "khaki1")
+  (set-face-attribute 'isearch nil :background "khaki1")
+  (set-face-attribute 'region nil :background "khaki1"))
 
-(set-background-color "honeydew")
-(set-face-attribute 'default nil :font "IBM Plex Mono" :height 100)
-(set-face-attribute 'lazy-highlight nil :background "khaki1")
-(set-face-attribute 'isearch nil :background "khaki1")
-(set-face-attribute 'region nil :background "khaki1")
+(add-to-list 'default-frame-alist '(background-color . "honeydew"))
+(add-to-list 'default-frame-alist '(font . "IBM Plex Mono-11"))
+
+(use-package fringe
+  :config
+  ;; large fringes to get high-resolution flycheck marks
+  (set-fringe-style (cons 16 16)))
 
 ;;; experiment with transparent sessions
 (defvar bk--toggle-transparency nil)
@@ -433,6 +434,11 @@
   :bind (("C-c g s" . magit-status)
 	 ("C-c g b" . magit-blame)))
 
+(use-package magit-todos
+  :ensure t
+  :config
+  (magit-todos-mode +1))
+
 (use-package forge
   :ensure t
   :config
@@ -469,10 +475,14 @@
   :diminish company-mode
   :init
   (setq company-show-numbers t
-        company-minimum-prefix-length 1
-	company-idle-delay 0.15)
+        company-minimum-prefix-length 2
+	    company-idle-delay nil)
   :config
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
   (global-company-mode +1))
+
+;;; completions
+(global-set-key (kbd "C-,") 'completion-at-point)
 
 (use-package buffer-move
   :ensure t
@@ -491,10 +501,11 @@
    ("C-c y" . yas-expand)
    ("C-c t" . yas-describe-tables)))
 
-(use-package java-snippets :ensure t)
 (use-package clojure-snippets :ensure t)
 (use-package quickrun :ensure t)
 
+;;; syntax checking for GNU Emacs
+;;; TODO: read the manual
 (use-package flycheck
   :ensure t
   :hook (prog-mode . flycheck-mode)
@@ -502,13 +513,20 @@
   (setq flycheck-check-syntax-automatically '(save)
 	flycheck-checker-error-threshold 4000))
 
+(use-package flycheck-clj-kondo
+  :ensure t)
+
+;;;
+
 ;; lisps
 (use-package paredit
   :ensure t
   :diminish paredit-mode
   :config
   (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-  (add-hook 'clojure-mode-hook 'enable-paredit-mode))
+  (add-hook 'clojure-mode-hook 'enable-paredit-mode)
+  (with-eval-after-load "eldoc"
+    (eldoc-add-command #'paredit-backward-delete #'paredit-close-round)))
 
 (defmacro pushnew! (place &rest values)
   "Push VALUES sequentially into PLACE, if they aren't already present."
@@ -543,10 +561,19 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :config
   (symbol-focus-mode +1))
 
+
 (use-package clojure-mode
   :ensure t
+  :init
+  (setq clojure-toplevel-inside-comment-form t)
   :config
-  (setq clojure-toplevel-inside-comment-form t))
+  (add-hook 'clojure-mode-hook #'subword-mode) ;; deal with java class and method names
+  (require 'flycheck-clj-kondo))
+
+
+(use-package subword
+  :diminish subword-mode)
+
 
 (use-package kaocha-runner
   :ensure t
@@ -571,66 +598,29 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (put 'tgt-projects 'safe-local-variable #'lisp)
   (global-set-key (kbd "s-t") 'tgt-toggle))
 
-(defvar bk--toggle-docs-clj nil)
-
-(defun bk/toggle-docs-clj ()
-  "Show docs."
-  (interactive)
-  (if bk--toggle-docs-clj
-      (progn
-	(setq bk--toggle-docs-clj nil)
-	(lsp-ui-doc-hide))
-    (progn
-      (setq bk--toggle-docs-clj t)
-      (lsp-ui-doc-show))))
-
-(use-package lsp-mode
-  :ensure t
-  :init
-  (setq lsp-enable-file-watchers nil
-	lsp-signature-render-documentation nil
-	
-        lsp-enable-indentation t
-        lsp-completion-enable nil
-	lsp-lens-enable nil
-	lsp-eldoc-enable-hover nil
-
-	lsp-ui-doc-enable nil
-	lsp-ui-doc-position 'at-point
-	lsp-ui-doc-include-signature t
-	lsp-ui-doc-header t
-
-	lsp-ui-sideline-enable t
-	lsp-ui-sideline-show-diagnostics t
-	lsp-ui-sideline-show-code-actions nil
-	lsp-ui-sideline-show-hover nil
-	lsp-ui-sideline-show-symbol nil
-	
-	lsp-headerline-breadcrumb-enable nil
-	lsp-headerline-breadcrumb-enable-diagnostics nil
-        lsp-intelephense-multi-root nil
-
-	lsp-modeline-code-actions-enable nil
-	lsp-modeline-diagnostics-enable nil
-        )
-  :hook ((clojure-mode . lsp)
-	 (clojurescript-mode . lsp)
-	 (clojurec-mode . lsp)
-	 (java-mode . lsp)
-         (lsp-mode . lsp-enable-which-key-integration))
-  :config
-  (define-key lsp-command-map (kbd "d") 'bk/toggle-docs-clj)
-  (require 'lsp-ido))
 
 (use-package cider
   :ensure t
   :config
   (setq cider-save-file-on-load t
-	cider-prompt-for-symbol nil
+        cider-annotate-completion-candidates nil ;; disable completion annotations
+	    cider-prompt-for-symbol nil
+        cider-eldoc-display-context-dependent-info t  ;; try to add expected function arguments
+        cider-font-lock-dynamically '(macro core function var)
+        cider-prefer-local-resources t
+        cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources"
+                              "/run/user/1000/tmp.edBKBeMntG/source")
         cider-print-options
         '(("length" 80)
           ("level" 20)
           ("right-margin" 80))))
+
+
+(defun bk/reload-cider-completion ()
+  "Function to reload cider completion.
+Better naming to improve the chances to find it."
+  (interactive)
+  (cider-completion-flush-caches))
 
 (use-package clj-refactor
   :ensure t
@@ -638,7 +628,16 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (setq cljr-warn-on-eval t
         cljr-eagerly-build-asts-on-startup t
         cljr-favor-prefix-notation nil
-	cljr-favor-private-functions t
+
+        ;; execute `cljr-clean-ns' for all .clj files.
+        cljr-project-clean-prompt nil
+
+	    cljr-favor-private-functions t
+
+        ;; whitelist, do not clean this libspec
+        cljr-libspec-whitelist
+        '("^moment")
+        
         cljr-magic-require-namespaces
         '(("io" . "clojure.java.io")
           ("set" . "clojure.set")
@@ -647,9 +646,8 @@ Please run M-x cider or M-x cider-jack-in to connect"))
           ("zip" . "clojure.zip")
           ("time" . "clj-time.core")
           ("log" . "clojure.tools.logging")
-          ("json" . "cheshire.core")
-	  ("antd" . "\"antd\""))
-	cljr-clojure-test-declaration "[clojure.test :refer [deftest testing is]]")
+          ("json" . "cheshire.core"))
+	cljr-clojure-test-declaration "[clojure.test :refer [deftest testing is use-fixtures]]")
   :config
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (add-hook 'cider-mode-hook 'clj-refactor-mode)
@@ -658,15 +656,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "aa") 'clojure-add-arity)
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "c!") 'clojure-cycle-not)
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "cw") 'clojure-cycle-when)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ra") 'clojure-rename-ns-alias)
-
-  ;; I would like to use lsp-mode for features that clj-refactor require ASTs evaluation
-    (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fu") 'lsp-ui-peek-find-references)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "fr") 'lsp-find-references)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "rs") 'lsp-rename)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ef") 'lsp-clojure-extract-function)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "is") 'lsp-clojure-inline-symbol)
-  )
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ra") 'clojure-rename-ns-alias))
 
 
 ;; Experimental configuration to hotload refactor
@@ -726,14 +716,6 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 (eval-after-load 'projectile
   '(progn
      (pushnew! projectile-globally-ignored-directories ".cpcache")))
-
-;;; java
-(use-package lsp-java
-  :ensure t
-  :after lsp
-  :hook ((java-mode . lsp))
-  :config
-  (add-hook 'java-mode-hook 'electric-pair-mode))
 
 ;; typescript
 
@@ -1022,6 +1004,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 (use-package ledger-mode
   :ensure t
   :mode ("ledger" . ledger-mode)
+  :init
   :custom
   (ledger-reports
    '(("netcash" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -R -X R$ --current bal ^assets:bank ^assets:crypto liabilities:card")
@@ -1041,7 +1024,9 @@ Please run M-x cider or M-x cider-jack-in to connect"))
      ("bal" "%(binary) -f %(ledger-file) bal")
      ("reg" "%(binary) -f %(ledger-file) reg")
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
-     ("account" "%(binary) -f %(ledger-file) reg %(account)"))))
+     ("account" "%(binary) -f %(ledger-file) reg %(account)")))
+  :config
+  (setq ledger-report-auto-width t))
 
 ;;; docker
 (use-package dockerfile-mode
@@ -1122,6 +1107,12 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (reindent-then-newline-and-indent)
   (org-cycle)
   (insert "- "))
+
+(defun bk/server-shutdown ()
+  "Save buffers, quit, and shutdown server."
+  (interactive)
+  (save-some-buffers)
+  (kill-emacs))
 
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars unresolved)
