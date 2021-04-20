@@ -1,5 +1,9 @@
 ;;; init.el --- Wand's config  -*- lexical-binding: t; -*-
+
 ;;; Commentary:
+
+;; Here be dragons!
+
 ;;; Code:
 
 ;;; Packages
@@ -80,6 +84,14 @@
 
 (use-package vlf :ensure t)
 
+(use-package buffer-move
+  :ensure t
+  :bind
+  (("s-<up>" . buf-move-up)
+   ("s-<down>" . buf-move-down)
+   ("s-<left>" . buf-move-left)
+   ("s-<right>" . buf-move-right)))
+
 ;;; Authentication
 (use-package pinentry
   :ensure t
@@ -131,32 +143,30 @@
             (eshell/alias "e" "find-file $1")
             (eshell/alias "ee" "find-file-other-window $1")))
 
+;;; Buffers
+
+(use-package winner
+  :init
+  (setq winner-dont-bind-my-keys t
+        winner-boring-buffers
+        '("*Completions*"
+          "*Compile-Log*"
+          "*inferior-lisp*"
+          "*Fuzzy Completions*"
+          "*Apropos*"
+          "*Help*"
+          "*cvs*"
+          "*Buffer List*"
+          "*Ibuffer*"
+          "*esh command on file*"))
+  :config
+  (winner-mode +1)
+  (global-set-key (kbd "C-x 4 u") 'winner-undo)
+  (global-set-key (kbd "C-x 4 U") 'winner-redo))
+
 (use-package recentf
   :config
   (recentf-mode +1))
-
-(use-package imenu
-  :config
-  (setq imenu-auto-rescan 1
-        imenu-auto-rescan-maxout 600000
-        imenu-max-item-length 600
-        imenu-use-markers t
-        imenu-max-items 200)
-  :bind
-  ("C-c i" . imenu))
-
-(defun bk/occur-dwim ()
-  "Call `occur' with a sane default."
-  (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (let ((sym (thing-at-point 'symbol)))
-            (when (stringp sym)
-              (regexp-quote sym))))
-        regexp-history)
-  (call-interactively 'occur))
 
 (use-package replace
   :bind
@@ -180,13 +190,7 @@
   :config
   (add-hook 'compilation-filter-hook 'bk/ansi-colorize-buffer))
 
-(use-package eldoc
-  :diminish eldoc-mode
-  :init
-  (setq eldoc-idle-delay 0.1
-	eldoc-echo-area-use-multiline-p nil)
-  :config
-  (global-eldoc-mode +1))
+;;; Dired
 
 (defun bk/dired-directories-first ()
   "Sorted dired listings with directories first."
@@ -235,24 +239,6 @@
   (setq dired-dwim-target t)
   (advice-add 'dired-readin :after #'bk/dired-directories-first))
 
-(use-package winner
-  :init
-  (setq winner-dont-bind-my-keys t
-        winner-boring-buffers
-        '("*Completions*"
-          "*Compile-Log*"
-          "*inferior-lisp*"
-          "*Fuzzy Completions*"
-          "*Apropos*"
-          "*Help*"
-          "*cvs*"
-          "*Buffer List*"
-          "*Ibuffer*"
-          "*esh command on file*"))
-  :config
-  (winner-mode +1)
-  (global-set-key (kbd "C-x 4 u") 'winner-undo)
-  (global-set-key (kbd "C-x 4 U") 'winner-redo))
 
 ;;; Ido Completion
 
@@ -344,7 +330,9 @@
       (set-frame-parameter (selected-frame) 'alpha 90)
       (setq bk--toggle-transparency t))))
 
-;; projects
+
+;;; Projects
+
 (use-package projectile
   :ensure t
   :diminish projectile-mode
@@ -364,7 +352,7 @@
   (projectile-mode +1))
 
 
-;;; Editor
+;;; Emacs Editor
 
 (use-package ediff
   :config
@@ -386,11 +374,6 @@
   :bind (("M-u" . fix-word-upcase)
          ("M-l" . fix-word-downcase)
          ("M-c" . fix-word-capitalize)))
-
-(use-package jump-char
-  :ensure t
-  :bind (("M-n" . jump-char-forward)
-         ("M-p" . jump-char-backward)))
 
 (use-package multiple-cursors
   :ensure t
@@ -442,6 +425,8 @@
 
 (global-set-key (kbd "C-c d l") #'bk/duplicate-current-line-or-region)
 
+;;; Emacs Movement
+
 (defun bk/jump-to-register ()
   "Switch between current position and pos stored."
   (interactive)
@@ -458,6 +443,33 @@
 (global-set-key (kbd "C-c m p") 'bk/point-to-register)
 (global-set-key (kbd "C-c j p") 'bk/jump-to-register)
 
+(use-package imenu
+  :config
+  (setq imenu-auto-rescan 1
+        imenu-auto-rescan-maxout 600000
+        imenu-max-item-length 600
+        imenu-use-markers t
+        imenu-max-items 200)
+  :bind
+  ("C-c i" . imenu))
+
+(defun bk/occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
+(use-package jump-char
+  :ensure t
+  :bind (("M-n" . jump-char-forward)
+         ("M-p" . jump-char-backward)))
 
 ;;; Git
 
@@ -505,13 +517,22 @@
   :ensure t
   :commands (gist-region-or-buffer))
 
-(use-package buffer-move
+;;; General Programming
+
+(use-package toggle-test
   :ensure t
-  :bind
-  (("s-<up>" . buf-move-up)
-   ("s-<down>" . buf-move-down)
-   ("s-<left>" . buf-move-left)
-   ("s-<right>" . buf-move-right)))
+  :init
+  (setq tgt-open-in-new-window nil)
+  :config
+  (put 'tgt-projects 'safe-local-variable #'lisp)
+  (global-set-key (kbd "s-t") 'tgt-toggle))
+
+(use-package flycheck
+  :ensure t
+  :hook (prog-mode . flycheck-mode)
+  :config
+  (setq flycheck-check-syntax-automatically '(save)
+	flycheck-checker-error-threshold 4000))
 
 (defun yas/goto-end-of-active-field ()
   "End of the field."
@@ -548,25 +569,7 @@
    ("C-c y" . yas-expand)
    ("C-c t" . yas-describe-tables)))
 
-(use-package clojure-snippets :ensure t)
 (use-package quickrun :ensure t)
-
-;;; General Programming
-
-(use-package toggle-test
-  :ensure t
-  :init
-  (setq tgt-open-in-new-window nil)
-  :config
-  (put 'tgt-projects 'safe-local-variable #'lisp)
-  (global-set-key (kbd "s-t") 'tgt-toggle))
-
-(use-package flycheck
-  :ensure t
-  :hook (prog-mode . flycheck-mode)
-  :config
-  (setq flycheck-check-syntax-automatically '(save)
-	flycheck-checker-error-threshold 4000))
 
 ;;; Emacs Lisp
 
@@ -576,6 +579,13 @@
   :config
   (add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
   (global-set-key (kbd "C-c h") 'outline-cycle))
+
+(use-package bicycle
+  :ensure t
+  :after outline
+  :bind (:map outline-minor-mode-map
+	      ([C-tab] . bicycle-cycle-global)
+	      ("<backtab>" . bicycle-cycle)))
 
 ;;; Lisps
 
@@ -595,6 +605,8 @@
        (cl-pushnew ,var ,place :test #'equal))))
 
 ;;; Clojure
+
+(use-package clojure-snippets :ensure t)
 
 (use-package flycheck-clj-kondo
   :ensure t)
@@ -812,6 +824,15 @@ Better naming to improve the chances to find it."
 
 ;;; Self-Discovering Tools
 
+(use-package eldoc
+  :diminish eldoc-mode
+  :init
+  (setq eldoc-idle-delay 0.1
+	eldoc-echo-area-use-multiline-p nil)
+  :config
+  (global-eldoc-mode +1))
+
+
 (use-package which-key
   :ensure t
   :diminish which-key-mode
@@ -973,7 +994,9 @@ Better naming to improve the chances to find it."
   (setq langtool-language-tool-jar
 	"~/.emacs.d/bin/languagetool-commandline.jar"))
 
-(use-package popup :ensure T)
+(use-package google-this :ensure t)
+
+(use-package popup :ensure t)
 
 ;;; Zettelkasten
 (defvar bk-zettelkasten-dir "/home/wanderson/zettelkasten")
@@ -1038,20 +1061,18 @@ Better naming to improve the chances to find it."
   :config
   (require 'org-roam-protocol))
 
+
+;;; Emacs Server
+
 (require 'server)
 (unless (server-running-p)
   (server-start))
 
-(use-package uuidgen
-  :preface
-  (defun bk/uuid ()
-    "Create uuid and add to clipboard."
-    (interactive)
-    (kill-new (uuidgen-4)))
-  :ensure t)
-
-(use-package google-this
-  :ensure t)
+(defun bk/server-shutdown ()
+  "Save buffers, quit, and shutdown server."
+  (interactive)
+  (save-some-buffers)
+  (kill-emacs))
 
 ;;; Finance management
 (use-package ledger-mode
@@ -1096,12 +1117,16 @@ Better naming to improve the chances to find it."
   :bind
   ("C-c d d" . docker))
 
+;;; XML
+
 (use-package nxml-mode
   :init
   (setq nxml-child-indent 4)
   :config
   (push '("<\\?xml" . nxml-mode) magic-mode-alist)
   (add-to-list 'auto-mode-alist '("\\.pom$" . nxml-mode)))
+
+;;; SQL
 
 (use-package sql-indent
   :ensure t
@@ -1156,11 +1181,15 @@ Better naming to improve the chances to find it."
   (org-cycle)
   (insert "- "))
 
-(defun bk/server-shutdown ()
-  "Save buffers, quit, and shutdown server."
-  (interactive)
-  (save-some-buffers)
-  (kill-emacs))
+;;; Misc. Custom Functions
+
+(use-package uuidgen
+  :preface
+  (defun bk/uuid ()
+    "Create uuid and add to clipboard."
+    (interactive)
+    (kill-new (uuidgen-4)))
+  :ensure t)
 
 ;;; End of file
 
