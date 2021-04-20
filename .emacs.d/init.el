@@ -2,6 +2,8 @@
 ;;; Commentary:
 ;;; Code:
 
+;;; Packages
+
 (require 'package)
 
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -15,11 +17,18 @@
   (package-install 'use-package)
   (package-install 'diminish))
 
-;;; my own patches
 (setq lisps-dir (expand-file-name "lisps" user-emacs-directory))
 (add-to-list 'load-path lisps-dir)
 
-;;; register shortcuts
+(setq custom-theme-directory (concat user-emacs-directory "themes"))
+
+(dolist
+    (path (directory-files custom-theme-directory t "\\w+"))
+  (when (file-directory-p path)
+    (add-to-list 'custom-theme-load-path path)))
+
+;;; Emacs basic
+
 (set-register ?t '(file . "/home/wanderson/agenda/todo.org"))
 (set-register ?l '(file . "/home/wanderson/ledger"))
 (set-register ?e '(file . "/home/wanderson/.emacs.d/init.el"))
@@ -29,14 +38,6 @@
   (interactive)
   (eval-buffer)
   (message "Buffer evaluated!"))
-
-(setq custom-theme-directory (concat user-emacs-directory "themes"))
-
-(dolist
-    (path (directory-files custom-theme-directory t "\\w+"))
-  (when (file-directory-p path)
-    (add-to-list 'custom-theme-load-path path)))
-
 
 (use-package emacs
   :init
@@ -55,8 +56,6 @@
 	 ("C-x e" . eshell)
 	 :map emacs-lisp-mode-map
 	 ("<f5>" . bk/eval-buffer)))
-
-(use-package vlf :ensure t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -79,7 +78,9 @@
   :config
   (global-auto-revert-mode +1))
 
-;;; auth
+(use-package vlf :ensure t)
+
+;;; Authentication
 (use-package pinentry
   :ensure t
   :init
@@ -104,7 +105,15 @@
              :host "bitwarden.app"
              :user "bartuka")))
 
-;;; eshell
+(defun my-gpg ()
+  "My gpg."
+  (interactive)
+  (kill-new
+   (with-temp-buffer
+     (insert-file-contents "~/.secrets/pwd/gpg.txt")
+     (buffer-string))))
+
+;;; Eshell
 
 (defun eshell-clear-buffer ()
   "Clear the terminal buffer."
@@ -245,6 +254,8 @@
   (global-set-key (kbd "C-x 4 u") 'winner-undo)
   (global-set-key (kbd "C-x 4 U") 'winner-redo))
 
+;;; Ido Completion
+
 (use-package ido
   :init
   (setq ido-enable-flex-matching t
@@ -270,7 +281,14 @@
   (ido-mode +1)
   (add-to-list 'ido-ignore-directories "target")
   (add-to-list 'ido-ignore-directories "node_modules")
+  (add-to-list 'ido-ignore-directories ".cpcache")
+  (add-to-list 'ido-ignore-directories "eln-cache")
   (define-key minibuffer-local-completion-map (kbd "SPC") 'self-insert-command))
+
+(use-package ido-at-point
+  :ensure t
+  :config
+  (ido-at-point-mode +1))
 
 (use-package smex
   :ensure t
@@ -283,6 +301,22 @@
   :config
   (ido-ubiquitous-mode +1))
 
+(use-package company
+  :ensure t
+  :disabled t
+  :diminish company-mode
+  :init
+  (setq company-show-numbers t
+        company-minimum-prefix-length 2
+	company-idle-delay nil)
+  :config
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
+  (global-company-mode +1))
+
+(global-set-key (kbd "C-,") 'completion-at-point)
+
+;;; Appearance
+
 (use-package simple
   :init
   (setq inhibit-startup-screen nil)
@@ -292,14 +326,11 @@
   (set-face-attribute 'region nil :background "khaki1"))
 
 (add-to-list 'default-frame-alist '(background-color . "honeydew"))
-(add-to-list 'default-frame-alist '(font . "IBM Plex Mono-11"))
+(add-to-list 'default-frame-alist '(font . "IBM Plex Mono-10"))
 
-(use-package fringe
-  :config
-  ;; large fringes to get high-resolution flycheck marks
-  (set-fringe-style (cons 16 16)))
+;; large fringes to get high-resolution flycheck marks
+(fringe-mode '(16 . 16))
 
-;;; experiment with transparent sessions
 (defvar bk--toggle-transparency nil)
 
 (defun bk/toggle-transparency ()
@@ -322,7 +353,8 @@
         projectile-dynamic-mode-line nil
         projectile-ignored-projects '("~/" "/tmp")
         projectile-globally-ignored-file-suffixes '(".elc" ".pyc" ".o")
-        projectile-globally-ignored-files '(".DS_Store" "TAGS" "ido.last" "recentf" "smex-items"))
+        projectile-globally-ignored-files '(".DS_Store" "TAGS" "ido.last" "recentf" "smex-items")
+        )
   :bind (("C-c p p" . projectile-switch-project)
          ("C-c p f" . projectile-find-file)
 	 :map projectile-mode-map
@@ -331,13 +363,15 @@
   (require 'subr-x)
   (projectile-mode +1))
 
+
+;;; Editor
+
 (use-package ediff
   :config
   (setq ediff-window-setup-function 'ediff-setup-windows-plain
         ediff-split-window-function 'split-window-horizontally
         ediff-diff-options "-w"))
 
-;; editor
 (use-package expand-region
   :ensure t
   :bind ("C-=" . er/expand-region))
@@ -425,12 +459,13 @@
 (global-set-key (kbd "C-c j p") 'bk/jump-to-register)
 
 
-;;; git
+;;; Git
 
 (use-package magit
   :ensure t
   :init
-  (setq magit-log-show-gpg-status t)
+  (setq magit-log-show-gpg-status t
+	magit-completing-read-function 'magit-ido-completing-read)
   :bind (("C-c g s" . magit-status)
 	 ("C-c g b" . magit-blame)))
 
@@ -470,20 +505,6 @@
   :ensure t
   :commands (gist-region-or-buffer))
 
-(use-package company
-  :ensure t
-  :diminish company-mode
-  :init
-  (setq company-show-numbers t
-        company-minimum-prefix-length 2
-	    company-idle-delay nil)
-  :config
-  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
-  (global-company-mode +1))
-
-;;; completions
-(global-set-key (kbd "C-,") 'completion-at-point)
-
 (use-package buffer-move
   :ensure t
   :bind
@@ -492,10 +513,36 @@
    ("s-<left>" . buf-move-left)
    ("s-<right>" . buf-move-right)))
 
+(defun yas/goto-end-of-active-field ()
+  "End of the field."
+  (let* ((snippet (car (yas--snippets-at-point)))
+	 (position (yas--field-end (yas--snippet-active-field snippet))))
+    (if (= (point) position)
+	(move-end-of-line 1)
+      (goto-char position))))
+
+(defun yas/goto-start-of-active-field ()
+  "Start of the field."
+  (interactive)
+  (let* ((snippet (car (yas--snippets-at-point)))
+	 (position (yas--field-start (yas--snippet-active-field snippet))))
+    (if (= (point) position)
+	(move-beginning-of-line 1)
+      (goto-char position))))
+
 (use-package yasnippet
   :ensure t
   :diminish yas-minor-mode
   :hook (prog-mode . yas-minor-mode)
+  :config
+  (setq yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
+	yas-verbosity 1
+	yas-wrap-around-region t)
+  (define-key yas-keymap (kbd "C-a") 'yas/goto-start-of-active-field)
+  (define-key yas-keymap (kbd "C-e") 'yas/goto-end-of-active-field)
+
+  ;; jump to end of snippet definition
+  (define-key yas-keymap (kbd "<return>") 'yas-exit-all-snippets)
   :bind
   (("C-x y" . yas-expand)
    ("C-c y" . yas-expand)
@@ -504,8 +551,16 @@
 (use-package clojure-snippets :ensure t)
 (use-package quickrun :ensure t)
 
-;;; syntax checking for GNU Emacs
-;;; TODO: read the manual
+;;; General Programming
+
+(use-package toggle-test
+  :ensure t
+  :init
+  (setq tgt-open-in-new-window nil)
+  :config
+  (put 'tgt-projects 'safe-local-variable #'lisp)
+  (global-set-key (kbd "s-t") 'tgt-toggle))
+
 (use-package flycheck
   :ensure t
   :hook (prog-mode . flycheck-mode)
@@ -513,12 +568,17 @@
   (setq flycheck-check-syntax-automatically '(save)
 	flycheck-checker-error-threshold 4000))
 
-(use-package flycheck-clj-kondo
-  :ensure t)
+;;; Emacs Lisp
 
-;;;
+(use-package outline
+  :init
+  (setq outline-blank-line t)
+  :config
+  (add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
+  (global-set-key (kbd "C-c h") 'outline-cycle))
 
-;; lisps
+;;; Lisps
+
 (use-package paredit
   :ensure t
   :diminish paredit-mode
@@ -534,7 +594,10 @@
     `(dolist (,var (list ,@values) (with-no-warnings ,place))
        (cl-pushnew ,var ,place :test #'equal))))
 
-;; clojure
+;;; Clojure
+
+(use-package flycheck-clj-kondo
+  :ensure t)
 
 (defun bk/nrepl-warn-when-not-connected ()
   "Function to warn me to start the REPL."
@@ -554,6 +617,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
       (kill-buffer buf))
     (message "All CIDER buffers were closed.")))
 
+
 (use-package symbol-focus
   :load-path "~/.emacs.d/lisps"
   :bind
@@ -567,12 +631,9 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :init
   (setq clojure-toplevel-inside-comment-form t)
   :config
+  (use-package subword :diminish subword-mode)
   (add-hook 'clojure-mode-hook #'subword-mode) ;; deal with java class and method names
   (require 'flycheck-clj-kondo))
-
-
-(use-package subword
-  :diminish subword-mode)
 
 
 (use-package kaocha-runner
@@ -590,26 +651,19 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 	("C-c k w" . kaocha-runner-show-warnings)
 	("C-c k h" . kaocha-runner-hide-windows)))
 
-(use-package toggle-test
-  :ensure t
-  :init
-  (setq tgt-open-in-new-window nil)
-  :config
-  (put 'tgt-projects 'safe-local-variable #'lisp)
-  (global-set-key (kbd "s-t") 'tgt-toggle))
-
 
 (use-package cider
   :ensure t
   :config
   (setq cider-save-file-on-load t
         cider-annotate-completion-candidates nil ;; disable completion annotations
-	    cider-prompt-for-symbol nil
+	cider-prompt-for-symbol nil
         cider-eldoc-display-context-dependent-info t  ;; try to add expected function arguments
         cider-font-lock-dynamically '(macro core function var)
         cider-prefer-local-resources t
         cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources"
-                              "/run/user/1000/tmp.edBKBeMntG/source")
+                              "~/Downloads/jvm11/source")
+	cider-print-fn 'fipp
         cider-print-options
         '(("length" 80)
           ("level" 20)
@@ -717,7 +771,8 @@ Better naming to improve the chances to find it."
   '(progn
      (pushnew! projectile-globally-ignored-directories ".cpcache")))
 
-;; typescript
+
+;;; Typescript
 
 (defun bk/setup-tide-mode ()
   "Setup js development."
@@ -754,7 +809,9 @@ Better naming to improve the chances to find it."
      (pushnew! projectile-globally-ignored-files "node_modules" "bkp" ".log")
      (pushnew! projectile-globally-ignored-directories "node_modules" "bkp" ".log")))
 
-;; helpers
+
+;;; Self-Discovering Tools
+
 (use-package which-key
   :ensure t
   :diminish which-key-mode
@@ -909,18 +966,16 @@ Better naming to improve the chances to find it."
   (flyspell-buffer))
 
 
-;;; custom functions -- end --
-
-;; spell checking
+;;; Spell Checking
 (use-package langtool
   :ensure t
   :config
   (setq langtool-language-tool-jar
 	"~/.emacs.d/bin/languagetool-commandline.jar"))
 
-(use-package popup :ensure t)
+(use-package popup :ensure T)
 
-;; zettelkasten
+;;; Zettelkasten
 (defvar bk-zettelkasten-dir "/home/wanderson/zettelkasten")
 
 (use-package org
@@ -987,7 +1042,6 @@ Better naming to improve the chances to find it."
 (unless (server-running-p)
   (server-start))
 
-;;; uuids
 (use-package uuidgen
   :preface
   (defun bk/uuid ()
@@ -996,11 +1050,10 @@ Better naming to improve the chances to find it."
     (kill-new (uuidgen-4)))
   :ensure t)
 
-;;; google
 (use-package google-this
   :ensure t)
 
-;;; finance
+;;; Finance management
 (use-package ledger-mode
   :ensure t
   :mode ("ledger" . ledger-mode)
@@ -1028,7 +1081,8 @@ Better naming to improve the chances to find it."
   :config
   (setq ledger-report-auto-width t))
 
-;;; docker
+;;; Docker
+
 (use-package dockerfile-mode
   :ensure t
   :mode ("Dockerfile" . dockerfile-mode)
@@ -1054,7 +1108,8 @@ Better naming to improve the chances to find it."
   :config
   (add-hook 'sql-mode-hook 'sqlind-minor-mode))
 
-;;; ripgrep
+;;; Search
+
 (use-package rg
   :ensure t
   :commands (bk/search-git-root-or-dir)
@@ -1068,22 +1123,14 @@ Better naming to improve the chances to find it."
     :confirm prefix
     :flags ("--hidden -g !.git")))
 
-;;; nixOS
-
-(use-package nix-mode :ensure t)
-
-;;; wgrep
 (use-package wgrep :ensure t)
 
-(defun my-gpg ()
-  "My gpg."
-  (interactive)
-  (kill-new
-   (with-temp-buffer
-     (insert-file-contents "~/.secrets/pwd/gpg.txt")
-     (buffer-string))))
+;;; nixOS
 
-;;; reify health
+(use-package nix-mode :ensure T)
+
+
+;;; Reify Health
 
 (defun reifyhealth/cider-connect ()
   "Connect into eSource."
@@ -1094,6 +1141,7 @@ Better naming to improve the chances to find it."
   "Open file notes from work."
   (interactive)
   (find-file "~/repos/reifyhealth/work.org"))
+
 
 (defun work-new-day ()
   "Create entry into org file for bookkeeping."
@@ -1113,6 +1161,8 @@ Better naming to improve the chances to find it."
   (interactive)
   (save-some-buffers)
   (kill-emacs))
+
+;;; End of file
 
 ;; Local Variables:
 ;; byte-compile-warnings: (not free-vars unresolved)
