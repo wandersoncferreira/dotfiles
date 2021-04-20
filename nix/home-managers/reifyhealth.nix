@@ -67,6 +67,8 @@ in {
       master.clojure-lsp
       master.babashka
       master.clj-kondo
+      master.leiningen
+      master.rlwrap
       zoom-us
       yarn
       direnv
