@@ -284,11 +284,19 @@
         ("O" . bk/dired-xdg-open)
         ("M-p" . bk/dired-back-to-top)
         ("M-n" .  bk/dired-back-to-bottom)
-        ("C-a" .  bk/dired-back-to-start-of-files))
+        ("C-a" .  bk/dired-back-to-start-of-files)
+	("C-x C-k" . dired-do-delete)
+	("k" . dired-do-delete))
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
   (advice-add 'dired-readin :after #'bk/dired-directories-first))
+
+(eval-after-load "wdired"
+  '(progn
+     (define-key wdired-mode-map (kbd "C-a") 'dired-back-to-start-of-files)
+     (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
+     (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)))
 
 (defun bk/create-non-existent-directory ()
   "Offer to create parent directories if they do not exist."
@@ -320,9 +328,14 @@
   :bind (:map ido-file-completion-map
 	      ("C-n" . ido-next-match)
 	      ("C-p" . ido-prev-match)
+	      ("C-w" . ido-delete-backward-updir)
+	      ("C-x C-w" . ido-copy-current-file-name)
 	      :map ido-common-completion-map
 	      ("SPC" . self-insert-command)
-	      ("M-SPC" . just-one-space))
+	      ("M-SPC" . just-one-space)
+	      :map ido-file-dir-completion-map
+	      ("C-w" . ido-delete-backward-updir)
+	      ("C-x C-w" . ido-copy-current-file-name))
   :config
   (ido-mode +1)
   (add-to-list 'ido-ignore-directories "target")
