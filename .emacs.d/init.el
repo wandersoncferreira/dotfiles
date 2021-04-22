@@ -291,7 +291,8 @@
 (use-package smex
   :ensure t
   :bind (("M-x" . smex)
-	 ("C-x C-m" . smex)))
+	 ("C-x C-m" . smex)
+	 ("C-c C-m" . smex)))
 
 (use-package ido-completing-read+
   :ensure t
