@@ -29,6 +29,7 @@
     dmidecode
     dtrx
     graphviz
+    pandoc
   ];
 
   services.openssh.enable = true;
