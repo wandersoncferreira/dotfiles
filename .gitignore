@@ -24,3 +24,4 @@ niceties/
 clojure/.cpcache
 clojure/lsp/sqlite.db
 .emacs.d/session.*
+.emacs.d/history

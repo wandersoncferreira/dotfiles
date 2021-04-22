@@ -53,21 +53,49 @@
 (use-package emacs
   :init
   (setq tab-always-indent 'complete
-	    ring-bell-function 'ignore
-	    visible-bell nil
-	    create-lockfiles nil
-	    custom-safe-themes t
-	    indent-tabs-mode nil
-	    tab-width 4
-	    make-backup-files nil
-	    gc-cons-threshold (* 100 1024 1024)
-	    read-process-output-max (* 4 1024 1024)
-	    custom-file (expand-file-name "custom.el" user-emacs-directory))
+	ring-bell-function 'ignore
+	visible-bell nil
+	create-lockfiles nil
+	custom-safe-themes t
+	indent-tabs-mode nil
+	delete-by-moving-to-trash t	;move files to trash when deleting
+	echo-keystrokes 0.1 		;show keystrokes in progress
+	tab-width 4
+	make-backup-files nil
+	gc-cons-threshold (* 100 1024 1024)
+	read-process-output-max (* 4 1024 1024)
+	custom-file (expand-file-name "custom.el" user-emacs-directory))
   :bind (("C-x p" . pop-to-mark-command)
-	     ("C-x C-b" . ibuffer)
-	     ("C-x e" . eshell)
-	     :map emacs-lisp-mode-map
-	     ("<f5>" . bk/eval-buffer)))
+	 ("C-x C-b" . ibuffer)
+	 ("C-x e" . eshell)
+	 :map emacs-lisp-mode-map
+	 ("<f5>" . bk/eval-buffer)))
+
+;; transparently open compressed files
+(auto-compression-mode t)
+
+;; show active region
+(transient-mark-mode 1)
+(make-variable-buffer-local 'transient-mark-mode)
+(put 'transient-mark-mode 'permanent-local t)
+(setq-default transient-mark-mode t)
+
+;; always display line and column numbers
+(setq line-number-mode t)
+(setq column-number-mode t)
+
+;; lines should be 80 characters wide, not 72
+(setq fill-column 80)
+
+;; save minibuffer history
+(savehist-mode +1)
+(setq history-length 1000)
+
+;; show me empty lines after buffer end
+(set-default 'indicate-empty-lines t)
+
+;; sentences do not need double spaces to end
+(set-default 'sentence-end-double-space nil)
 
 (setq ring-bell-function
       (lambda ()
@@ -99,6 +127,9 @@
 
 (use-package autorevert
   :diminish auto-revert-mode
+  :init
+  (setq global-auto-revert-non-file-buffers t
+	auto-revert-verbose nil)
   :config
   (global-auto-revert-mode +1))
 
@@ -258,6 +289,15 @@
   (require 'dired-x)
   (setq dired-dwim-target t)
   (advice-add 'dired-readin :after #'bk/dired-directories-first))
+
+(defun bk/create-non-existent-directory ()
+  "Offer to create parent directories if they do not exist."
+  (let ((parent-directory (file-name-as-directory buffer-file-name)))
+    (when (and (not (file-exists-p parent-directory))
+	       (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
+      (make-directory parent-directory t))))
+
+(add-to-list 'find-file-not-found-functions 'bk/create-non-existent-directory)
 
 
 ;;; Ido Completion
@@ -578,9 +618,32 @@
   :ensure t
   :init
   (setq magit-log-show-gpg-status t
-	magit-completing-read-function 'magit-ido-completing-read)
+	magit-completing-read-function 'magit-ido-completing-read
+	magit-section-initial-visibility-alist
+	'((untracked . show)
+	  (unstaged . show)
+	  (unpushed . show)
+	  (unpulled . show)
+	  (stashes . show)))
   :bind (("C-c g s" . magit-status)
-	 ("C-c g b" . magit-blame)))
+	 ("C-c g b" . magit-blame))
+  :config
+  (set-default 'magit-push-always-verify nil)
+  (set-default 'magit-revert-buffers 'silent)
+  (set-default 'magit-no-confirm '(stage-all-changes unstage-all-changes))
+
+  ;; Real dates, please
+  (set-default 'magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
+
+(use-package diff-hl
+  :ensure t
+  :config
+  (global-diff-hl-mode +1)
+  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (custom-set-faces
+   '(diff-hl-change ((t (:background "#3a81c3"))))
+   '(diff-hl-insert ((t (:background "#7ccd7c"))))
+   '(diff-hl-delete ((t (:background "#ee6363"))))))
 
 (use-package magit-todos
   :ensure t
@@ -708,6 +771,17 @@
   (let ((var (make-symbol "result")))
     `(dolist (,var (list ,@values) (with-no-warnings ,place))
        (cl-pushnew ,var ,place :test #'equal))))
+
+;;; Markdown
+
+(use-package markdown-mode
+  :ensure t
+  :commands (markdown-mode gfm-mode)
+  :mode (("README\\.md\\'" . gfm-mode)
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
+  :init
+  (setq markdown-command "pandoc"))
 
 ;;; Clojure
 
@@ -1129,6 +1203,7 @@ Better naming to improve the chances to find it."
   :init
   (setq org-return-follows-link t
 	org-confirm-babel-evaluate nil
+	org-replace-disputed-keys t	;don't ruin S-arrow to switch windows please
 	org-src-fontify-natively t
 	org-src-tab-acts-natively t
 	org-agenda-files (list "~/agenda/todo.org"))
