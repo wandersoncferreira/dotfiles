@@ -115,6 +115,8 @@
 
 (load custom-file)
 
+(display-line-numbers-mode +1)
+
 (windmove-default-keybindings)
 
 (tool-bar-mode -1)
@@ -445,6 +447,12 @@
         ediff-split-window-function 'split-window-horizontally
         ediff-diff-options "-w"))
 
+(use-package editorconfig
+  :ensure t
+  :hook ((prog-mode text-mode) . editorconfig-mode)
+  :config
+  (add-to-list 'editorconfig-exclude-modes 'git-rebase-mode))
+
 (use-package browse-kill-ring
   :ensure t
   :config
@@ -632,6 +640,7 @@
   :init
   (setq magit-log-show-gpg-status t
 	magit-completing-read-function 'magit-ido-completing-read
+	magit-revision-show-gravatars t
 	magit-section-initial-visibility-alist
 	'((untracked . show)
 	  (unstaged . show)
@@ -653,6 +662,7 @@
   :config
   (global-diff-hl-mode +1)
   (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
+  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
   (custom-set-faces
    '(diff-hl-change ((t (:background "#3a81c3"))))
    '(diff-hl-insert ((t (:background "#7ccd7c"))))
@@ -695,6 +705,11 @@
   :commands (gist-region-or-buffer))
 
 ;;; General Programming
+
+(use-package envrc
+  :ensure t
+  :config
+  (envrc-global-mode +1))
 
 (use-package toggle-test
   :ensure t
@@ -1047,9 +1062,18 @@ Better naming to improve the chances to find it."
   :ensure t
   :diminish which-key-mode
   :config
-  (which-key-mode))
+  (which-key-Mode))
 
-;; custom functions
+(use-package helpful
+  :ensure t
+  :bind (("C-h k" . helpful-key)
+	 ("C-h v" . helpful-variable)
+	 ("C-h f" . helpful-callable)
+	 ("C-h F" . helpful-function)
+	 ("C-c C-d" . helpful-at-point)))
+
+;;; Custom Functions
+
 (defun bk/kill-buffer ()
   "Kill current buffer."
   (interactive)
@@ -1391,6 +1415,15 @@ Better naming to improve the chances to find it."
   (reindent-then-newline-and-indent)
   (org-cycle)
   (insert "- "))
+
+;;; PDF
+
+(use-package pdf-tools
+  :ensure t
+  :magic ("%PDF" . pdf-view-mode)
+  :config
+  (pdf-tools-install :no-query)
+  (require 'pdf-occur))
 
 ;;; Misc. Custom Functions
 
