@@ -4,9 +4,21 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(browse-kill-ring zprint-mode edit-indirect windresize T bicycle flx-ido ido-at-point moody aggressive-indent aggressive-indent-mode rainbow-delimiters flycheck-clj-kondo magit-todos buffer-move zenburn-theme pomidor company-nixos-options nixos-options nix-buffer nix-sandbox nixpkgs-fmt nix-mode rg sql-indent docker docker-compose-mode dockerfile-mode ledger-mode google-this uuidgen org-roam-server org-roam org-download google-translate popup langtool which-key tide add-node-modules-path prettier-js typescript-mode lsp-java lsp-ui clj-refactor toggle-test kaocha-runner clojure-mode paredit flycheck-projectile flycheck quickrun clojure-snippets java-snippets yasnippet company gist browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine forge magit move-text multiple-cursors jump-char fix-word change-inner expand-region zeal-at-point projectile ido-completing-read+ smex pinentry vlf ibuffer-vc diminish use-package))
+   '(whitespace-cleanup-mode whitespace-cleanup zprint-mode windresize which-key vlf uuidgen use-package toggle-test tide sql-indent smex rg rainbow-delimiters quickrun projectile prettier-js popup pinentry org-roam-server org-download nixpkgs-fmt nix-sandbox nix-mode nix-buffer move-text moody magit-todos lsp-ui lsp-java ledger-mode langtool kaocha-runner jump-char java-snippets ido-completing-read+ ido-at-point google-translate google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flycheck-clj-kondo flx-ido fix-word edit-indirect dockerfile-mode docker-compose-mode docker diminish company-nixos-options clojure-snippets clj-refactor change-inner buffer-move browse-kill-ring browse-at-remote bicycle aggressive-indent add-node-modules-path))
  '(safe-local-variable-values
    '((tgt-projects
+      ((:root-dir "/home/wanderson/repos/reifyhealth/esource-service")
+       (:src-dirs "src")
+       (:test-dirs "test")
+       (:test-suffixes "_test")))
+     (tgt-projects
+      ((:root-dir "/home/wanderson/repos/reifyhealth/esource-service")
+       (:src-dirs "src/clj")
+       (:test-dirs "test/clj")
+       (:test-suffixes "_test")))
+     (cider-known-endpoints
+      ("localhost" "12344"))
+     (tgt-projects
       ((:root-dir "/home/wand/platform/seu-barriga")
        (:src-dirs "src")
        (:test-dirs "test")

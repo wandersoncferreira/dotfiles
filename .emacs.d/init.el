@@ -54,7 +54,7 @@
   :init
   (setq tab-always-indent 'complete
 	    ring-bell-function 'ignore
-	    visible-bell t
+	    visible-bell nil
 	    create-lockfiles nil
 	    custom-safe-themes t
 	    indent-tabs-mode nil
@@ -68,6 +68,14 @@
 	     ("C-x e" . eshell)
 	     :map emacs-lisp-mode-map
 	     ("<f5>" . bk/eval-buffer)))
+
+(setq ring-bell-function
+      (lambda ()
+        (invert-face 'mode-line)
+        (run-with-timer 0.05 nil 'invert-face 'mode-line)))
+
+;;; don't defer screen updates when performing operations
+(setq redisplay-dont-pause t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
@@ -322,6 +330,10 @@
 
 ;;; Appearance
 
+(defun bk/search-font (font-name)
+  "Search for a FONT-NAME."
+  (-filter (lambda (f) (string-match font-name f)) (font-family-list)))
+
 (use-package simple
   :init
   (setq inhibit-startup-screen nil)
@@ -331,7 +343,7 @@
   (set-face-attribute 'region nil :background "khaki1"))
 
 (add-to-list 'default-frame-alist '(background-color . "honeydew"))
-(add-to-list 'default-frame-alist '(font . "IBM Plex Mono-11"))
+(add-to-list 'default-frame-alist '(font . "IBM Plex Mono-10"))
 
 
 ;; large fringes to get high-resolution flycheck marks
@@ -414,6 +426,19 @@
   :bind
   (([(meta shift up)] . move-text-up)
    ([(meta shift down)] . move-text-down)))
+
+(use-package whitespace-cleanup-mode
+  :ensure t
+  :diminish whitespace-cleanup-mode
+  :config
+  (global-whitespace-cleanup-mode +1))
+
+(use-package whitespace
+  :diminish whitespace-mode
+  :config
+  (setq whitespace-style '(trailing lines space-before-tab indentation space-after-tab))
+  :config
+  (add-hook 'prog-mode-hook 'whitespace-mode))
 
 (defun bk/kill-inner-word ()
   "Kill the entire word your cursor is in.  Equivalent to ciw in vim."
@@ -603,19 +628,12 @@
   (put 'tgt-projects 'safe-local-variable #'lisp)
   (global-set-key (kbd "s-t") 'tgt-toggle))
 
-(defun bk/adjust-flycheck-automatic-syntax-eagerness ()
-  "How often we check for errors based on if there are any."
-  (seq flycheck-idle-change-delay (if flycheck-current-errors 0.5 30.0)))
-
 (use-package flycheck
   :ensure t
   :hook (prog-mode . flycheck-mode)
-  :init
-  (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
-	flycheck-checker-error-threshold 4000)
   :config
-  (make-variable-buffer-local 'flycheck-idle-change-delay)
-  (add-hook 'flycheck-after-syntax-check-hook 'bk/adjust-flycheck-automatic-syntax-eagerness))
+  (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+	flycheck-checker-error-threshold 4000))
 
 (defun yas/goto-end-of-active-field ()
   "End of the field."
@@ -651,6 +669,9 @@
   (("C-x y" . yas-expand)
    ("C-c y" . yas-expand)
    ("C-c t" . yas-describe-tables)))
+
+;;; use normal tabs in makefiles
+(add-hook 'makefile-mode-hook 'indent-tabs-mode)
 
 (use-package quickrun :ensure t)
 
@@ -776,10 +797,8 @@ Better naming to improve the chances to find it."
 	lsp-enable-file-watchers nil
 	lsp-keymap-prefix "C-c l"
 	lsp-modeline-code-actions-enable nil
-	lsp-use-plists t
 	lsp-modeline-diagnostics-enable nil
-	lsp-completion-provider :none
-	lsp-semantic-tokens-enable t)
+	lsp-completion-provider :none)
   :config
   (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers))))
 
