@@ -69,6 +69,8 @@ in {
       master.clj-kondo
       master.leiningen
       master.rlwrap
+      mongodb-compass
+      postman
       zoom-us
       yarn
       direnv

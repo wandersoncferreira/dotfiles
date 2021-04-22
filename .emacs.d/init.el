@@ -31,6 +31,13 @@
   (when (file-directory-p path)
     (add-to-list 'custom-theme-load-path path)))
 
+;;; Security
+(eval-after-load "enriched"
+  '(defun enriched-decode-display-prop (start end &optional param)
+     (ignore param)
+     (list start end)))
+
+
 ;;; Emacs basic
 
 (set-register ?t '(file . "/home/wanderson/agenda/todo.org"))
@@ -46,24 +53,29 @@
 (use-package emacs
   :init
   (setq tab-always-indent 'complete
-	ring-bell-function 'ignore
-	create-lockfiles nil
-	custom-safe-themes t
-	indent-tabs-mode nil
-	tab-width 4
-	make-backup-files nil
-	gc-cons-threshold (* 100 1024 1024)
-	read-process-output-max (* 4 1024 1024)
-	custom-file (expand-file-name "custom.el" user-emacs-directory))
+	    ring-bell-function 'ignore
+	    visible-bell t
+	    create-lockfiles nil
+	    custom-safe-themes t
+	    indent-tabs-mode nil
+	    tab-width 4
+	    make-backup-files nil
+	    gc-cons-threshold (* 100 1024 1024)
+	    read-process-output-max (* 4 1024 1024)
+	    custom-file (expand-file-name "custom.el" user-emacs-directory))
   :bind (("C-x p" . pop-to-mark-command)
-	 ("C-x C-b" . ibuffer)
-	 ("C-x e" . eshell)
-	 :map emacs-lisp-mode-map
-	 ("<f5>" . bk/eval-buffer)))
+	     ("C-x C-b" . ibuffer)
+	     ("C-x e" . eshell)
+	     :map emacs-lisp-mode-map
+	     ("<f5>" . bk/eval-buffer)))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(show-paren-mode)
+(use-package paren
+  :init
+  (setq show-paren-style 'parenthesis)
+  :config
+  (show-paren-mode +1))
 
 (load custom-file)
 
@@ -299,6 +311,11 @@
   (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
   (global-company-mode +1))
 
+;; hippie expand
+
+(require 'patch-hippie-expand)
+(global-set-key (kbd "C-.") 'hippie-expand-no-case-fold)
+(global-set-key (kbd "C-:") 'hippie-expand-lines)
 (global-set-key (kbd "C-,") 'completion-at-point)
 
 ;;; Appearance
@@ -312,7 +329,8 @@
   (set-face-attribute 'region nil :background "khaki1"))
 
 (add-to-list 'default-frame-alist '(background-color . "honeydew"))
-(add-to-list 'default-frame-alist '(font . "IBM Plex Mono-10"))
+(add-to-list 'default-frame-alist '(font . "IBM Plex Mono-11"))
+
 
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 16))
@@ -360,8 +378,16 @@
         ediff-split-window-function 'split-window-horizontally
         ediff-diff-options "-w"))
 
+(use-package browse-kill-ring
+  :ensure t
+  :config
+  (setq browse-kill-ring-quit-action 'save-and-restore))
+
 (use-package expand-region
   :ensure t
+  :config
+  (setq expand-region-fast-keys-enabled nil
+	er--show-expansion-message t)
   :bind ("C-=" . er/expand-region))
 
 (use-package change-inner
@@ -406,13 +432,24 @@
     (dotimes (_ num)
       (insert region))))
 
+(defun paredit-duplicate-current-line ()
+  "Duplicate current line if paredit-mode is enabled."
+  (back-to-indentation)
+  (let (kill-ring kill-ring-yank-pointer)
+    (paredit-kill)
+    (yank)
+    (newline-and-indent)
+    (yank)))
+
 (defun duplicate-current-line (num)
   "Duplicate the current line NUM times."
   (interactive "p")
-  (when (eq (point-at-eol) (point-max))
-    (goto-char (point-max))
-    (newline)
-    (forward-char -1))
+  (if (bound-and-true-p paredit-mode)
+      (paredit-duplicate-current-line)
+    (when (eq (point-at-eol) (point-max))
+      (goto-char (point-max))
+      (newline)
+      (forward-char -1)))
   (duplicate-region num (point-at-bol) (1+ (point-at-eol))))
 
 (defun bk/duplicate-current-line-or-region (arg)
@@ -424,6 +461,43 @@
       (duplicate-current-line arg))))
 
 (global-set-key (kbd "C-c d l") #'bk/duplicate-current-line-or-region)
+
+
+;; automatically indenting yanked text if in programming modes
+(require 'dash)
+
+(defvar yank-indent-modes '(prog-mode
+                            sgml-mode
+                            js2-mode)
+  "Modes in which to indent regions that are yanked (or yank-popped).")
+
+(defvar yank-advised-indent-threshold 1000
+  "Threshold (# chars) over which indentation does not automatically occur.")
+
+(defun yank-advised-indent-function (beg end)
+  "Do indentation from BEG and END, as long as the region isn't too large."
+  (if (<= (- end beg) yank-advised-indent-threshold)
+      (indent-region beg end nil)))
+
+(defadvice yank (after yank-indent activate)
+  "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
+  (if (and (not (ad-get-arg 0))
+           (--any? (derived-mode-p it) yank-indent-modes))
+      (let ((transient-mark-mode nil))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
+
+(defadvice yank-pop (after yank-pop-indent activate)
+  "If current mode is one of 'yank-indent-modes, indent yanked text (with prefix arg don't indent)."
+  (if (and (not (ad-get-arg 0))
+           (member major-mode yank-indent-modes))
+      (let ((transient-mark-mode nil))
+        (yank-advised-indent-function (region-beginning) (region-end)))))
+
+(defun yank-unindented ()
+  "Unindent after yank in programming modes."
+  (interactive)
+  (yank 1))
+
 
 ;;; Emacs Movement
 
@@ -527,12 +601,19 @@
   (put 'tgt-projects 'safe-local-variable #'lisp)
   (global-set-key (kbd "s-t") 'tgt-toggle))
 
+(defun bk/adjust-flycheck-automatic-syntax-eagerness ()
+  "How often we check for errors based on if there are any."
+  (seq flycheck-idle-change-delay (if flycheck-current-errors 0.5 30.0)))
+
 (use-package flycheck
   :ensure t
   :hook (prog-mode . flycheck-mode)
+  :init
+  (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+	flycheck-checker-error-threshold 4000)
   :config
-  (setq flycheck-check-syntax-automatically '(save)
-	flycheck-checker-error-threshold 4000))
+  (make-variable-buffer-local 'flycheck-idle-change-delay)
+  (add-hook 'flycheck-after-syntax-check-hook 'bk/adjust-flycheck-automatic-syntax-eagerness))
 
 (defun yas/goto-end-of-active-field ()
   "End of the field."
@@ -574,6 +655,7 @@
 ;;; Emacs Lisp
 
 (use-package outline
+  :diminish outline-minor-mode
   :init
   (setq outline-blank-line t)
   :config
@@ -607,9 +689,6 @@
 ;;; Clojure
 
 (use-package clojure-snippets :ensure t)
-
-(use-package flycheck-clj-kondo
-  :ensure t)
 
 (defun bk/nrepl-warn-when-not-connected ()
   "Function to warn me to start the REPL."
@@ -645,8 +724,7 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :config
   (use-package subword :diminish subword-mode)
   (add-hook 'clojure-mode-hook #'subword-mode) ;; deal with java class and method names
-  (require 'flycheck-clj-kondo))
-
+  )
 
 (use-package kaocha-runner
   :ensure t
@@ -662,7 +740,6 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 	("C-c k a" . kaocha-runner-run-all-tests)
 	("C-c k w" . kaocha-runner-show-warnings)
 	("C-c k h" . kaocha-runner-hide-windows)))
-
 
 (use-package cider
   :ensure t
@@ -681,12 +758,35 @@ Please run M-x cider or M-x cider-jack-in to connect"))
           ("level" 20)
           ("right-margin" 80))))
 
-
 (defun bk/reload-cider-completion ()
   "Function to reload cider completion.
 Better naming to improve the chances to find it."
   (interactive)
   (cider-completion-flush-caches))
+
+(use-package lsp-mode
+  :commands lsp
+  :ensure t
+  :hook ((clojure-mode . lsp)
+	 (lsp-mode . lsp-enable-which-key-integration))
+  :init
+  (setq lsp-lens-enable nil
+	lsp-enable-file-watchers nil
+	lsp-keymap-prefix "C-c l"
+	lsp-modeline-code-actions-enable nil
+	lsp-use-plists t
+	lsp-modeline-diagnostics-enable nil
+	lsp-completion-provider :none
+	lsp-semantic-tokens-enable t)
+  :config
+  (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers))))
+
+
+(use-package lsp-ui
+  :ensure t
+  :config
+  (setq lsp-ui-sideline-enable t
+	lsp-ui-sideline-show-code-actions nil))
 
 (use-package clj-refactor
   :ensure t
@@ -698,7 +798,7 @@ Better naming to improve the chances to find it."
         ;; execute `cljr-clean-ns' for all .clj files.
         cljr-project-clean-prompt nil
 
-	    cljr-favor-private-functions t
+	cljr-favor-private-functions t
 
         ;; whitelist, do not clean this libspec
         cljr-libspec-whitelist
@@ -722,8 +822,8 @@ Better naming to improve the chances to find it."
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "aa") 'clojure-add-arity)
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "c!") 'clojure-cycle-not)
   (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "cw") 'clojure-cycle-when)
-  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ra") 'clojure-rename-ns-alias))
-
+  (define-key clj-refactor-map (cljr--key-pairs-with-prefix "C-c C-m" "ra") 'clojure-rename-ns-alias)
+  )
 
 ;; Experimental configuration to hotload refactor
 ;; using Pomegranate from Cemerick
@@ -733,6 +833,7 @@ Better naming to improve the chances to find it."
 (eval-after-load 'cider
   '(progn
      (defun bk/send-to-repl (sexp eval ns)
+       (ignore eval)
        (cider-switch-to-repl-buffer ns)
        (goto-char cider-repl-input-start-mark)
        (delete-region (point) (point-max))
@@ -760,6 +861,7 @@ Better naming to improve the chances to find it."
      (setq cljr-hotload-dependencies t)
 
      (defun cljr-hotload-dependency (artifact version &optional dep ns)
+       (ignore dep)
        (bk/send-to-repl
 	(bk/pomegranate-dep (format "[%s \"%s\"]" artifact version))
 	t ns))
@@ -1152,7 +1254,7 @@ Better naming to improve the chances to find it."
 
 ;;; nixOS
 
-(use-package nix-mode :ensure T)
+(use-package nix-mode :ensure t)
 
 
 ;;; Reify Health
@@ -1183,6 +1285,8 @@ Better naming to improve the chances to find it."
 
 ;;; Misc. Custom Functions
 
+(use-package zprint-mode :ensure t)
+
 (use-package uuidgen
   :preface
   (defun bk/uuid ()
@@ -1194,7 +1298,7 @@ Better naming to improve the chances to find it."
 ;;; End of file
 
 ;; Local Variables:
-;; byte-compile-warnings: (not free-vars unresolved)
+;; byte-compile-warnings: (not free-vars unresolved cl-functions)
 ;; End:
 
 ;;; init.el ends here
