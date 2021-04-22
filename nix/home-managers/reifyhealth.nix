@@ -66,16 +66,11 @@ in {
       (import ../configurations/custom/hey.nix)
       master.clojure-lsp
       master.babashka
-      master.clj-kondo
-      master.leiningen
-      master.rlwrap
-      mongodb-compass
-      postman
       zoom-us
       yarn
       direnv
       nodejs-14_x
-      python3
+      icu67                     # patch embedded postgresql used in eSource
     ];
   };
 

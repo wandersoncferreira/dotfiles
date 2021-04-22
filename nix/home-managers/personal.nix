@@ -11,6 +11,7 @@ in {
 
   imports = [
     ./common/home.nix
+    ./common/programs.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
@@ -44,9 +45,14 @@ in {
     stateVersion = "21.03";
     packages = with pkgs; [
       (import ../configurations/custom/hey.nix)
-      whatsapp-for-linux
+      master.clojure
+      master.rlwrap
+      master.leiningen
+      master.clj-kondo
+      postman
       transmission-qt
       libreoffice
+
     ];
   };
 }

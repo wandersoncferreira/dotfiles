@@ -1,0 +1,3 @@
+
+/home/wanderson/repos/personal/dotfiles/setup.sh $1
+home-manager switch

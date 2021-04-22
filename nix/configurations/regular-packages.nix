@@ -11,8 +11,6 @@
     texlive.combined.scheme-full
     deja-dup
     simplescreenrecorder
-    transmission-qt
-    libreoffice
   ];
 
 }

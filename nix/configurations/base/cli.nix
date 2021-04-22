@@ -28,6 +28,7 @@
     ffmpeg
     dmidecode
     dtrx
+    graphviz
   ];
 
   services.openssh.enable = true;
