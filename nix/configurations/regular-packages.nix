@@ -10,6 +10,7 @@
     vlc
     texlive.combined.scheme-full
     deja-dup
+    bitwarden
     simplescreenrecorder
   ];
 

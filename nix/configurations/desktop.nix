@@ -41,8 +41,7 @@
           i3status
           i3lock
           xfce.terminal
-          feh
-          xlibs.backlight
+          nitrogen
         ];
       };
 
