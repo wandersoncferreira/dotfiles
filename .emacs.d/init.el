@@ -115,7 +115,7 @@
 
 (load custom-file)
 
-(display-line-numbers-mode +1)
+(add-hook 'after-init-hook 'display-line-numbers-mode)
 
 (windmove-default-keybindings)
 
@@ -300,14 +300,8 @@
      (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
      (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)))
 
-(defun bk/create-non-existent-directory ()
-  "Offer to create parent directories if they do not exist."
-  (let ((parent-directory (file-name-as-directory buffer-file-name)))
-    (when (and (not (file-exists-p parent-directory))
-	       (y-or-n-p (format "Directory `%s' does not exist! Create it?" parent-directory)))
-      (make-directory parent-directory t))))
 
-(add-to-list 'find-file-not-found-functions 'bk/create-non-existent-directory)
+
 
 
 ;;; Ido Completion
@@ -400,6 +394,8 @@
 (add-to-list 'default-frame-alist '(background-color . "honeydew"))
 (add-to-list 'default-frame-alist '(font . "IBM Plex Mono-10"))
 
+(set-face-attribute 'default nil :font "IBM Plex Mono" :height 100)
+(set-background-color "honeydew")
 
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 16))
@@ -900,6 +896,10 @@ Better naming to improve the chances to find it."
 	lsp-keymap-prefix "C-c l"
 	lsp-modeline-code-actions-enable nil
 	lsp-modeline-diagnostics-enable nil
+	lsp-semantic-tokens-enable nil
+	lsp-idle-delay 0.3
+	lsp-ui-doc-show-with-cursor nil
+	lsp-ui-doc-show-with-mouse nil
 	lsp-completion-provider :none)
   :config
   (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers))))
@@ -1062,7 +1062,7 @@ Better naming to improve the chances to find it."
   :ensure t
   :diminish which-key-mode
   :config
-  (which-key-Mode))
+  (which-key-mode))
 
 (use-package helpful
   :ensure t

@@ -2,6 +2,7 @@
 
 {
   nixpkgs.config.allowBroken = true;
+  nixpkgs.config.pulseaudio = true;
   environment.shellAliases = {
     rebuild = "sudo nixos-rebuild switch";
     ls = "ls --color=tty --si";
@@ -21,9 +22,29 @@
       enable = true;
       layout = "us,br";
 
-      displayManager.sddm.enable = true;
-      displayManager.defaultSession = "plasma5";
-      desktopManager.plasma5.enable = true;
+      desktopManager = {
+        xterm.enable = false;
+        xfce = {
+          enable = true;
+          noDesktop = true;
+          enableXfwm = false;
+        };
+      };
+
+      displayManager.defaultSession = "xfce+i3";
+      displayManager.lightdm.enable = true;
+
+      windowManager.i3 = {
+        enable = true;
+        extraPackages = with pkgs; [
+          dmenu
+          i3status
+          i3lock
+          xfce.terminal
+          feh
+          xlibs.backlight
+        ];
+      };
 
       xkbVariant = "intl,abnt2";
       xkbOptions = "ctrl:nocaps";
@@ -39,25 +60,9 @@
   };
 
   security.hideProcessInformation = false;
-  security.pam.services.sddm.sshAgentAuth = true;
-  security.pam.services.sddm.enableKwallet = true;
-  security.pam.services.kwallet = {
-    name = "kwallet";
-    enableKwallet = true;
-  };
-
-  environment.systemPackages = with pkgs; [
-    kwalletmanager
-    ksshaskpass
-    libsForQt5.kwallet
-    ark
-    ksysguard
-    kwallet-pam
-    gwenview
-    okular
-    kcalc
-    kgpg
-  ];
+  services.gnome3.gnome-keyring.enable = true;
+  programs.seahorse.enable = true;
+  security.pam.services.lightdm.enableGnomeKeyring = true;
 
   fonts = {
     fonts = with pkgs; [

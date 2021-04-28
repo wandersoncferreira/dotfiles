@@ -5,8 +5,6 @@ let
   master = import (fetchTarball
     https://github.com/NixOS/nixpkgs/archive/master.tar.gz) {};
 
-  mkTuple = lib.hm.gvariant.mkTuple;
-
   dotfilesDir = "$HOME/repos/personal/dotfiles";
 
 in {
@@ -65,6 +63,7 @@ in {
       (import ../configurations/custom/clojure.nix)
       (import ../configurations/custom/hey.nix)
       master.clojure-lsp
+      master.rlwrap
       master.babashka
       zoom-us
       yarn

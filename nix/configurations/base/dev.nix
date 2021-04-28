@@ -15,11 +15,10 @@ in {
   environment.systemPackages = with pkgs;
     [
       master.docker-compose
-      jetbrains.datagrip
       emacsGcc
+      jetbrains.datagrip
       plantuml
       clang
-      zeal
     ];
 
   virtualisation.docker = {
@@ -42,7 +41,7 @@ in {
 
   systemd.user.services.emacs = {
     enable = true;
-    wantedBy = ["default.target"];
+    wantedBy = [ "default.target" ];
     description = "Emacs: the extensible, self-documenting text editor";
     serviceConfig = {
       Type = "forking";

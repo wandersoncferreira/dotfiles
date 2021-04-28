@@ -5,8 +5,6 @@ let
   master = import (fetchTarball
     https://github.com/NixOS/nixpkgs/archive/master.tar.gz) {};
 
-  mkTuple = lib.hm.gvariant.mkTuple;
-
 in {
 
   imports = [
@@ -45,14 +43,16 @@ in {
     stateVersion = "21.03";
     packages = with pkgs; [
       (import ../configurations/custom/hey.nix)
-      master.clojure
+      (import ../configurations/custom/clojure.nix)
+      master.clojure-lsp
       master.rlwrap
       master.leiningen
-      master.clj-kondo
+      master.babashka
       postman
+      direnv
       transmission-qt
       libreoffice
-
+      vscode
     ];
   };
 }
