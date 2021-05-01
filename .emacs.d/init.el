@@ -53,23 +53,23 @@
 (use-package emacs
   :init
   (setq tab-always-indent 'complete
-	ring-bell-function 'ignore
-	visible-bell nil
-	create-lockfiles nil
-	custom-safe-themes t
-	indent-tabs-mode nil
-	delete-by-moving-to-trash t	;move files to trash when deleting
-	echo-keystrokes 0.1 		;show keystrokes in progress
-	tab-width 4
-	make-backup-files nil
-	gc-cons-threshold (* 100 1024 1024)
-	read-process-output-max (* 4 1024 1024)
-	custom-file (expand-file-name "custom.el" user-emacs-directory))
+	    ring-bell-function 'ignore
+	    visible-bell nil
+	    create-lockfiles nil
+	    custom-safe-themes t
+	    indent-tabs-mode nil
+	    delete-by-moving-to-trash t	;move files to trash when deleting
+	    echo-keystrokes 0.1 		;show keystrokes in progress
+	    tab-width 4
+	    make-backup-files nil
+	    gc-cons-threshold (* 100 1024 1024)
+	    read-process-output-max (* 4 1024 1024)
+	    custom-file (expand-file-name "custom.el" user-emacs-directory))
   :bind (("C-x p" . pop-to-mark-command)
-	 ("C-x C-b" . ibuffer)
-	 ("C-x e" . eshell)
-	 :map emacs-lisp-mode-map
-	 ("<f5>" . bk/eval-buffer)))
+	     ("C-x C-b" . ibuffer)
+	     ("C-x e" . eshell)
+	     :map emacs-lisp-mode-map
+	     ("C-c C-k" . bk/eval-buffer)))
 
 ;; scrolling
 (setq mouse-wheel-scroll-amount '(2 ((shift) . 2))
@@ -79,6 +79,11 @@
 ;; disable dialog boxes
 (setq use-dialog-box nil)
 
+;; disable file dialog
+(setq use-file-dialog nil)
+
+;; no ugly button for checkboxes
+(setq widget-image-enable nil)
 
 ;; enable line number modes
 (dolist (mode '(text-mode-hook
@@ -91,6 +96,10 @@
 
 ;; don't warn when advice is added for functions
 (setq ad-redefinition-action 'accept)
+
+;; user configs
+(setq user-mail-address "wand@hey.com"
+      user-full-name "Wanderson Ferreira")
 
 ;; fewer slots for mark rings
 (setq mark-ring-max 4)
@@ -138,7 +147,7 @@
         (invert-face 'mode-line)
         (run-with-timer 0.05 nil 'invert-face 'mode-line)))
 
-;;; don't defer screen updates when performing operations
+;; don't defer screen updates when performing operations
 (setq redisplay-dont-pause t)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
@@ -178,6 +187,66 @@
    ("s-<down>" . buf-move-down)
    ("s-<left>" . buf-move-left)
    ("s-<right>" . buf-move-right)))
+
+;;; Abbreviations
+
+(defun bk/add-region-local-abbrev (start end)
+  "Go from START to END and add the selected text to a local abbrev."
+  (interactive "r")
+  (if (use-region-p)
+	  (let ((num-words (count-words-region start end)))
+	    (add-mode-abbrev num-words)
+	    (deactivate-mark))
+    (message "No selected region!")))
+
+(defun bk/add-region-global-abbrev (start end)
+  "Go from START to END and add the selected text to global abbrev."
+  (interactive "r")
+  (if (use-region-p)
+	  (let ((num-words (count-words-region start end)))
+	    (add-abbrev global-abbrev-table "Global" num-words)
+	    (deactivate-mark))
+    (message "No selected region!")))
+
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ("reuslt" "result" nil 0)
+    ("requie" "require" nil 0)
+    ("requier" "require" nil 0)
+    ))
+
+(setq abbrev-file-name "~/.emacs.d/abbrev_defs")
+
+(add-hook 'after-init-hook (lambda ()
+                             (abbrev-mode +1)
+                             (diminish 'abbrev-mode)))
+
+;;; Bookmarks
+
+(use-package bm
+  :ensure t
+  :custom-face
+  (bm-persistent-face ((t (:background "khaki2"))))
+  :init
+  (setq bm-restore-repository-on-load t
+        bm-repository-file "~/.emacs.d/bm-repository"
+        bm-buffer-persistence t
+        bm-cycle-all-buffers t)
+  :config
+  (add-hook 'kill-buffer-hook 'bm-buffer-save)
+  (add-hook 'kill-emacs-hook (lambda ()
+                               (bm-buffer-save-all)
+                               (bm-repository-save)))
+  ;; restoring bookmarks
+  (add-hook 'find-file-hook #'bm-buffer-restore)
+  (add-hook 'after-revert-hook #'bm-buffer-restore)
+
+  (add-hook 'vc-before-checkin-hook #'bm-buffer-save)
+
+  (global-unset-key (kbd "<f2>"))
+  (global-set-key (kbd "<C-f2>") 'bm-next)
+  (global-set-key (kbd "<f2>") 'bm-toggle)
+  (global-set-key (kbd "<S-f2>") 'bm-previous))
 
 ;;; Authentication
 (use-package pinentry
