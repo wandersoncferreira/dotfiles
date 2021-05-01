@@ -41,7 +41,10 @@
           i3status
           i3lock
           xfce.terminal
-          nitrogen
+          lxappearance
+          arandr
+          feh
+          evince
         ];
       };
 
