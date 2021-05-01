@@ -71,6 +71,42 @@
 	 :map emacs-lisp-mode-map
 	 ("<f5>" . bk/eval-buffer)))
 
+;; scrolling
+(setq mouse-wheel-scroll-amount '(2 ((shift) . 2))
+      mouse-wheel-progressive-speed nil
+      mouse-wheel-follow-mouse 't)
+
+;; disable dialog boxes
+(setq use-dialog-box nil)
+
+
+;; enable line number modes
+(dolist (mode '(text-mode-hook
+		prog-mode-hook
+		conf-mode-hook))
+  (add-hook mode (lambda () (display-line-numbers-mode 1))))
+
+;; don't warn for following symlinked files
+(setq vc-follow-symlinks t)
+
+;; don't warn when advice is added for functions
+(setq ad-redefinition-action 'accept)
+
+;; fewer slots for mark rings
+(setq mark-ring-max 4)
+
+(setq display-time-world-list
+      '(("Etc/UTC" "UTC")
+	("America/Sao_Paulo" "Sao Paulo")
+	("Europe/Paris" "Paris")
+	("America/Boston" "Boston")))
+
+;; truncate lines
+(setq-default truncate-lines t)
+
+;; limit minibuffer to 2 lines
+(setq max-mini-window-height 10)
+
 ;; transparently open compressed files
 (auto-compression-mode t)
 
@@ -114,8 +150,6 @@
   (show-paren-mode +1))
 
 (load custom-file)
-
-(add-hook 'after-init-hook 'display-line-numbers-mode)
 
 (windmove-default-keybindings)
 
@@ -435,6 +469,15 @@
   (projectile-mode +1))
 
 
+(use-package perspective
+  :ensure t
+  :init
+  (setq persp-initial-frame-name "Main")
+  :config
+  (unless (equal persp-mode t)
+    (persp-mode)))
+
+
 ;;; Emacs Editor
 
 (use-package ediff
@@ -445,6 +488,7 @@
 
 (use-package editorconfig
   :ensure t
+  :diminish editorconfig-mode
   :hook ((prog-mode text-mode) . editorconfig-mode)
   :config
   (add-to-list 'editorconfig-exclude-modes 'git-rebase-mode))
@@ -1032,6 +1076,7 @@ Better naming to improve the chances to find it."
 
 (use-package tide
   :ensure t
+  :diminish tide-mode
   :init
   (setq tide-completion-detailed t
 	tide-always-show-documentation t
@@ -1073,6 +1118,13 @@ Better naming to improve the chances to find it."
 	 ("C-c C-d" . helpful-at-point)))
 
 ;;; Custom Functions
+
+(defun what-face (pos)
+  "Find what face at POS."
+  (interactive "d")
+  (let ((face (or (get-char-property pos 'read-face-name)
+                  (get-char-property pos 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 (defun bk/kill-buffer ()
   "Kill current buffer."

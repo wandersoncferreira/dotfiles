@@ -185,4 +185,10 @@ for_window [class="zoom" instance="zoom"] floating enable
 for_window [class="Pavucontrol"] floating enable
 
 # increase keyboard repeat rate
-exec --no-startup-id xset r rate 300 40
+exec_always --no-startup-id ~/repos/personal/dotfiles/scripts/fastkeys
+
+# arandr
+exec_always --no-startup-id ~/.screenlayout/workstation.sh
+
+# papel de parede
+exec --no-startup-id feh --bg-fill ~/Pictures/pexels-pixabay-50594.jpg --bg-fill ~/Pictures/pexels-roberto-nickson-2559941.jpg
