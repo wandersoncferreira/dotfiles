@@ -104,6 +104,9 @@
 ;; don't warn for following symlinked files
 (setq vc-follow-symlinks t)
 
+;; ellispis are nice
+(setq truncate-string-ellipsis "…")
+
 ;; don't warn when advice is added for functions
 (setq ad-redefinition-action 'accept)
 
