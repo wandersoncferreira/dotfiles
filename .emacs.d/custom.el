@@ -9,7 +9,7 @@
    ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
  '(hl-sexp-background-color "#efebe9")
  '(package-selected-packages
-   '(bm perspective envrc pdf-tools editorconfig helpful zoom-frm diff-hl diff-hl-mode whitespace-cleanup-mode whitespace-cleanup zprint-mode windresize which-key vlf uuidgen use-package toggle-test tide sql-indent smex rg rainbow-delimiters quickrun projectile prettier-js popup pinentry org-roam-server org-download nixpkgs-fmt nix-sandbox nix-mode nix-buffer move-text moody magit-todos lsp-ui lsp-java ledger-mode langtool kaocha-runner jump-char java-snippets ido-completing-read+ ido-at-point google-translate google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flycheck-clj-kondo flx-ido fix-word edit-indirect dockerfile-mode docker-compose-mode docker diminish company-nixos-options clojure-snippets clj-refactor change-inner buffer-move browse-kill-ring browse-at-remote bicycle aggressive-indent add-node-modules-path))
+   '(disable-mouse anzu beacon hledger-mode keycast bm perspective envrc pdf-tools editorconfig helpful zoom-frm diff-hl diff-hl-mode whitespace-cleanup-mode whitespace-cleanup zprint-mode windresize which-key vlf uuidgen use-package toggle-test tide sql-indent smex rg rainbow-delimiters quickrun projectile prettier-js popup pinentry org-roam-server org-download nixpkgs-fmt nix-sandbox nix-mode nix-buffer move-text moody magit-todos lsp-ui lsp-java ledger-mode langtool kaocha-runner jump-char java-snippets ido-completing-read+ ido-at-point google-translate google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flycheck-clj-kondo flx-ido fix-word edit-indirect dockerfile-mode docker-compose-mode docker diminish company-nixos-options clojure-snippets clj-refactor change-inner buffer-move browse-kill-ring browse-at-remote bicycle aggressive-indent add-node-modules-path))
  '(safe-local-variable-values
    '((tgt-projects
       ((:root-dir "/home/wanderson/projects/atvi-broadcast-stats-portico")
@@ -77,6 +77,7 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(bm-persistent-face ((t (:background "khaki2"))))
  '(diff-hl-change ((t (:background "#3a81c3"))))
  '(diff-hl-delete ((t (:background "#ee6363"))))
  '(diff-hl-insert ((t (:background "#7ccd7c"))))

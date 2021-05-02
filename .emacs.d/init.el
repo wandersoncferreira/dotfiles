@@ -76,6 +76,9 @@
       mouse-wheel-progressive-speed nil
       mouse-wheel-follow-mouse 't)
 
+(setq max-specpdl-size (* 15 max-specpdl-size))
+(setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
+
 ;; disable dialog boxes
 (setq use-dialog-box nil)
 
@@ -100,6 +103,9 @@
 ;; user configs
 (setq user-mail-address "wand@hey.com"
       user-full-name "Wanderson Ferreira")
+
+;; highlight current line
+(global-hl-line-mode +1)
 
 ;; fewer slots for mark rings
 (setq mark-ring-max 4)
@@ -1178,6 +1184,9 @@ Better naming to improve the chances to find it."
   :config
   (which-key-mode))
 
+(use-package keycast
+  :ensure t)
+
 (use-package helpful
   :ensure t
   :bind (("C-h k" . helpful-key)
@@ -1458,6 +1467,11 @@ Better naming to improve the chances to find it."
   :config
   (setq ledger-report-auto-width t))
 
+(use-package hledger-mode
+  :ensure t
+  :bind (:map hledger-mode-map
+              ("TAB" . completion-at-point)))
+
 ;;; Docker
 
 (use-package dockerfile-mode
@@ -1505,6 +1519,12 @@ Better naming to improve the chances to find it."
     :flags ("--hidden -g !.git")))
 
 (use-package wgrep :ensure t)
+
+(use-package anzu
+  :ensure t
+  :diminish anzu-mode
+  :config
+  (global-anzu-mode))
 
 ;;; nixOS
 
@@ -1557,6 +1577,12 @@ Better naming to improve the chances to find it."
     (interactive)
     (kill-new (uuidgen-4)))
   :ensure t)
+
+(use-package disable-mouse
+  :ensure t
+  :diminish disable-mouse-mode
+  :config
+  (global-disable-mouse-mode))
 
 ;;; End of file
 
