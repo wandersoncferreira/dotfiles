@@ -31,6 +31,7 @@
     graphviz
     pandoc
     silver-searcher
+    mpv
   ];
 
   services.openssh.enable = true;
