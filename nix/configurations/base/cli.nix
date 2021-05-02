@@ -30,6 +30,7 @@
     dtrx
     graphviz
     pandoc
+    silver-searcher
   ];
 
   services.openssh.enable = true;

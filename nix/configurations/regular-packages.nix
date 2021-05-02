@@ -12,6 +12,7 @@
     deja-dup
     bitwarden
     simplescreenrecorder
+    spotify
   ];
 
 }
