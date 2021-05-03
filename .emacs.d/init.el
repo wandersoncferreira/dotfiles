@@ -1659,7 +1659,20 @@ Better naming to improve the chances to find it."
      (define-key elfeed-search-mode-map "v" #'ambrevar/elfeed-play-with-mpv)
      (define-key elfeed-show-mode-map "v" #'ambrevar/elfeed-play-with-mpv)))
 
+;;; API
 
+(use-package restclient
+  :ensure t
+  :config
+  (add-to-list 'auto-mode-alist '("\\.restclient\\'" . restclient-mode)))
+
+
+(defun bk/restclient ()
+  "Open a restclient buffer."
+  (interactive)
+  (with-current-buffer (get-buffer-create "*restclient*")
+    (restclient-mode)
+    (pop-to-buffer (current-buffer))))
 
 ;;; End of file
 
