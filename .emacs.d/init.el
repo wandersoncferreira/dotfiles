@@ -502,6 +502,8 @@
 (use-package simple
   :init
   (setq inhibit-startup-screen nil)
+  :custom-face
+  (mode-line ((t (:background "grey75" :foreground "black" :box (:line-width (1 . -1) :style released-button)))))
   :config
   (set-face-attribute 'lazy-highlight nil :background "khaki1")
   (set-face-attribute 'isearch nil :background "khaki1")
@@ -529,6 +531,21 @@
       (set-frame-parameter (selected-frame) 'alpha 90)
       (setq bk--toggle-transparency t))))
 
+;; interesting themes used sometimes
+
+(use-package vscode-dark-plus-theme
+  :ensure t
+  :disabled t
+  :config
+  (load-theme 'vscode-dark-plus t)
+  (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100))
+
+(use-package monokai-pro-theme
+  :ensure t
+  :disabled t
+  :config
+  (load-theme 'monokai-pro-classic t)
+  (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100))
 
 ;;; Projects
 
@@ -1030,6 +1047,7 @@ Better naming to improve the chances to find it."
 	    lsp-modeline-diagnostics-enable nil
 	    lsp-semantic-tokens-enable nil
 	    lsp-idle-delay 0.3
+        lsp-ui-doc-enable nil
 	    lsp-ui-doc-show-with-cursor nil
 	    lsp-ui-doc-show-with-mouse nil
 	    lsp-completion-provider :none)
