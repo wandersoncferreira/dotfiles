@@ -86,6 +86,10 @@
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
 
+;; handling long lines
+(setq bidi-paragraph-direction 'left-to-right
+      bidi-inhibit-bpa t)
+
 ;; disable dialog boxes
 (setq use-dialog-box nil)
 
@@ -207,7 +211,7 @@
   "Go from START to END and add the selected text to a local abbrev."
   (interactive "r")
   (if (use-region-p)
-	  (let ((num-words (count-words-region start end)))
+      (let ((num-words (count-words-region start end)))
 	    (add-mode-abbrev num-words)
 	    (deactivate-mark))
     (message "No selected region!")))
@@ -216,7 +220,7 @@
   "Go from START to END and add the selected text to global abbrev."
   (interactive "r")
   (if (use-region-p)
-	  (let ((num-words (count-words-region start end)))
+      (let ((num-words (count-words-region start end)))
 	    (add-abbrev global-abbrev-table "Global" num-words)
 	    (deactivate-mark))
     (message "No selected region!")))
@@ -233,6 +237,16 @@
 (add-hook 'after-init-hook (lambda ()
                              (abbrev-mode +1)
                              (diminish 'abbrev-mode)))
+
+;;; Saving data between sessions
+
+(use-package session
+  :ensure t
+  :init
+  (setq session-use-package t)
+  :config
+  (add-hook 'after-init-hook 'session-initialize))
+
 
 ;;; Bookmarks
 
@@ -530,6 +544,12 @@
     (progn
       (set-frame-parameter (selected-frame) 'alpha 90)
       (setq bk--toggle-transparency t))))
+
+(use-package beacon
+  :diminish beacon-mode
+  :ensure t
+  :config
+  (beacon-mode +1))
 
 ;; interesting themes used sometimes
 
@@ -1044,8 +1064,10 @@ Better naming to improve the chances to find it."
 	    lsp-enable-file-watchers nil
 	    lsp-keymap-prefix "C-c l"
 	    lsp-modeline-code-actions-enable nil
+	    lsp-enable-completion-at-point nil
 	    lsp-modeline-diagnostics-enable nil
 	    lsp-semantic-tokens-enable nil
+        lsp-headerline-breadcrumb-enable nil
 	    lsp-idle-delay 0.3
         lsp-ui-doc-enable nil
 	    lsp-ui-doc-show-with-cursor nil
@@ -1608,6 +1630,8 @@ Better naming to improve the chances to find it."
 
 ;;; Misc. Custom Functions
 
+(use-package try :ensure t)
+
 (use-package helm-spotify-plus
   :ensure t)
 
@@ -1691,6 +1715,55 @@ Better naming to improve the chances to find it."
   (with-current-buffer (get-buffer-create "*restclient*")
     (restclient-mode)
     (pop-to-buffer (current-buffer))))
+
+;;; Calendar and Diary
+
+(use-package calendar
+  :config
+  (setq calendar-mark-diary-entries-flag t
+        calendar-mark-holidays-flag t
+        calendar-mode-line-format nil
+        calendar-time-display-form '(24-hours ":" minutes (when time-zone (format "(%s)" time-zone)))
+        calendar-week-start-day 1 ;; monday
+        calendar-date-style 'iso
+        calendar-date-display-form calendar-iso-date-display-form
+        calenadr-time-zone-style 'numeric))
+
+(use-package diary-lib
+  :config
+  (setq diary-date-forms diary-iso-date-forms
+        diary-comment-start ";;"
+        diary-comment-end ""
+        diary-nonmarking-symbol "!"
+        diary-show-holidays-flag t
+        diary-display-function #'diary-fancy-display
+        diary-header-line-format nil
+        diary-number-of-entries 2
+        diary-mail-days 2
+        diary-abbreviated-year-flag nil))
+
+(add-hook 'calendar-today-visible-hook #'calendar-mark-today)
+(add-hook 'diary-list-entries-hook 'diary-sort-entries t)
+(add-hook 'diary-mode-hook #'goto-address-mode)
+
+
+(require 'cal-dst)
+(setq calendar-standard-time-zone-name "-0300")
+(setq calendar-daylight-time-zone-name "-0300")
+
+;; notification of appointments from your diary file
+(use-package appt
+  :init
+  (setq appt-checking-p t
+        appt-display-diary nil
+        appt-disp-window-function #'appt-disp-window
+        appt-display-mode-line t
+        appt-display-interval 5
+        appt-warning-time-regexp "appt \\([0-9]+\\)"
+        appt-message-warning-time 10)
+  :config
+  (run-at-time 10 nil #'appt-activate 1)
+  (add-hook 'diary-hook 'appt-make-list))
 
 ;;; End of file
 

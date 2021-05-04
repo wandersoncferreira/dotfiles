@@ -25,3 +25,7 @@ clojure/.cpcache
 clojure/lsp/sqlite.db
 .emacs.d/session.*
 .emacs.d/history
+.emacs.d/bm-repository
+.emacs.d/diary
+.emacs.d/image-dired/
+.emacs.d/perspective
