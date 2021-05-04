@@ -32,6 +32,7 @@
     pandoc
     silver-searcher
     mpv
+    nodePackages.prettier
   ];
 
   services.openssh.enable = true;
