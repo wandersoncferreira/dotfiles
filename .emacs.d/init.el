@@ -19,6 +19,7 @@
 (unless (file-exists-p "~/.emacs.d/elpa/archives/melpa")
   (package-refresh-contents)
   (package-install 'use-package)
+  (package-install 'dash)
   (package-install 'diminish))
 
 (setq lisps-dir (expand-file-name "lisps" user-emacs-directory))
@@ -430,10 +431,6 @@
      (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
      (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)))
 
-
-
-
-
 ;;; Ido Completion
 
 (use-package ido
@@ -487,18 +484,6 @@
   :config
   (ido-ubiquitous-mode +1))
 
-(use-package company
-  :ensure t
-  :disabled t
-  :diminish company-mode
-  :init
-  (setq company-show-numbers t
-        company-minimum-prefix-length 2
-	    company-idle-delay nil)
-  :config
-  (global-set-key (kbd "TAB") #'company-indent-or-complete-common)
-  (global-company-mode +1))
-
 ;; hippie expand
 
 (require 'patch-hippie-expand)
@@ -516,18 +501,16 @@
 (use-package simple
   :init
   (setq inhibit-startup-screen nil)
-  :custom-face
-  (mode-line ((t (:background "grey75" :foreground "black" :box (:line-width (1 . -1) :style released-button)))))
   :config
   (set-face-attribute 'lazy-highlight nil :background "khaki1")
   (set-face-attribute 'isearch nil :background "khaki1")
-  (set-face-attribute 'region nil :background "khaki1"))
+  (set-face-attribute 'region nil :background "khaki1")
 
-(add-to-list 'default-frame-alist '(background-color . "honeydew"))
-(add-to-list 'default-frame-alist '(font . "IBM Plex Mono-10"))
+  (add-to-list 'default-frame-alist '(background-color . "honeydew"))
+  (add-to-list 'default-frame-alist '(font . "IBM Plex Mono-10"))
 
-(set-face-attribute 'default nil :font "IBM Plex Mono" :height 100)
-(set-background-color "honeydew")
+  (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100)
+  (set-background-color "honeydew"))
 
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 16))
@@ -545,11 +528,6 @@
       (set-frame-parameter (selected-frame) 'alpha 90)
       (setq bk--toggle-transparency t))))
 
-(use-package beacon
-  :diminish beacon-mode
-  :ensure t
-  :config
-  (beacon-mode +1))
 
 ;; interesting themes used sometimes
 
@@ -587,13 +565,6 @@
   (require 'subr-x)
   (projectile-mode +1))
 
-
-(defun bk/search-word-in-project ()
-  "Search for word at point in current project."
-  (interactive)
-  (projectile-ag (buffer-substring (region-beginning) (region-end))))
-
-
 (use-package perspective
   :ensure t
   :init
@@ -610,18 +581,6 @@
   (setq ediff-window-setup-function 'ediff-setup-windows-plain
         ediff-split-window-function 'split-window-horizontally
         ediff-diff-options "-w"))
-
-(use-package editorconfig
-  :ensure t
-  :diminish editorconfig-mode
-  :hook ((prog-mode text-mode) . editorconfig-mode)
-  :config
-  (add-to-list 'editorconfig-exclude-modes 'git-rebase-mode))
-
-(use-package browse-kill-ring
-  :ensure t
-  :config
-  (setq browse-kill-ring-quit-action 'save-and-restore))
 
 (use-package expand-region
   :ensure t
@@ -998,14 +957,12 @@ Please run M-x cider or M-x cider-jack-in to connect"))
       (kill-buffer buf))
     (message "All CIDER buffers were closed.")))
 
-
 (use-package symbol-focus
   :load-path "~/.emacs.d/lisps"
   :bind
   ("C-c f f" . sf/focus-at-point)
   :config
   (symbol-focus-mode +1))
-
 
 (use-package clojure-mode
   :ensure t
@@ -1053,35 +1010,6 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 Better naming to improve the chances to find it."
   (interactive)
   (cider-completion-flush-caches))
-
-(use-package lsp-mode
-  :commands lsp
-  :ensure t
-  :hook ((clojure-mode . lsp)
-	     (lsp-mode . lsp-enable-which-key-integration))
-  :init
-  (setq lsp-lens-enable nil
-	    lsp-enable-file-watchers nil
-	    lsp-keymap-prefix "C-c l"
-	    lsp-modeline-code-actions-enable nil
-	    lsp-enable-completion-at-point nil
-	    lsp-modeline-diagnostics-enable nil
-	    lsp-semantic-tokens-enable nil
-        lsp-headerline-breadcrumb-enable nil
-	    lsp-idle-delay 0.3
-        lsp-ui-doc-enable nil
-	    lsp-ui-doc-show-with-cursor nil
-	    lsp-ui-doc-show-with-mouse nil
-	    lsp-completion-provider :none)
-  :config
-  (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers))))
-
-
-(use-package lsp-ui
-  :ensure t
-  :config
-  (setq lsp-ui-sideline-enable t
-	    lsp-ui-sideline-show-code-actions nil))
 
 (use-package clj-refactor
   :ensure t
@@ -1239,14 +1167,6 @@ Better naming to improve the chances to find it."
 
 (use-package keycast
   :ensure t)
-
-(use-package helpful
-  :ensure t
-  :bind (("C-h k" . helpful-key)
-	     ("C-h v" . helpful-variable)
-	     ("C-h f" . helpful-callable)
-	     ("C-h F" . helpful-function)
-	     ("C-c C-d" . helpful-at-point)))
 
 ;;; Custom Functions
 
@@ -1631,9 +1551,6 @@ Better naming to improve the chances to find it."
 ;;; Misc. Custom Functions
 
 (use-package try :ensure t)
-
-(use-package helm-spotify-plus
-  :ensure t)
 
 (use-package zprint-mode :ensure t)
 

@@ -29,3 +29,4 @@ clojure/lsp/sqlite.db
 .emacs.d/diary
 .emacs.d/image-dired/
 .emacs.d/perspective
+.emacs.d/.session
