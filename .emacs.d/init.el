@@ -73,7 +73,7 @@
 	    gc-cons-threshold (* 100 1024 1024)
 	    read-process-output-max (* 4 1024 1024)
 	    custom-file (expand-file-name "custom.el" user-emacs-directory))
-  :bind (("C-x p" . pop-to-mark-command)
+  :bind (("C-c p" . pop-to-mark-command)
 	     ("C-x C-b" . ibuffer)
 	     ("C-x e" . eshell)
 	     :map emacs-lisp-mode-map
@@ -547,23 +547,7 @@
 
 ;;; Projects
 
-(use-package projectile
-  :ensure t
-  :diminish projectile-mode
-  :init
-  (setq projectile-completion-system 'ido
-        projectile-dynamic-mode-line nil
-        projectile-ignored-projects '("~/" "/tmp")
-        projectile-globally-ignored-file-suffixes '(".elc" ".pyc" ".o")
-        projectile-globally-ignored-files '(".DS_Store" "TAGS" "ido.last" "recentf" "smex-items")
-        )
-  :bind (("C-c p p" . projectile-switch-project)
-         ("C-c p f" . projectile-find-file)
-	     :map projectile-mode-map
-	     ("C-c p" . projectile-command-map))
-  :config
-  (require 'subr-x)
-  (projectile-mode +1))
+(require 'project)
 
 (use-package perspective
   :ensure t
