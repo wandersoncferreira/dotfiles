@@ -3,13 +3,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(ansi-color-faces-vector
-   [default default default italic underline success warning error])
- '(ansi-color-names-vector
-   ["black" "red3" "ForestGreen" "yellow3" "blue" "magenta3" "DeepSkyBlue" "gray50"])
- '(hl-sexp-background-color "#efebe9")
  '(package-selected-packages
-   '(session try restclient vscode-dark-plus-theme elfeed-org elfeed epresent org-tree-slide org-roam typescript-mode lsp-mode cider clojure-mode markdown-mode paredit yasnippet flycheck magit multiple-cursors expand-region zygospore ag helm-spotify-plus disable-mouse anzu beacon hledger-mode keycast bm perspective envrc pdf-tools editorconfig helpful zoom-frm diff-hl diff-hl-mode whitespace-cleanup-mode whitespace-cleanup zprint-mode windresize which-key vlf uuidgen use-package toggle-test tide sql-indent smex rg rainbow-delimiters quickrun projectile prettier-js popup pinentry org-roam-server org-download nixpkgs-fmt nix-sandbox nix-mode nix-buffer move-text moody magit-todos lsp-ui lsp-java ledger-mode langtool kaocha-runner jump-char java-snippets ido-completing-read+ ido-at-point google-translate google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flycheck-clj-kondo flx-ido fix-word edit-indirect dockerfile-mode docker-compose-mode docker diminish company-nixos-options clojure-snippets clj-refactor change-inner buffer-move browse-kill-ring browse-at-remote bicycle aggressive-indent add-node-modules-path))
+   '(restclient elfeed-org elfeed uuidgen zprint-mode try pdf-tools nix-mode anzu rg sql-indent docker docker-compose-mode dockerfile-mode hledger-mode ledger-mode org-roam-server org-roam org-download popup google-this langtool zygospore keycast which-key tide add-node-modules-path prettier-js typescript-mode clj-refactor kaocha-runner clojure-mode clojure-snippets paredit bicycle quickrun yasnippet flycheck toggle-test envrc gist browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine forge magit-todos diff-hl magit jump-char dash whitespace-cleanup-mode move-text multiple-cursors fix-word change-inner expand-region perspective projectile monokai-pro-theme ido-completing-read+ smex ido-at-point pinentry bm session buffer-move vlf diminish use-package))
  '(safe-local-variable-values
    '((tgt-projects
       ((:root-dir "/home/wanderson/projects/atvi-broadcast-stats-portico")
@@ -71,6 +66,7 @@
      (cider-cljs-lein-repl . "(do (user/go) (user/cljs-repl))")
      (cider-ns-refresh-after-fn . "reloaded.repl/resume")
      (cider-ns-refresh-before-fn . "reloaded.repl/suspend")))
+ '(session-use-package t nil (session))
  '(warning-suppress-types '((magit-todos) (comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -80,7 +76,4 @@
  '(bm-persistent-face ((t (:background "khaki2"))))
  '(diff-hl-change ((t (:background "#3a81c3"))))
  '(diff-hl-delete ((t (:background "#ee6363"))))
- '(diff-hl-insert ((t (:background "#7ccd7c"))))
- '(lsp-lsp-flycheck-error-unnecessary-face ((t (:underline (:color "Red1" :style wave)))) t)
- '(lsp-lsp-flycheck-info-unnecessary-face ((t (:underline (:color "dark orange" :style wave)))) t)
- '(mode-line ((t (:background "grey75" :foreground "black" :box (:line-width (1 . -1) :style released-button))))))
+ '(diff-hl-insert ((t (:background "#7ccd7c")))))
