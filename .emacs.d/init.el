@@ -101,9 +101,7 @@
 (setq widget-image-enable nil)
 
 ;; enable line number modes
-(dolist (mode '(text-mode-hook
-		        prog-mode-hook
-		        conf-mode-hook))
+(dolist (mode '(prog-mode-hook conf-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 1))))
 
 ;; don't warn for following symlinked files
@@ -1681,6 +1679,19 @@ Better naming to improve the chances to find it."
   :config
   (run-at-time 10 nil #'appt-activate 1)
   (add-hook 'diary-hook 'appt-make-list))
+
+;;; Writing
+
+(use-package flymd
+  :ensure t)
+
+(use-package writeroom-mode
+  :ensure t
+  :init
+  (setq writeroom-width 100
+	    writeroom-extra-line-spacing 1)
+  :config
+  (add-hook 'text-mode-hook 'auto-fill-mode))
 
 ;;; Manage external services
 
