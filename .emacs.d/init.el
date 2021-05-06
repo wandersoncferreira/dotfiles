@@ -104,6 +104,17 @@
 (dolist (mode '(prog-mode-hook conf-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 1))))
 
+(global-prettify-symbols-mode +1)
+
+;;; make cursor the width of the character it is under
+(setq x-stretch-cursor t)
+
+;; more complex clipboard management
+(setq save-interprogram-paste-before-kill t)
+
+;;; real emacs knights don't use shift to mark things
+(setq shift-select-mode nil)
+
 ;; don't warn for following symlinked files
 (setq vc-follow-symlinks t)
 
@@ -150,7 +161,9 @@
 
 ;; save minibuffer history
 (savehist-mode +1)
-(setq history-length 1000)
+(setq history-length 1000
+      history-delete-duplicates nil
+      savehist-additional-variables '(search-ring regexp-search-ring))
 
 ;; show me empty lines after buffer end
 (set-default 'indicate-empty-lines t)
@@ -1174,6 +1187,11 @@ Better naming to improve the chances to find it."
   :ensure t)
 
 ;;; Custom Functions
+
+(defun bk/clear-registers ()
+  "Remove all saved registers."
+  (interactive)
+  (setq register-alist nil))
 
 (defun what-face (pos)
   "Find what face at POS."
