@@ -1583,6 +1583,17 @@ Better naming to improve the chances to find it."
   (pdf-tools-install :no-query)
   (require 'pdf-occur))
 
+
+;;; PlantUML
+(use-package plantuml-mode
+  :ensure t
+  :mode ("\\.plantuml\\'" "\\.puml\\'")
+  :init
+  (setq org-plantuml-jar-path "~/.emacs.d/bin/plantuml.jar")
+  :config
+  (require 'ob-plantuml))
+
+
 ;;; Misc. Custom Functions
 
 (use-package try :ensure t)
