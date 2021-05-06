@@ -497,6 +497,7 @@
   (-filter (lambda (f) (string-match font-name f)) (font-family-list)))
 
 (use-package simple
+  :disabled t
   :init
   (setq inhibit-startup-screen nil)
   :config
@@ -541,6 +542,12 @@
   :disabled t
   :config
   (load-theme 'monokai-pro-classic t)
+  (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100))
+
+(use-package jbeans-theme
+  :ensure t
+  :config
+  (load-theme 'jbeans t)
   (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100))
 
 ;;; Projects
