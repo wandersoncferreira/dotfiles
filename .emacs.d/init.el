@@ -517,6 +517,8 @@
 
 (use-package simple
   :disabled t
+  :custom-face
+  (mode-line ((t (:background "grey75" :foreground "black" :box (:line-width (1 . -1) :style released-button)))))
   :init
   (setq inhibit-startup-screen nil)
   :config
@@ -801,14 +803,7 @@
   :ensure t
   :init
   (setq magit-log-show-gpg-status t
-	    magit-completing-read-function 'magit-ido-completing-read
-	    magit-revision-show-gravatars t
-	    magit-section-initial-visibility-alist
-	    '((untracked . show)
-	      (unstaged . show)
-	      (unpushed . show)
-	      (unpulled . show)
-	      (stashes . show)))
+	    magit-completing-read-function 'magit-ido-completing-read)
   :bind (("C-c g s" . magit-status)
 	     ("C-c g b" . magit-blame))
   :config
@@ -818,6 +813,7 @@
 
   ;; Real dates, please
   (set-default 'magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
+
 
 (use-package diff-hl
   :ensure t

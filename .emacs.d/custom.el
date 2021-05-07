@@ -68,12 +68,3 @@
      (cider-ns-refresh-before-fn . "reloaded.repl/suspend")))
  '(session-use-package t nil (session))
  '(warning-suppress-types '((magit-todos) (comp))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(bm-persistent-face ((t (:background "khaki2"))))
- '(diff-hl-change ((t (:background "#3a81c3"))))
- '(diff-hl-delete ((t (:background "#ee6363"))))
- '(diff-hl-insert ((t (:background "#7ccd7c")))))
