@@ -13,6 +13,8 @@ in {
     ./common/programs.nix
     ./common/home.nix
     ./common/services.nix
+    ./common/alacritty.nix
+    ./common/i3.nix
   ];
 
   nixpkgs.config.allowUnfree = true;

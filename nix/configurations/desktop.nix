@@ -17,6 +17,8 @@
   time.timeZone = "America/Sao_Paulo";
   programs.dconf.enable = true;
 
+  environment.pathsToLink = [ "/libexec" ];
+
   services = {
     xserver = {
       enable = true;
@@ -26,6 +28,10 @@
         xterm.enable = false;
         xfce = {
           enable = true;
+          thunarPlugins = [
+            pkgs.xfce.thunar-archive-plugin
+            pkgs.xfce.thunar-volman
+          ];
           noDesktop = true;
           enableXfwm = false;
         };
@@ -37,10 +43,10 @@
       windowManager.i3 = {
         enable = true;
         extraPackages = with pkgs; [
-          dmenu
+          rofi
           i3status
           i3lock
-          xfce.terminal
+          alacritty
           lxappearance
           arandr
           feh

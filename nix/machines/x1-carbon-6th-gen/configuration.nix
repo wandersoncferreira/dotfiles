@@ -13,7 +13,10 @@
 
   nixpkgs.overlays = import ../../configurations/overlays.nix;
 
-  nixpkgs.config.allowUnfree = true; 
+  nixpkgs.config.allowUnfree = true;
+
+  virtualisation.virtualbox.host.enable = true;
+  virtualisation.virtualbox.host.enableExtensionPack = true;
 
   networking = {
     useDHCP = false;
@@ -54,6 +57,8 @@
     shell = pkgs.zsh;
     extraGroups = [ "wheel" "networkmanager" "docker"];
   };
+
+  users.extraGroups.vboxusers.members = [ "wanderson" ];
 
   programs.steam.enable = true;
   

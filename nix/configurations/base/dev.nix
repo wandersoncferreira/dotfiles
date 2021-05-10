@@ -39,8 +39,7 @@ in {
     adb.enable = true;
   };
 
-  systemd.user.services.emacs = {
-    enable = true;
+  systemd.user.services."emacs" = {
     wantedBy = [ "default.target" ];
     description = "Emacs: the extensible, self-documenting text editor";
     serviceConfig = {
@@ -50,5 +49,7 @@ in {
       Restart = "always";
     };
   };
+
+  systemd.user.services.emacs.enable = true;
 
 }
