@@ -61,23 +61,23 @@
 (use-package emacs
   :init
   (setq tab-always-indent 'complete
-	    ring-bell-function 'ignore
-	    visible-bell nil
-	    create-lockfiles nil
-	    custom-safe-themes t
-	    indent-tabs-mode nil
-	    delete-by-moving-to-trash t	;move files to trash when deleting
-	    echo-keystrokes 0.1 		;show keystrokes in progress
-	    tab-width 4
-	    make-backup-files nil
-	    gc-cons-threshold (* 100 1024 1024)
-	    read-process-output-max (* 4 1024 1024)
-	    custom-file (expand-file-name "custom.el" user-emacs-directory))
+	ring-bell-function 'ignore
+	visible-bell nil
+	create-lockfiles nil
+	custom-safe-themes t
+	indent-tabs-mode nil
+	delete-by-moving-to-trash t	;move files to trash when deleting
+	echo-keystrokes 0.1 		;show keystrokes in progress
+	tab-width 4
+	make-backup-files nil
+	gc-cons-threshold (* 100 1024 1024)
+	read-process-output-max (* 4 1024 1024)
+	custom-file (expand-file-name "custom.el" user-emacs-directory))
   :bind (("C-x p" . pop-to-mark-command)
-	     ("C-x C-b" . ibuffer)
-	     ("C-x e" . eshell)
-	     :map emacs-lisp-mode-map
-	     ("C-c C-k" . bk/eval-buffer)))
+	 ("C-x C-b" . ibuffer)
+	 ("C-x e" . eshell)
+	 :map emacs-lisp-mode-map
+	 ("C-c C-k" . bk/eval-buffer)))
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
@@ -135,9 +135,9 @@
 
 (setq display-time-world-list
       '(("Etc/UTC" "UTC")
-	    ("America/Sao_Paulo" "Sao Paulo")
-	    ("Europe/Paris" "Paris")
-	    ("America/Boston" "Boston")))
+	("America/Sao_Paulo" "Sao Paulo")
+	("Europe/Paris" "Paris")
+	("America/Boston" "Boston")))
 
 ;; truncate lines
 (setq-default truncate-lines t)
@@ -205,7 +205,7 @@
   :diminish auto-revert-mode
   :init
   (setq global-auto-revert-non-file-buffers t
-	    auto-revert-verbose nil)
+	auto-revert-verbose nil)
   :config
   (global-auto-revert-mode +1))
 
@@ -226,8 +226,8 @@
   (interactive "r")
   (if (use-region-p)
       (let ((num-words (count-words-region start end)))
-	    (add-mode-abbrev num-words)
-	    (deactivate-mark))
+	(add-mode-abbrev num-words)
+	(deactivate-mark))
     (message "No selected region!")))
 
 (defun bk/add-region-global-abbrev (start end)
@@ -235,8 +235,8 @@
   (interactive "r")
   (if (use-region-p)
       (let ((num-words (count-words-region start end)))
-	    (add-abbrev global-abbrev-table "Global" num-words)
-	    (deactivate-mark))
+	(add-abbrev global-abbrev-table "Global" num-words)
+	(deactivate-mark))
     (message "No selected region!")))
 
 (define-abbrev-table 'global-abbrev-table
@@ -294,8 +294,8 @@
   :ensure t
   :init
   (setq epg-gpg-program "gpg"
-	    epa-file-cache-passphrase-for-symmetric-encryption t
-	    epa-pinentry-mode 'loopback)
+	epa-file-cache-passphrase-for-symmetric-encryption t
+	epa-pinentry-mode 'loopback)
   :config
   (pinentry-start))
 
@@ -303,7 +303,7 @@
   :ensure nil
   :init
   (setq auth-source-debug t
-	    auth-sources '((:source "~/.secrets/authinfo.gpg")))
+	auth-sources '((:source "~/.secrets/authinfo.gpg")))
   :config
   (pinentry-start))
 
@@ -431,12 +431,12 @@
         ("M-p" . bk/dired-back-to-top)
         ("M-n" .  bk/dired-back-to-bottom)
         ("C-a" .  bk/dired-back-to-start-of-files)
-	    ("C-x C-k" . dired-do-delete)
-	    ("k" . dired-do-delete))
+	("C-x C-k" . dired-do-delete)
+	("k" . dired-do-delete))
   :init
   (setq dired-listing-switches "-alh"
-	    dired-recursive-copies 'always
-	    dired-recursive-deletes 'always)
+	dired-recursive-copies 'always
+	dired-recursive-deletes 'always)
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
@@ -453,29 +453,29 @@
 (use-package ido
   :init
   (setq ido-enable-flex-matching t
-	    ido-use-virtual-buffers t
-	    ido-everywhere t
-	    ido-show-dot-for-dired t
-	    ido-create-new-buffer 'always
+	ido-use-virtual-buffers t
+	ido-everywhere t
+	ido-show-dot-for-dired t
+	ido-create-new-buffer 'always
         confirm-nonexistent-file-or-buffer nil
         ido-auto-merge-work-directories-length -1
-	    ido-confirm-unique-completion t
-	    ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
+	ido-confirm-unique-completion t
+	ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
   [No match]" " [Matched]" " [Not readable]" " [Too big]" "
   [Confirm]"))
-	    confirm-nonexistent-file-or-buffer nil
-	    )
+	confirm-nonexistent-file-or-buffer nil
+	)
   :bind (:map ido-file-completion-map
-	          ("C-n" . ido-next-match)
-	          ("C-p" . ido-prev-match)
-	          ("C-w" . ido-delete-backward-updir)
-	          ("C-x C-w" . ido-copy-current-file-name)
-	          :map ido-common-completion-map
-	          ("SPC" . self-insert-command)
-	          ("M-SPC" . just-one-space)
-	          :map ido-file-dir-completion-map
-	          ("C-w" . ido-delete-backward-updir)
-	          ("C-x C-w" . ido-copy-current-file-name))
+	      ("C-n" . ido-next-match)
+	      ("C-p" . ido-prev-match)
+	      ("C-w" . ido-delete-backward-updir)
+	      ("C-x C-w" . ido-copy-current-file-name)
+	      :map ido-common-completion-map
+	      ("SPC" . self-insert-command)
+	      ("M-SPC" . just-one-space)
+	      :map ido-file-dir-completion-map
+	      ("C-w" . ido-delete-backward-updir)
+	      ("C-x C-w" . ido-copy-current-file-name))
   :config
   (ido-mode +1)
   (add-to-list 'ido-ignore-directories "target")
@@ -492,8 +492,8 @@
 (use-package smex
   :ensure t
   :bind (("M-x" . smex)
-	     ("C-x C-m" . smex)
-	     ("C-c C-m" . smex)))
+	 ("C-x C-m" . smex)
+	 ("C-c C-m" . smex)))
 
 (use-package ido-completing-read+
   :ensure t
@@ -516,7 +516,6 @@
   (-filter (lambda (f) (string-match font-name f)) (font-family-list)))
 
 (use-package simple
-  :disabled t
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black" :box (:line-width (1 . -1) :style released-button)))))
   :init
@@ -532,6 +531,7 @@
   (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100)
   (set-background-color "honeydew"))
 
+
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 16))
 
@@ -542,34 +542,12 @@
   (interactive)
   (if bk--toggle-transparency
       (progn
-	    (set-frame-parameter (selected-frame) 'alpha 100)
-	    (setq bk--toggle-transparency nil))
+	(set-frame-parameter (selected-frame) 'alpha 100)
+	(setq bk--toggle-transparency nil))
     (progn
       (set-frame-parameter (selected-frame) 'alpha 90)
       (setq bk--toggle-transparency t))))
 
-
-;; interesting themes used sometimes
-
-(use-package vscode-dark-plus-theme
-  :ensure t
-  :disabled t
-  :config
-  (load-theme 'vscode-dark-plus t)
-  (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100))
-
-(use-package monokai-pro-theme
-  :ensure t
-  :disabled t
-  :config
-  (load-theme 'monokai-pro-classic t)
-  (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100))
-
-(use-package jbeans-theme
-  :ensure t
-  :config
-  (load-theme 'jbeans t)
-  (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100))
 
 ;;; Projects
 
@@ -585,8 +563,8 @@
         )
   :bind (("C-c p p" . projectile-switch-project)
          ("C-c p f" . projectile-find-file)
-	     :map projectile-mode-map
-	     ("C-c p" . projectile-command-map))
+	 :map projectile-mode-map
+	 ("C-c p" . projectile-command-map))
   :config
   (require 'subr-x)
   (projectile-mode +1))
@@ -626,7 +604,7 @@
   :ensure t
   :config
   (setq expand-region-fast-keys-enabled nil
-	    er--show-expansion-message t)
+	er--show-expansion-message t)
   :bind ("C-=" . er/expand-region))
 
 (use-package change-inner
@@ -644,7 +622,7 @@
   :ensure t
   :bind (("C-c >" . mc/mark-next-like-this)
          ("C-c <" . mc/mark-previous-like-this)
-	     ("<mouse-3>" . mc/toggle-cursor-on-click)))
+	 ("<mouse-3>" . mc/toggle-cursor-on-click)))
 
 (use-package move-text
   :ensure t
@@ -803,9 +781,9 @@
   :ensure t
   :init
   (setq magit-log-show-gpg-status t
-	    magit-completing-read-function 'magit-ido-completing-read)
+	magit-completing-read-function 'magit-ido-completing-read)
   :bind (("C-c g s" . magit-status)
-	     ("C-c g b" . magit-blame))
+	 ("C-c g b" . magit-blame))
   :config
   (set-default 'magit-push-always-verify nil)
   (set-default 'magit-revert-buffers 'silent)
@@ -882,23 +860,23 @@
   :hook (prog-mode . flycheck-mode)
   :config
   (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
-	    flycheck-checker-error-threshold 4000))
+	flycheck-checker-error-threshold 4000))
 
 (defun yas/goto-end-of-active-field ()
   "End of the field."
   (let* ((snippet (car (yas--snippets-at-point)))
-	     (position (yas--field-end (yas--snippet-active-field snippet))))
+	 (position (yas--field-end (yas--snippet-active-field snippet))))
     (if (= (point) position)
-	    (move-end-of-line 1)
+	(move-end-of-line 1)
       (goto-char position))))
 
 (defun yas/goto-start-of-active-field ()
   "Start of the field."
   (interactive)
   (let* ((snippet (car (yas--snippets-at-point)))
-	     (position (yas--field-start (yas--snippet-active-field snippet))))
+	 (position (yas--field-start (yas--snippet-active-field snippet))))
     (if (= (point) position)
-	    (move-beginning-of-line 1)
+	(move-beginning-of-line 1)
       (goto-char position))))
 
 (use-package yasnippet
@@ -907,8 +885,8 @@
   :hook (prog-mode . yas-minor-mode)
   :config
   (setq yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
-	    yas-verbosity 1
-	    yas-wrap-around-region t)
+	yas-verbosity 1
+	yas-wrap-around-region t)
   (define-key yas-keymap (kbd "C-a") 'yas/goto-start-of-active-field)
   (define-key yas-keymap (kbd "C-e") 'yas/goto-end-of-active-field)
 
@@ -938,8 +916,8 @@
   :ensure t
   :after outline
   :bind (:map outline-minor-mode-map
-	          ([C-tab] . bicycle-cycle-global)
-	          ("<backtab>" . bicycle-cycle)))
+	      ([C-tab] . bicycle-cycle-global)
+	      ("<backtab>" . bicycle-cycle)))
 
 ;;; Lisps
 
@@ -964,8 +942,8 @@
   :ensure t
   :commands (markdown-mode gfm-mode)
   :mode (("README\\.md\\'" . gfm-mode)
-	     ("\\.md\\'" . markdown-mode)
-	     ("\\.markdown\\'" . markdown-mode))
+	 ("\\.md\\'" . markdown-mode)
+	 ("\\.markdown\\'" . markdown-mode))
   :init
   (setq markdown-command "pandoc"))
 
@@ -983,9 +961,9 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   "Iterate over all CIDER buffers and close them all."
   (interactive)
   (let ((repl-buffers (seq-filter (lambda (b)
-				                    (with-current-buffer b
-				                      (eq major-mode 'cider-repl-mode)))
-				                  (buffer-list))))
+				    (with-current-buffer b
+				      (eq major-mode 'cider-repl-mode)))
+				  (buffer-list))))
     (dolist (buf repl-buffers)
       (cider--close-connection buf)
       (kill-buffer buf))
@@ -1016,24 +994,24 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (require 'patch-kaocha-runner)
   :bind
   (:map clojure-mode-map
-	    ("C-c k t" . kaocha-runner-run-test-at-point)
-	    ("C-c k r" . kaocha-runner-run-tests)
-	    ("C-c k a" . kaocha-runner-run-all-tests)
-	    ("C-c k w" . kaocha-runner-show-warnings)
-	    ("C-c k h" . kaocha-runner-hide-windows)))
+	("C-c k t" . kaocha-runner-run-test-at-point)
+	("C-c k r" . kaocha-runner-run-tests)
+	("C-c k a" . kaocha-runner-run-all-tests)
+	("C-c k w" . kaocha-runner-show-warnings)
+	("C-c k h" . kaocha-runner-hide-windows)))
 
 (use-package cider
   :ensure t
   :config
   (setq cider-save-file-on-load t
         cider-annotate-completion-candidates nil ;; disable completion annotations
-	    cider-prompt-for-symbol nil
+	cider-prompt-for-symbol nil
         cider-eldoc-display-context-dependent-info t  ;; try to add expected function arguments
         cider-font-lock-dynamically '(macro core function var)
         cider-prefer-local-resources t
         cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources"
                               "~/Downloads/jvm11/source")
-	    cider-print-fn 'fipp
+	cider-print-fn 'pprint
         cider-print-options
         '(("length" 80)
           ("level" 20)
@@ -1055,7 +1033,7 @@ Better naming to improve the chances to find it."
         ;; execute `cljr-clean-ns' for all .clj files.
         cljr-project-clean-prompt nil
 
-	    cljr-favor-private-functions t
+	cljr-favor-private-functions t
 
         ;; whitelist, do not clean this libspec
         cljr-libspec-whitelist
@@ -1070,7 +1048,7 @@ Better naming to improve the chances to find it."
           ("time" . "clj-time.core")
           ("log" . "clojure.tools.logging")
           ("json" . "cheshire.core"))
-	    cljr-clojure-test-declaration "[clojure.test :refer [deftest testing is use-fixtures]]")
+	cljr-clojure-test-declaration "[clojure.test :refer [deftest testing is use-fixtures]]")
   :config
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (add-hook 'cider-mode-hook 'clj-refactor-mode)
@@ -1095,48 +1073,48 @@ Better naming to improve the chances to find it."
        (goto-char cider-repl-input-start-mark)
        (delete-region (point) (point-max))
        (save-excursion
-	     (insert sexp)
-	     (when (equal (char-before) ?\n)
-	       (delete-char -1))
-	     (cider-repl--send-input t))
+	 (insert sexp)
+	 (when (equal (char-before) ?\n)
+	   (delete-char -1))
+	 (cider-repl--send-input t))
        (delete-region (point) (point-max)))
 
      (defun bk/pomegranate-dep (dep)
        (concat
-	    (format
-	     "%s"
-	     `(use '[cemerick.pomegranate :only (add-dependencies)]))
-	    (s-replace-all
-	     `(("\\." . ".")
-	       ("mydep" . ,dep))
-	     (format
-	      "%S"
-	      `(add-dependencies :coordinates '[mydep]
+	(format
+	 "%s"
+	 `(use '[cemerick.pomegranate :only (add-dependencies)]))
+	(s-replace-all
+	 `(("\\." . ".")
+	   ("mydep" . ,dep))
+	 (format
+	  "%S"
+	  `(add-dependencies :coordinates '[mydep]
                              :repositories (merge cemerick.pomegranate.aether/maven-central
-						                          {"clojars" "https://clojars.org/repo"}))))))
+						  {"clojars" "https://clojars.org/repo"}))))))
 
      (setq cljr-hotload-dependencies t)
 
      (defun cljr-hotload-dependency (artifact version &optional dep ns)
        (ignore dep)
        (bk/send-to-repl
-	    (bk/pomegranate-dep (format "[%s \"%s\"]" artifact version))
-	    t ns))
+	(bk/pomegranate-dep (format "[%s \"%s\"]" artifact version))
+	t ns))
 
      (defun cljr--add-project-dependency (artifact version)
        (let* ((project-file (cljr--project-file))
               (deps (cljr--project-with-deps-p project-file)))
-	     (cljr--update-file project-file
-	       (goto-char (point-min))
-	       (if deps
+	 (cljr--update-file project-file
+	   (goto-char (point-min))
+	   (if deps
                (cljr--insert-into-clj-dependencies artifact version)
              (cljr--insert-into-leiningen-dependencies artifact version))
-	       (cljr--post-command-message "Added %s version %s as a project dependency" artifact version))
-	     (when cljr-hotload-dependencies
-	       (if deps
+	   (cljr--post-command-message "Added %s version %s as a project dependency" artifact version))
+	 (when cljr-hotload-dependencies
+	   (if deps
                (back-to-indentation)
              (paredit-backward-down))
-	       (cljr-hotload-dependency artifact version))))))
+	   (cljr-hotload-dependency artifact version))))))
 
 (eval-after-load 'projectile
   '(progn
@@ -1169,11 +1147,11 @@ Better naming to improve the chances to find it."
   :diminish tide-mode
   :init
   (setq tide-completion-detailed t
-	    tide-always-show-documentation t
-	    tide-server-max-response-length 524288)
+	tide-always-show-documentation t
+	tide-server-max-response-length 524288)
   :hook ((js-mode . bk/setup-tide-mode)
-	     (js2-mode . bk/setup-tide-mode)
-	     (typescript-mode . bk/setup-tide-mode)))
+	 (js2-mode . bk/setup-tide-mode)
+	 (typescript-mode . bk/setup-tide-mode)))
 
 (eval-after-load 'projectile
   '(progn
@@ -1188,7 +1166,7 @@ Better naming to improve the chances to find it."
   :diminish eldoc-mode
   :init
   (setq eldoc-idle-delay 0.1
-	    eldoc-echo-area-use-multiline-p nil)
+	eldoc-echo-area-use-multiline-p nil)
   :config
   (global-eldoc-mode +1))
 
@@ -1336,10 +1314,10 @@ Better naming to improve the chances to find it."
   "Help development on multiple branches."
   (interactive)
   (let* ((root-proj (projectile-project-root))
-	     (proj-name (car (cdr (nreverse (split-string root-proj "/")))))
-	     (dest-dir (file-name-directory (directory-file-name root-proj)))
-	     (branch (ido-completing-read "Choose the branch: " (magit-list-local-branch-names)))
-	     (worktree-path (concat dest-dir proj-name "-wt-" branch)))
+	 (proj-name (car (cdr (nreverse (split-string root-proj "/")))))
+	 (dest-dir (file-name-directory (directory-file-name root-proj)))
+	 (branch (ido-completing-read "Choose the branch: " (magit-list-local-branch-names)))
+	 (worktree-path (concat dest-dir proj-name "-wt-" branch)))
     (magit-worktree-checkout worktree-path branch)
     (projectile-find-file)))
 
@@ -1348,11 +1326,11 @@ Better naming to improve the chances to find it."
   (interactive)
   (let ((worktree (ido-completing-read "Choose worktree: " (magit-list-worktrees))))
     (mapc (lambda (buffer)
-	        (with-current-buffer buffer
-	          (let ((worktree-name (file-name-base worktree)))
-		        (when (string-equal (projectile-project-name) worktree-name)
-		          (kill-buffer buffer)))))
-	      (buffer-list))
+	    (with-current-buffer buffer
+	      (let ((worktree-name (file-name-base worktree)))
+		(when (string-equal (projectile-project-name) worktree-name)
+		  (kill-buffer buffer)))))
+	  (buffer-list))
     (magit-worktree-delete worktree)))
 
 (defun bk/spell-buffer-pt-BR ()
@@ -1374,7 +1352,7 @@ Better naming to improve the chances to find it."
   :ensure t
   :config
   (setq langtool-language-tool-jar
-	    "~/.emacs.d/bin/languagetool-commandline.jar"))
+	"~/.emacs.d/bin/languagetool-commandline.jar"))
 
 (use-package google-this :ensure t)
 
@@ -1386,11 +1364,11 @@ Better naming to improve the chances to find it."
   :ensure nil
   :init
   (setq org-return-follows-link t
-	    org-confirm-babel-evaluate nil
-	    org-replace-disputed-keys t	;don't ruin S-arrow to switch windows please
-	    org-src-fontify-natively t
-	    org-src-tab-acts-natively t
-	    org-agenda-files (list "~/agenda/todo.org"))
+	org-confirm-babel-evaluate nil
+	org-replace-disputed-keys t	;don't ruin S-arrow to switch windows please
+	org-src-fontify-natively t
+	org-src-tab-acts-natively t
+	org-agenda-files (list "~/agenda/todo.org"))
   :bind
   (("C-c c" . org-capture)
    ("C-c a" . org-agenda))
@@ -1413,10 +1391,10 @@ Better naming to improve the chances to find it."
      (clojure . t)))
 
   (setq org-capture-templates
-	    '(
-	      ("t" "Todo" entry (file+headline "~/agenda/todo.org" "Task")
-	       "* TODO %^{Title}\n %i" :clock-in t :clock-resume t))
-	    ))
+	'(
+	  ("t" "Todo" entry (file+headline "~/agenda/todo.org" "Task")
+	   "* TODO %^{Title}\n %i" :clock-in t :clock-resume t))
+	))
 
 (use-package org-download
   :ensure t
@@ -1432,10 +1410,10 @@ Better naming to improve the chances to find it."
   :diminish org-roam-mode
   :init
   (setq org-roam-directory bk-zettelkasten-dir
-	    org-roam-completion-system 'ido)
+	org-roam-completion-system 'ido)
   :bind (("C-c z f" . org-roam-find-file)
-	     ("C-c z i" . org-roam-insert)
-	     ("C-c z I" . org-roam-insert-immediate))
+	 ("C-c z i" . org-roam-insert)
+	 ("C-c z I" . org-roam-insert-immediate))
   :config
   (org-roam-mode +1))
 
@@ -1530,7 +1508,7 @@ Better naming to improve the chances to find it."
   :ensure t
   :config
   (setq ag-reuse-buffers t
-	    ag-reuse-window t))
+	ag-reuse-window t))
 
 (use-package rg
   :ensure t
@@ -1541,7 +1519,7 @@ Better naming to improve the chances to find it."
     :format regexp
     :files "everything"
     :dir (let ((vc (vc-root-dir)))
-	       (if vc vc default-directory))
+	   (if vc vc default-directory))
     :confirm prefix
     :flags ("--hidden -g !.git")))
 
@@ -1711,7 +1689,7 @@ Better naming to improve the chances to find it."
         diary-comment-start ";;"
         diary-comment-end ""
         diary-nonmarking-symbol "!"
-        diary-show-holidays-flag t
+        aadiary-show-holidays-flag t
         diary-display-function #'diary-fancy-display
         diary-header-line-format nil
         diary-number-of-entries 2
@@ -1750,7 +1728,7 @@ Better naming to improve the chances to find it."
   :ensure t
   :init
   (setq writeroom-width 100
-	    writeroom-extra-line-spacing 1)
+	writeroom-extra-line-spacing 1)
   :config
   (add-hook 'text-mode-hook 'auto-fill-mode))
 
