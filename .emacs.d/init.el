@@ -195,6 +195,7 @@
 
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
+(menu-bar-mode -1)
 
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
@@ -515,7 +516,12 @@
   "Search for a FONT-NAME."
   (-filter (lambda (f) (string-match font-name f)) (font-family-list)))
 
+(defun bk/set-ibm-font (size)
+  "Set default font at SIZE."
+  (set-face-attribute 'default nil :font "IBM Plex Mono" :height size))
+
 (use-package simple
+  :disabled t
   :custom-face
   (mode-line ((t (:background "grey75" :foreground "black" :box (:line-width (1 . -1) :style released-button)))))
   :init
@@ -528,9 +534,11 @@
   (add-to-list 'default-frame-alist '(background-color . "honeydew"))
   (add-to-list 'default-frame-alist '(font . "IBM Plex Mono-10"))
 
-  (set-face-attribute 'default nil :font "IBM Plex Mono" :height 100)
+  (bk/set-ibm-font 100)
   (set-background-color "honeydew"))
 
+(load-theme 'default-black t)
+(bk/set-ibm-font 110)
 
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 16))
@@ -579,13 +587,6 @@
 
 
 ;;; Emacs Editor
-
-(use-package avy
-  :ensure t
-  :config
-  (avy-setup-default)
-  :bind
-  (("C-:" . avy-goto-char-timer)))
 
 (use-package ediff
   :config
@@ -791,18 +792,6 @@
 
   ;; Real dates, please
   (set-default 'magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
-
-
-(use-package diff-hl
-  :ensure t
-  :config
-  (global-diff-hl-mode +1)
-  (add-hook 'magit-post-refresh-hook 'diff-hl-magit-post-refresh)
-  (add-hook 'magit-pre-refresh-hook 'diff-hl-magit-pre-refresh)
-  (custom-set-faces
-   '(diff-hl-change ((t (:background "#3a81c3"))))
-   '(diff-hl-insert ((t (:background "#7ccd7c"))))
-   '(diff-hl-delete ((t (:background "#ee6363"))))))
 
 (use-package magit-todos
   :ensure t
@@ -1176,9 +1165,6 @@ Better naming to improve the chances to find it."
   :diminish which-key-mode
   :config
   (which-key-mode))
-
-(use-package keycast
-  :ensure t)
 
 ;;; Custom Functions
 

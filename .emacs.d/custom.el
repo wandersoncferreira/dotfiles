@@ -77,4 +77,5 @@
  '(bm-persistent-face ((t (:background "khaki2"))))
  '(diff-hl-change ((t (:background "#3a81c3"))))
  '(diff-hl-delete ((t (:background "#ee6363"))))
- '(diff-hl-insert ((t (:background "#7ccd7c")))))
+ '(diff-hl-insert ((t (:background "#7ccd7c"))))
+ '(mode-line ((t (:background "grey75" :foreground "black" :box (:line-width (1 . -1) :style released-button))))))
