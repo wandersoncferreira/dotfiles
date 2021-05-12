@@ -16,6 +16,7 @@ in {
     ./common/alacritty.nix
     ./common/i3.nix
     ./common/compton.nix
+    ./common/org-protocol.nix
   ];
 
   nixpkgs.config.allowUnfree = true;

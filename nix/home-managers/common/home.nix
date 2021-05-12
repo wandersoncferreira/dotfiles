@@ -18,6 +18,7 @@ in {
       "x-scheme-handler/https" = "google-chrome.desktop";
       "x-scheme-handler/mailto" = "hey-mail.desktop";
       "x-scheme-handler/slack" = "slack.desktop";
+      "x-scheme-handler/org-protocol" = "org-protocol.desktop";
       "application/pdf" = "org.gnome.Evince.desktop";
       "image/png" = "org.gnome.eog.desktop";
       "image/jpg" = "org.gnome.eog.desktop";
