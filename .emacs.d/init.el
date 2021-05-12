@@ -585,6 +585,38 @@
   (unless (equal persp-mode t)
     (persp-mode)))
 
+;; find file in project, with specific patterns
+
+(defun ffip--create-exclude-find-options (names)
+  "Exclude NAMES from find candidates."
+  (mapconcat (lambda (name) (concat "-not -regex \".*" name ".*\"")) names " "))
+
+(use-package find-file-in-project
+  :ensure t
+  :config
+  (setq ffip-find-options
+	(ffip--create-exclude-find-options
+	 '("/node_modules/"
+	   "/target/"
+	   "/out/"
+	   "/.shadow-cljs/"
+	   "/.cpcache/"))))
+
+(defun ffip-create-pattern-file-finder (&rest patterns)
+  "Create new functions that look for a specific PATTERNS."
+  (lexical-let ((patterns patterns))
+    (lambda ()
+      (interactive)
+      (let ((ffip-patterns patterns))
+	(find-file-in-project)))))
+
+
+(global-unset-key (kbd "C-x C-o"))
+(global-set-key (kbd "C-x C-o jn") (ffip-create-pattern-file-finder "*.json"))
+(global-set-key (kbd "C-x C-o ht") (ffip-create-pattern-file-finder "*.html"))
+(global-set-key (kbd "C-x C-o ed") (ffip-create-pattern-file-finder "*.edn"))
+(global-set-key (kbd "C-x C-o ym") (ffip-create-pattern-file-finder "*.yml"))
+
 
 ;;; Emacs Editor
 
@@ -1773,6 +1805,7 @@ Better naming to improve the chances to find it."
   (prodigy-define-tag
     :name 'esource-run
     :ready-message "WARNING: .*"))
+
 
 ;;; End of file
 
