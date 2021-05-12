@@ -1433,7 +1433,8 @@ Better naming to improve the chances to find it."
 	 ("C-c z i" . org-roam-insert)
 	 ("C-c z I" . org-roam-insert-immediate))
   :config
-  (org-roam-mode +1))
+  (org-roam-mode +1)
+  (add-hook 'org-roam-backlinks-mode-hook 'toggle-truncate-lines))
 
 (use-package org-roam-server
   :ensure t
@@ -1441,6 +1442,7 @@ Better naming to improve the chances to find it."
   :init
   (setq org-roam-server-port 17042)
   :config
+  (require 'org-protocol)
   (require 'org-roam-protocol))
 
 
