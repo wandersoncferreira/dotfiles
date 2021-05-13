@@ -1865,9 +1865,9 @@ Better naming to improve the chances to find it."
   (global-wakatime-mode +1))
 
 ;; using projectile information to access Project in wakatime
+(require 'projectile)
 (defun wakatime-client-command (savep)
-  "Return client command executable and arguments.
-   Set SAVEP to non-nil for write action."
+  "Return client command executable and arguments, set SAVEP to non-nil for write action."
   (format "%s%s--file \"%s\" --plugin \"%s/%s\" --project \"%s\" --time %.2f%s%s"
           (if (s-blank wakatime-python-bin) "" (format "\"%s\" " wakatime-python-bin))
           (if (s-blank wakatime-cli-path) "wakatime " (format "\"%s\" " wakatime-cli-path))
