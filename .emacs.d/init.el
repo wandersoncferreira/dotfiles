@@ -486,9 +486,6 @@
   (set-face-attribute 'default nil :font "IBM Plex Mono" :height size))
 
 (use-package simple
-  :disabled t
-  :custom-face
-  (mode-line ((t (:background "grey75" :foreground "black" :box (:line-width (1 . -1) :style released-button)))))
   :init
   (setq inhibit-startup-screen nil)
   :config
@@ -501,12 +498,6 @@
 
   (bk/set-ibm-font 100)
   (set-background-color "honeydew"))
-
-(use-package monokai-theme
-  :ensure t
-  :config
-  (load-theme 'monokai t)
-  (bk/set-ibm-font 100))
 
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 16))
