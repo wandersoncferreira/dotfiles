@@ -48,11 +48,6 @@
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
-;; scrolling
-(setq mouse-wheel-scroll-amount '(2 ((shift) . 2))
-      mouse-wheel-progressive-speed nil
-      mouse-wheel-follow-mouse 't)
-
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
 
