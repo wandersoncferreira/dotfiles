@@ -4,8 +4,9 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(linum-format " %3i ")
+ '(org-roam-server-mode t)
  '(package-selected-packages
-   '(find-file-in-project zenburn-theme dracula-theme jetbrains-darcula-theme plantuml-mode windresize goto-chg avy ag jbeans-theme prodigy writeroom-mode olivetti flymd writegood-mode flymd-flyit restclient elfeed-org elfeed uuidgen zprint-mode try pdf-tools nix-mode anzu rg sql-indent docker docker-compose-mode dockerfile-mode hledger-mode ledger-mode org-roam-server org-roam org-download popup google-this langtool zygospore keycast which-key tide add-node-modules-path prettier-js typescript-mode clj-refactor kaocha-runner clojure-mode clojure-snippets paredit bicycle quickrun yasnippet flycheck toggle-test envrc gist browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine forge magit-todos diff-hl magit jump-char dash whitespace-cleanup-mode move-text multiple-cursors fix-word change-inner expand-region perspective projectile monokai-pro-theme ido-completing-read+ smex ido-at-point pinentry bm session buffer-move vlf diminish use-package))
+   '(monokai-theme wakatime-mode yascroll dtrt-indent find-file-in-project zenburn-theme dracula-theme jetbrains-darcula-theme plantuml-mode windresize goto-chg avy ag jbeans-theme prodigy writeroom-mode olivetti flymd writegood-mode flymd-flyit restclient elfeed-org elfeed uuidgen zprint-mode try pdf-tools nix-mode anzu rg sql-indent docker docker-compose-mode dockerfile-mode hledger-mode ledger-mode org-roam-server org-roam org-download popup google-this langtool zygospore keycast which-key tide add-node-modules-path prettier-js typescript-mode clj-refactor kaocha-runner clojure-mode clojure-snippets paredit bicycle quickrun yasnippet flycheck toggle-test envrc gist browse-at-remote gitignore-templates gitignore-mode gitconfig-mode git-timemachine forge magit-todos diff-hl magit jump-char dash whitespace-cleanup-mode move-text multiple-cursors fix-word change-inner expand-region perspective projectile monokai-pro-theme ido-completing-read+ smex ido-at-point pinentry bm session buffer-move vlf diminish use-package))
  '(safe-local-variable-values
    '((tgt-projects
       ((:root-dir "/home/wanderson/projects/atvi-broadcast-stats-portico")
@@ -68,4 +69,13 @@
      (cider-ns-refresh-after-fn . "reloaded.repl/resume")
      (cider-ns-refresh-before-fn . "reloaded.repl/suspend")))
  '(session-use-package t nil (session))
+ '(wakatime-cli-path "/home/wanderson/.nix-profile/bin/wakatime")
+ '(wakatime-python-bin nil)
  '(warning-suppress-types '((magit-todos) (comp))))
+
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(bm-persistent-face ((t (:background "khaki2")))))
