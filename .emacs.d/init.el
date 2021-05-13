@@ -397,11 +397,15 @@
   :init
   (setq dired-listing-switches "-alh"
         dired-recursive-copies 'always
-        dired-recursive-deletes 'always)
+        dired-recursive-deletes 'always
+	dired-omit-files
+	(rx (or (seq bol (? ".") "#")
+		(seq bol "." eol))))
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
-  (advice-add 'dired-readin :after #'bk/dired-directories-first))
+  (advice-add 'dired-readin :after #'bk/dired-directories-first)
+  (add-hook 'dired-mode-hook (lambda () (dired-sort-toggle-or-edit))))
 
 (eval-after-load "wdired"
   '(progn
@@ -481,6 +485,7 @@
   (set-face-attribute 'default nil :font "IBM Plex Mono" :height size))
 
 (use-package simple
+  :disabled t
   :init
   (setq inhibit-startup-screen nil)
   :config
@@ -495,7 +500,7 @@
   (set-background-color "honeydew"))
 
 ;; large fringes to get high-resolution flycheck marks
-(fringe-mode '(16 . 16))
+(fringe-mode '(16 . 0))
 
 (defvar bk--toggle-transparency nil)
 
@@ -507,8 +512,17 @@
         (set-frame-parameter (selected-frame) 'alpha 100)
         (setq bk--toggle-transparency nil))
     (progn
-      (set-frame-parameter (selected-frame) 'alpha 90)
+      (set-frame-parameter (selected-frame) 'alpha 85)
       (setq bk--toggle-transparency t))))
+
+
+(defun bk/default-theme ()
+  "Default theme to be used."
+  (load-theme 'default-black t)
+  (bk/set-ibm-font 100)
+  (set-frame-parameter (selected-frame) 'alpha 85))
+
+(bk/default-theme)
 
 
 ;;; Projects
@@ -1371,6 +1385,26 @@ Better naming to improve the chances to find it."
   (flyspell-buffer))
 
 
+(use-package flyspell
+  :ensure nil
+  :diminish flyspell-mode
+  :config
+  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+  (add-hook 'text-mode-hook 'flyspell-mode)
+  (define-key flyspell-mode-map (kbd "C-.") nil))
+
+
+(use-package flyspell-correct
+  :ensure t
+  :commands (flyspell-correct-word-generic
+	     flyspell-correct-previous-word-generic)
+  :config
+  (require 'flyspell-correct-ido)
+  (setq flyspell-correct-interface #'flyspell-correct-ido)
+  :bind (:map flyspell-mode-map
+	      ("C-;" . flyspell-correct-wrapper)))
+
+
 ;;; Spell Checking
 
 (use-package langtool
@@ -1466,6 +1500,51 @@ Better naming to improve the chances to find it."
   (kill-emacs))
 
 ;;; Finance management
+
+(defun bk/clean-leader-on-save ()
+  "Hook to keep the file organized."
+  (interactive)
+  (if (eq major-mode 'ledger-mode)
+      (let ((curr-line (line-number-at-pos)))
+        (ledger-mode-clean-buffer)
+        (line-move (- curr-line 1)))))
+
+(defun bk/encoded-date (date)
+  "Create DATE."
+  (string-match "\\([0-9][0-9][0-9][0-9]\\)/\\([0-9][0-9]\\)/\\([0-9][0-9]\\)" date)
+  (let* ((fixed-date
+          (concat (match-string 1 date) "-"
+                  (match-string 2 date) "-"
+                  (match-string 3 date)))
+         (d (parse-time-string fixed-date)))
+    (encode-time 0 0 0 (nth 3 d) (nth 4 d) (nth 5 d))))
+
+(defun bk/ledger-change-date (num)
+  "Change the date based on NUM of days."
+  (save-excursion
+    (ledger-navigate-beginning-of-xact)
+    (let* ((beg (point))
+           (end (re-search-forward ledger-iso-date-regexp))
+           (xact-date (filter-buffer-substring beg end)))
+      (delete-region beg end)
+      (insert
+       (format-time-string
+        "%Y/%m/%d"
+        (time-add (bk/encoded-date xact-date)
+                  (days-to-time num)))))))
+
+(defun bk/ledger-increment-date ()
+  "Increase the date number."
+  (interactive)
+  (bk/ledger-change-date 1))
+
+
+(defun bk/ledger-decrement-date ()
+  "Decrease the date number."
+  (interactive)
+  (bk/ledger-change-date -1))
+
+
 (use-package ledger-mode
   :ensure t
   :mode ("ledger" . ledger-mode)
@@ -1491,7 +1570,11 @@ Better naming to improve the chances to find it."
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)")))
   :config
-  (setq ledger-report-auto-width t))
+  (setq ledger-report-auto-width t)
+  (add-hook 'before-save-hook 'bk/clean-leader-on-save)
+  :bind (:map ledger-mode-map
+	      ("C-M-." . bk/ledger-increment-date)
+	      ("C-M-," . bk/ledger-decrement-date)))
 
 (use-package hledger-mode
   :ensure t
@@ -1499,6 +1582,33 @@ Better naming to improve the chances to find it."
               ("TAB" . completion-at-point)))
 
 ;;; Docker
+
+
+(defun bk/dockerfile-add-build-args ()
+  "Add env variables to your docker build."
+  (interactive)
+  (let* ((vars (read-from-minibuffer "sequence of <envName>=<envValue>: "))
+	 (split-vars (split-string vars " ")))
+    (setq dockerfile-build-args nil)
+    (dolist (v split-vars)
+      (add-to-list 'dockerfile-build-args v))
+    (setq docker-build-history-args vars)))
+
+
+(defun bk/docker-compose-custom-envs ()
+  "Add usual env variables to Emacs environment."
+  (interactive)
+  (let* ((idu (shell-command-to-string "id -u"))
+	 (idg (shell-command-to-string "id -g"))
+	 (uid (string-join (vector (string-trim idu) ":" (string-trim idg)))))
+    (setenv "WEBSERVER_PORT" "3000")
+    (setenv "CURRENT_UID" uid)
+    (message "setenv WEBSERVER_PORT=3000 CURRENT_UID=$(id -u):$(id -g) done!")))
+
+(defun bk/docker-cleanup-buffers ()
+  "Delete all the docker buffers created."
+  (interactive)
+  (kill-matching-buffers "docker" nil t))
 
 (use-package dockerfile-mode
   :ensure t
@@ -1592,6 +1702,19 @@ Better naming to improve the chances to find it."
   (pdf-tools-install :no-query)
   (require 'pdf-occur))
 
+(use-package pdf-view
+  :ensure nil
+  :after pdf-tools
+  :bind (:map pdf-view-mode-map
+	      ("C-s" . isearch-forward)
+	      ("d" . pdf-annot-delete)
+	      ("h" . pdf-annot-add-highlight-markup-annotation)
+	      ("t" . pdf-annot-add-text-annotation))
+  :custom
+  (pdf-view-display-size 'fit-page)
+  (pdf-view-resize-factor 1.1)
+  (pdf-view-use-unicode-lighter nil))
+
 
 ;;; PlantUML
 (use-package plantuml-mode
@@ -1628,8 +1751,7 @@ Better naming to improve the chances to find it."
   (abbrev-mode -1)
   (yas-minor-mode -1)
   (dired-async-mode -1)
-  (global-auto-revert-mode -1)
-  (diff-hl-flydiff-mode -1))
+  (global-auto-revert-mode -1))
 
 (use-package elfeed
   :ensure t

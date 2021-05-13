@@ -3,6 +3,8 @@
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(flyspell-correct zygospore zprint-mode writeroom-mode windresize whitespace-cleanup-mode which-key wakatime-mode vlf uuidgen use-package try toggle-test tide sql-indent smex session rg restclient quickrun projectile prodigy prettier-js plantuml-mode pinentry perspective pdf-tools org-roam-server org-download nix-mode move-text monokai-theme magit-todos ledger-mode langtool kaocha-runner jump-char ido-completing-read+ ido-at-point hledger-mode goto-chg google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flymd fix-word find-file-in-project envrc elfeed-org dtrt-indent dockerfile-mode docker-compose-mode docker diminish clojure-snippets clj-refactor change-inner buffer-move browse-at-remote bm bicycle ag add-node-modules-path))
  '(safe-local-variable-values
    '((tgt-projects
       ((:root-dir "/home/wanderson/projects/atvi-broadcast-stats-portico")
@@ -67,3 +69,9 @@
  '(wakatime-cli-path "/home/wanderson/.nix-profile/bin/wakatime")
  '(wakatime-python-bin nil)
  '(warning-suppress-types '((magit-todos) (comp))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(bm-persistent-face ((t (:background "khaki2")))))
