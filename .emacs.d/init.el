@@ -515,12 +515,25 @@
       (set-frame-parameter (selected-frame) 'alpha 85)
       (setq bk--toggle-transparency t))))
 
-
 (defun bk/default-theme ()
   "Default theme to be used."
+  (interactive)
   (load-theme 'default-black t)
   (bk/set-ibm-font 100)
-  (set-frame-parameter (selected-frame) 'alpha 85))
+  (set-frame-parameter (selected-frame) 'alpha 90))
+
+
+(defun bk/presentation-theme ()
+  "Presentation theme."
+  (interactive)
+  (bk/set-ibm-font 120)
+  (disable-theme 'default-black)
+  (set-frame-parameter (selected-frame) 'alpha 100)
+  (set-face-attribute 'lazy-highlight nil :background "khaki1")
+  (set-face-attribute 'isearch nil :background "khaki1")
+  (set-face-attribute 'region nil :background "khaki1")
+  (set-background-color "honeydew"))
+
 
 (bk/default-theme)
 
