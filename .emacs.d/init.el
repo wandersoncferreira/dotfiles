@@ -68,8 +68,6 @@
 (dolist (mode '(prog-mode-hook conf-mode-hook))
   (add-hook mode (lambda () (display-line-numbers-mode 1))))
 
-(global-prettify-symbols-mode +1)
-
 ;;; make cursor the width of the character it is under
 (setq x-stretch-cursor t)
 
@@ -397,10 +395,7 @@
   :init
   (setq dired-listing-switches "-alh"
         dired-recursive-copies 'always
-        dired-recursive-deletes 'always
-	dired-omit-files
-	(rx (or (seq bol (? ".") "#")
-		(seq bol "." eol))))
+        dired-recursive-deletes 'always)
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
@@ -512,7 +507,7 @@
         (set-frame-parameter (selected-frame) 'alpha 100)
         (setq bk--toggle-transparency nil))
     (progn
-      (set-frame-parameter (selected-frame) 'alpha 85)
+      (set-frame-parameter (selected-frame) 'alpha 95)
       (setq bk--toggle-transparency t))))
 
 (defun bk/default-theme ()
@@ -520,7 +515,7 @@
   (interactive)
   (load-theme 'default-black t)
   (bk/set-ibm-font 100)
-  (set-frame-parameter (selected-frame) 'alpha 90))
+  (set-frame-parameter (selected-frame) 'alpha 95))
 
 
 (defun bk/presentation-theme ()
@@ -536,7 +531,6 @@
 
 
 (bk/default-theme)
-
 
 ;;; Projects
 
@@ -649,12 +643,6 @@
   :bind
   (([(meta shift up)] . move-text-up)
    ([(meta shift down)] . move-text-down)))
-
-(use-package whitespace-cleanup-mode
-  :ensure t
-  :diminish whitespace-cleanup-mode
-  :config
-  (global-whitespace-cleanup-mode +1))
 
 (use-package whitespace
   :diminish whitespace-mode
@@ -898,6 +886,9 @@
   :config
   (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
         flycheck-checker-error-threshold 4000))
+
+(use-package flycheck-projectile
+  :ensure t)
 
 (defun yas/goto-end-of-active-field ()
   "End of the field."
