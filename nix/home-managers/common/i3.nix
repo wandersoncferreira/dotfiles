@@ -86,6 +86,12 @@
       #   "1: coding" = [{ class = "^Emacs$"; }];
       # };
 
+      bars = [
+        {
+          fonts = [ "IBM Plex Mono 10" ];
+        }
+      ];
+
       floating.criteria = [
         { class = "Pavucontrol"; }
         { class = "zoom"; instance = "zoom"; }
