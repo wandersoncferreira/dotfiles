@@ -22,7 +22,7 @@ You can find the configurations from other people in the [[https://nixos.wiki/wi
     Every machine is composed with a set of modules:
 
     * hardware:           video, disks, boot, etc.
-    * desktop:            Gnome 3
+    * desktop:            i3wm
     * regular packages    default packages
     * services            postgres, etc
 
