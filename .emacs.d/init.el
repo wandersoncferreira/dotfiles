@@ -883,11 +883,17 @@
   :ensure t
   :hook (prog-mode . flycheck-mode)
   :config
-  (setq flycheck-check-syntax-automatically '(save idle-change mode-enabled)
+  (setq flycheck-check-syntax-automatically '(save mode-enabled)
         flycheck-checker-error-threshold 4000))
 
 (use-package flycheck-projectile
   :ensure t)
+
+(use-package flycheck-pos-tip
+  :ensure t
+  :after flycheck
+  :config
+  (flycheck-pos-tip-mode +1))
 
 (defun yas/goto-end-of-active-field ()
   "End of the field."
