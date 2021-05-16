@@ -53,6 +53,7 @@ in {
       transmission-qt
       libreoffice
       vscode
+      racket-minimal            # run: raco pkg install drracket
     ];
   };
 }
