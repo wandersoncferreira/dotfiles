@@ -506,15 +506,15 @@
         (set-frame-parameter (selected-frame) 'alpha 100)
         (setq bk--toggle-transparency nil))
     (progn
-      (set-frame-parameter (selected-frame) 'alpha 95)
+      (set-frame-parameter (selected-frame) 'alpha 80)
       (setq bk--toggle-transparency t))))
 
 (defun bk/default-theme ()
   "Default theme to be used."
   (interactive)
   (load-theme 'default-black t)
-  (bk/set-ibm-font 100)
-  (set-frame-parameter (selected-frame) 'alpha 95))
+  (bk/set-ibm-font 120)
+  (set-frame-parameter (selected-frame) 'alpha 90))
 
 
 (defun bk/presentation-theme ()
@@ -528,6 +528,11 @@
   (set-face-attribute 'region nil :background "khaki1")
   (set-background-color "honeydew"))
 
+(defun bk/light-theme ()
+  "Light theme default."
+  (interactive)
+  (bk/presentation-theme)
+  (set-frame-parameter (selected-frame) 'alpha 80))
 
 (bk/default-theme)
 
