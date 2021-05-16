@@ -954,6 +954,8 @@
   :config
   (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
   (add-hook 'clojure-mode-hook 'enable-paredit-mode)
+  (add-hook 'racket-mode-hook 'enable-paredit-mode)
+  (add-hook 'racket-repl-mode-hook 'enable-paredit-mode)
   (with-eval-after-load "eldoc"
     (eldoc-add-command #'paredit-backward-delete #'paredit-close-round)))
 
@@ -1717,6 +1719,16 @@ Better naming to improve the chances to find it."
   (pdf-view-display-size 'fit-page)
   (pdf-view-resize-factor 1.1)
   (pdf-view-use-unicode-lighter nil))
+
+;;; Racket
+
+(use-package racket-mode
+  :ensure t
+  :bind (:map racket-mode-map
+	      ("C-c C-k" . racket-run))
+  :config
+  (add-hook 'racket-mode-hook #'racket-unicode-input-method-enable)
+  (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable))
 
 
 ;;; PlantUML
