@@ -399,8 +399,7 @@
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
-  (advice-add 'dired-readin :after #'bk/dired-directories-first)
-  (add-hook 'dired-mode-hook (lambda () (dired-sort-toggle-or-edit))))
+  (advice-add 'dired-readin :after #'bk/dired-directories-first))
 
 (eval-after-load "wdired"
   '(progn
