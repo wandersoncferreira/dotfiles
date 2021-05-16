@@ -13,6 +13,7 @@
     bitwarden
     simplescreenrecorder
     spotify
+    transmission-qt
   ];
 
 }
