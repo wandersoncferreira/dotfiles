@@ -90,9 +90,6 @@
 (setq user-mail-address "wand@hey.com"
       user-full-name "Wanderson Ferreira")
 
-;; fewer slots for mark rings
-(setq mark-ring-max 4)
-
 (setq display-time-world-list
       '(("Etc/UTC" "UTC")
         ("America/Sao_Paulo" "Sao Paulo")
@@ -136,14 +133,9 @@
         (invert-face 'mode-line)
         (run-with-timer 0.05 nil 'invert-face 'mode-line)))
 
-;; don't defer screen updates when performing operations
-(setq redisplay-dont-pause t)
-
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (use-package paren
-  :init
-  (setq show-paren-style 'parenthesis)
   :config
   (show-paren-mode +1))
 
@@ -443,6 +435,10 @@
   (add-to-list 'ido-ignore-directories "eln-cache")
   (define-key minibuffer-local-completion-map (kbd "SPC") 'self-insert-command))
 
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
 (use-package ido-at-point
   :ensure t
   :config
@@ -509,18 +505,19 @@
       (set-frame-parameter (selected-frame) 'alpha 80)
       (setq bk--toggle-transparency t))))
 
+
 (defun bk/default-theme ()
   "Default theme to be used."
   (interactive)
   (load-theme 'default-black t)
-  (bk/set-ibm-font 120)
+  (bk/set-ibm-font 110)
   (set-frame-parameter (selected-frame) 'alpha 90))
 
 
 (defun bk/presentation-theme ()
   "Presentation theme."
   (interactive)
-  (bk/set-ibm-font 120)
+  (bk/set-ibm-font 110)
   (disable-theme 'default-black)
   (set-frame-parameter (selected-frame) 'alpha 100)
   (set-face-attribute 'lazy-highlight nil :background "khaki1")
@@ -528,13 +525,16 @@
   (set-face-attribute 'region nil :background "khaki1")
   (set-background-color "honeydew"))
 
+
 (defun bk/light-theme ()
   "Light theme default."
   (interactive)
   (bk/presentation-theme)
   (set-frame-parameter (selected-frame) 'alpha 80))
 
+
 (bk/default-theme)
+
 
 ;;; Projects
 
@@ -555,14 +555,6 @@
   :config
   (require 'subr-x)
   (projectile-mode +1))
-
-(use-package perspective
-  :ensure t
-  :init
-  (setq persp-initial-frame-name "Main")
-  :config
-  (unless (equal persp-mode t)
-    (persp-mode)))
 
 ;; find file in project, with specific patterns
 
@@ -598,25 +590,11 @@
 
 ;;; Emacs Editor
 
-;; auto-detecting indentation style
-(use-package dtrt-indent
-  :ensure t
-  :diminish dtrt-indent-mode
-  :config
-  (dtrt-indent-mode +1))
-
 (use-package ediff
   :config
   (setq ediff-window-setup-function 'ediff-setup-windows-plain
         ediff-split-window-function 'split-window-horizontally
         ediff-diff-options "-w"))
-
-;; move around through points at which you made edits in a buffer here
-(use-package goto-chg
-  :ensure t
-  :config
-  (global-set-key (kbd "C-c b ,") 'goto-last-change)
-  (global-set-key (kbd "C-c b .") 'goto-last-change-reverse))
 
 (use-package expand-region
   :ensure t
@@ -847,7 +825,8 @@
   ("C-c f p" . forge-list-authored-pullreqs)
   ("C-c f c" . forge-create-pullreq))
 
-(use-package git-timemachine :ensure t)
+(use-package git-timemachine
+  :ensure t)
 
 (use-package gitconfig-mode
   :ensure t
@@ -939,23 +918,6 @@
 (add-hook 'makefile-mode-hook 'indent-tabs-mode)
 
 (use-package quickrun :ensure t)
-
-;;; Emacs Lisp
-
-(use-package outline
-  :diminish outline-minor-mode
-  :init
-  (setq outline-blank-line t)
-  :config
-  (add-hook 'emacs-lisp-mode-hook #'outline-minor-mode)
-  (global-set-key (kbd "C-c h") 'outline-cycle))
-
-(use-package bicycle
-  :ensure t
-  :after outline
-  :bind (:map outline-minor-mode-map
-              ([C-tab] . bicycle-cycle-global)
-              ("<backtab>" . bicycle-cycle)))
 
 ;;; Lisps
 
@@ -1210,7 +1172,6 @@ Better naming to improve the chances to find it."
   :config
   (global-eldoc-mode +1))
 
-
 (use-package which-key
   :ensure t
   :diminish which-key-mode
@@ -1399,7 +1360,6 @@ Better naming to improve the chances to find it."
   (interactive)
   (ispell-change-dictionary "en_US")
   (flyspell-buffer))
-
 
 (use-package flyspell
   :ensure nil
@@ -1682,7 +1642,6 @@ Better naming to improve the chances to find it."
 
 (use-package nix-mode :ensure t)
 
-
 ;;; Reify Health
 
 (defun reifyhealth/cider-connect ()
@@ -1695,6 +1654,7 @@ Better naming to improve the chances to find it."
   (interactive)
   (find-file "~/repos/reifyhealth/work.org"))
 
+;;; Work in General
 
 (defun work-new-day ()
   "Create entry into org file for bookkeeping."
@@ -1718,18 +1678,6 @@ Better naming to improve the chances to find it."
   (pdf-tools-install :no-query)
   (require 'pdf-occur))
 
-(use-package pdf-view
-  :ensure nil
-  :after pdf-tools
-  :bind (:map pdf-view-mode-map
-	      ("C-s" . isearch-forward)
-	      ("d" . pdf-annot-delete)
-	      ("h" . pdf-annot-add-highlight-markup-annotation)
-	      ("t" . pdf-annot-add-text-annotation))
-  :custom
-  (pdf-view-display-size 'fit-page)
-  (pdf-view-resize-factor 1.1)
-  (pdf-view-use-unicode-lighter nil))
 
 ;;; Racket
 
@@ -1756,10 +1704,6 @@ Better naming to improve the chances to find it."
 
 (use-package windresize
   :ensure t)
-
-(use-package try :ensure t)
-
-(use-package zprint-mode :ensure t)
 
 (use-package uuidgen
   :preface
@@ -1888,18 +1832,6 @@ Better naming to improve the chances to find it."
   (run-at-time 10 nil #'appt-activate 1)
   (add-hook 'diary-hook 'appt-make-list))
 
-;;; Writing
-
-(use-package flymd
-  :ensure t)
-
-(use-package writeroom-mode
-  :ensure t
-  :init
-  (setq writeroom-width 100
-        writeroom-extra-line-spacing 1)
-  :config
-  (add-hook 'text-mode-hook 'auto-fill-mode))
 
 ;;; Manage external services
 
@@ -1956,32 +1888,6 @@ Better naming to improve the chances to find it."
   (prodigy-define-tag
     :name 'esource-run
     :ready-message "WARNING: .*"))
-
-;;; Time tracking
-
-(use-package wakatime-mode
-  :ensure t
-  :diminish wakatime-mode
-  :config
-  (global-wakatime-mode +1))
-
-;; using projectile information to access Project in wakatime
-(require 'projectile)
-(defun wakatime-client-command (savep)
-  "Return client command executable and arguments, set SAVEP to non-nil for write action."
-  (format "%s%s--file \"%s\" --plugin \"%s/%s\" --project \"%s\" --time %.2f%s%s"
-          (if (s-blank wakatime-python-bin) "" (format "\"%s\" " wakatime-python-bin))
-          (if (s-blank wakatime-cli-path) "wakatime " (format "\"%s\" " wakatime-cli-path))
-          (buffer-file-name (current-buffer))
-          wakatime-user-agent
-          wakatime-version
-          (let ((pname (projectile-project-name)))
-            (if (string= pname "-")
-                "Other"
-              pname))
-          (float-time)
-          (if savep " --write" "")
-          (if (s-blank wakatime-api-key) "" (format " --key %s" wakatime-api-key))))
 
 ;;; End of file
 
