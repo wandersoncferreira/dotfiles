@@ -816,7 +816,7 @@
   (set-default 'magit-no-confirm '(stage-all-changes unstage-all-changes))
 
   ;; fix cursor when entering git commit buffer
-  (add-hook 'git-commit-mode-hook (lambda () (beginning-of-buffer)))
+  (add-hook 'git-commit-setup-hook (lambda () (beginning-of-buffer)))
 
   ;; Real dates, please
   (set-default 'magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
@@ -937,6 +937,7 @@
   :config
   (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
   (add-hook 'clojure-mode-hook 'enable-paredit-mode)
+  (add-hook 'git-commit-mode-hook 'enable-paredit-mode)
   (add-hook 'racket-mode-hook 'enable-paredit-mode)
   (add-hook 'racket-repl-mode-hook 'enable-paredit-mode)
   (with-eval-after-load "eldoc"
