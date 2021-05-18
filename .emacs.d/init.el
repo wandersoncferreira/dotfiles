@@ -815,6 +815,9 @@
   (set-default 'magit-revert-buffers 'silent)
   (set-default 'magit-no-confirm '(stage-all-changes unstage-all-changes))
 
+  ;; fix cursor when entering git commit buffer
+  (add-hook 'git-commit-mode-hook (lambda () (beginning-of-buffer)))
+
   ;; Real dates, please
   (set-default 'magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
 
