@@ -1800,10 +1800,35 @@ Better naming to improve the chances to find it."
 
 ;;; Calendar and Diary
 
+(defface prot-diary-calendar-administrative-mark
+  '((((class color) (min-colors 88) (background light))
+     :background "#fff3da" :foreground "#813e00")
+    (((class color) (min-colors 88) (background dark))
+     :background "#221000" :foreground "#eecc00")
+    (t :foreground "yellow"))
+  "Face to mark administrative tasks in the calendar.")
+
+(defface prot-diary-calendar-mundane-mark
+  '((((class color) (min-colors 88) (background light))
+     :background "#f0f0f0" :foreground "#505050")
+    (((class color) (min-colors 88) (background dark))
+     :background "#191a1b" :foreground "#a8a8a8")
+    (t :inherit shadow))
+  "Face to mark mundane tasks in the calendar.")
+
+
+(defface prot-diary-calendar-event-mark
+  '((((class color) (min-colors 88) (background light))
+     :background "#aceaac" :foreground "#004c00")
+    (((class color) (min-colors 88) (background dark))
+     :background "#00422a" :foreground "#9ff0cf")
+    (t :foreground "green"))
+  "Face to mark events in the calendar.")
+
 (use-package calendar
   :config
   (setq calendar-mark-diary-entries-flag t
-        calendar-mark-holidays-flag t
+        calendar-mark-holidays-flag nil
         calendar-mode-line-format nil
         calendar-time-display-form '(24-hours ":" minutes (when time-zone (format "(%s)" time-zone)))
         calendar-week-start-day 1 ;; monday
