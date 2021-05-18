@@ -493,6 +493,9 @@
   (bk/set-ibm-font 100)
   (set-background-color "honeydew"))
 
+(use-package rainbow-mode
+  :ensure t)
+
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 0))
 
