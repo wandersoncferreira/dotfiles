@@ -411,11 +411,7 @@
         confirm-nonexistent-file-or-buffer nil
         ido-auto-merge-work-directories-length -1
         ido-confirm-unique-completion t
-        ido-decorations (quote ("\n-> " "" "\n " "\n ..." "[" "]" "
-  [No match]" " [Matched]" " [Not readable]" " [Too big]" "
-  [Confirm]"))
-        confirm-nonexistent-file-or-buffer nil
-        )
+        confirm-nonexistent-file-or-buffer nil)
   :bind (:map ido-file-completion-map
               ("C-n" . ido-next-match)
               ("C-p" . ido-prev-match)
@@ -434,6 +430,14 @@
   (add-to-list 'ido-ignore-directories ".cpcache")
   (add-to-list 'ido-ignore-directories "eln-cache")
   (define-key minibuffer-local-completion-map (kbd "SPC") 'self-insert-command))
+
+(use-package ido-vertical-mode
+  :ensure t
+  :init
+  (setq ido-vertical-define-keys 'C-n-and-C-p-only
+	ido-vertical-show-count t)
+  :config
+  (ido-vertical-mode +1))
 
 (setq minibuffer-prompt-properties
       '(read-only t cursor-intangible t face minibuffer-prompt))
