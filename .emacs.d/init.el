@@ -1444,6 +1444,17 @@ Better naming to improve the chances to find it."
 
 (defvar bk-zettelkasten-dir "/home/wanderson/zettelkasten")
 
+(defun bk/roam-add-resource ()
+  "Add resource to Org Roam buffer."
+  (interactive)
+  (let* ((candidates (mapcar (lambda (x)
+			       (replace-regexp-in-string "~/resources/" "" x))
+			     (directory-files-recursively "~/resources" "")))
+	 (resource (ido-completing-read "Resource: " candidates))
+	 (link-location (concat "file:~/resources/" resource))
+	 (description (ido-completing-read "Description: " "")))
+    (org-insert-link t link-location description)))
+
 (use-package org-roam
   :ensure t
   :diminish org-roam-mode
