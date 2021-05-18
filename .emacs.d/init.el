@@ -506,7 +506,7 @@
         (set-frame-parameter (selected-frame) 'alpha 100)
         (setq bk--toggle-transparency nil))
     (progn
-      (set-frame-parameter (selected-frame) 'alpha 80)
+      (set-frame-parameter (selected-frame) 'alpha 90)
       (setq bk--toggle-transparency t))))
 
 
