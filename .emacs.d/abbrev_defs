@@ -1,6 +1,9 @@
 ;;-*-coding: utf-8;-*-
 (define-abbrev-table 'global-abbrev-table
   '(
+    ("catehory" "category" nil :count 2)
+    ("datasouce" "datasource" nil :count 0)
+    ("keus" "keys" nil :count 0)
     ("requie" "require" nil :count 0)
     ("requier" "require" nil :count 0)
     ("reuslt" "result" nil :count 0)

@@ -48,6 +48,13 @@
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
+;;; this will save the buffer for me...
+(auto-save-visited-mode +1)
+(add-function :after after-focus-change-function
+              (lambda ()
+                (unless (frame-focus-state)
+                  (save-some-buffers t))))
+
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
 
@@ -391,6 +398,13 @@
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
+
+  ;; make dired less verbose
+  (add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode 1)))
+
+  ;; enable 'a'-keybinding in dired - which opens the file and closes dired buffer
+  (put 'dired-find-alternate-file 'disabled nil)
+
   (advice-add 'dired-readin :after #'bk/dired-directories-first))
 
 (eval-after-load "wdired"
@@ -435,7 +449,7 @@
   :ensure t
   :init
   (setq ido-vertical-define-keys 'C-n-and-C-p-only
-	ido-vertical-show-count t)
+        ido-vertical-show-count t)
   :config
   (ido-vertical-mode +1))
 
@@ -636,7 +650,8 @@
 (use-package whitespace
   :diminish whitespace-mode
   :config
-  (setq whitespace-style '(trailing lines space-before-tab indentation space-after-tab))
+  (setq whitespace-style '(trailing tabs tab-mark)
+        whitespace-line-column 100)
   :config
   (add-hook 'prog-mode-hook 'whitespace-mode))
 
@@ -807,7 +822,13 @@
   :ensure t
   :init
   (setq magit-log-show-gpg-status t
-        magit-completing-read-function 'magit-ido-completing-read)
+        magit-completing-read-function 'magit-ido-completing-read
+        magit-section-initial-visibility-alist
+        '((untracked . show)
+          (unstaged . show)
+          (unpushed . show)
+          (unpulled . show)
+          (stashes . show)))
   :bind (("C-c g s" . magit-status)
          ("C-c g b" . magit-blame))
   :config
@@ -921,7 +942,6 @@
   (define-key yas-keymap (kbd "<return>") 'yas-exit-all-snippets)
   :bind
   (("C-x y" . yas-expand)
-   ("C-c y" . yas-expand)
    ("C-c t" . yas-describe-tables)))
 
 ;;; use normal tabs in makefiles
@@ -1000,11 +1020,32 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 
 (use-package kaocha-runner
   :ensure t
+  :preface
+
+  (defun kaocha-runner-run-relevant-tests ()
+    (when (cljr--project-depends-on-p "kaocha")
+      (if (clj--is-test? (buffer-file-name))
+          (kaocha-runner--run-tests
+           (kaocha-runner--testable-sym (cider-current-ns) nil (eq major-mode 'clojurescript-mode))
+           nil t)
+        (let ((original-buffer (current-buffer)))
+          (save-window-excursion
+            (let* ((file (clj-other-file-name))
+                   (alternative-file (clj-find-alternative-name file)))
+              (cond
+               ((file-exists-p file) (find-file file))
+               ((file-exists-p alternative-file) (find-file alternative-file))))
+            (when (clj--is-test? (buffer-file-name))
+              (kaocha-runner--run-tests
+               (kaocha-runner--testable-sym (cider-current-ns) nil (eq major-mode 'clojurescript-mode))
+               nil t original-buffer)))))))
+
   :init
   (setq kaocha-runner-repl-invocation-template
         "(do (require 'kaocha.repl) %s)")
   :config
   (require 'patch-kaocha-runner)
+  (add-hook 'cider-file-loaded-hook #'kaocha-runner-run-relevant-tests)
   :bind
   (:map clojure-mode-map
         ("C-c k t" . kaocha-runner-run-test-at-point)
@@ -1140,7 +1181,7 @@ Better naming to improve the chances to find it."
   "Setup js development."
   (interactive)
   (tide-setup)
-  (eldoc-mode +1)
+  (eldoc-mode -1)
   (electric-pair-mode +1)
   (tide-hl-identifier-mode +1)
   (prettier-js-mode +1)
@@ -1154,6 +1195,19 @@ Better naming to improve the chances to find it."
 (use-package prettier-js :ensure t)
 (use-package add-node-modules-path :ensure t)
 (setq-default js-indent-level 2)
+
+(use-package js2-mode
+  :ensure t
+  :init
+  (setq js2-mode-show-parse-errors nil
+        js2-missing-semi-one-line-override nil)
+  :config
+  (add-hook 'js2-mode-hook (lambda () (flycheck-mode +1))))
+
+(use-package js2-refactor
+  :ensure t
+  :config
+  (js2r-add-keybindings-with-prefix "C-c C-m"))
 
 (use-package tide
   :ensure t
@@ -1191,6 +1245,14 @@ Better naming to improve the chances to find it."
 
 ;;; Custom Functions
 
+(defun bk/shame-on-you ()
+  "Shame."
+  (interactive)
+  (message "Stop this bad habbit!"))
+
+;; stop pressing C-x C-s to save buffers, we already have a minor mode enabled to do that
+(global-set-key (kbd "C-x C-s") #'bk/shame-on-you)
+
 (defun bk/days-since ()
   "Number of days since DATE to today."
   (interactive)
@@ -1208,6 +1270,22 @@ Better naming to improve the chances to find it."
     (comment-kill (save-excursion
                     (goto-char (point-max))
                     (line-number-at-pos)))))
+
+(defun bk/point-to-register ()
+  "Store cursor position in a register."
+  (interactive)
+  (point-to-register 8)
+  (message "Point set"))
+
+(defun bk/jump-to-register ()
+  "Switch between current position and pos stored."
+  (interactive)
+  (let ((tmp (point-marker)))
+    (jump-to-register 8)
+    (set-register 8 tmp)))
+
+(global-set-key (kbd "C-c r p") #'bk/point-to-register)
+(global-set-key (kbd "C-c j p") #'bk/jump-to-register)
 
 (defun bk/clear-registers ()
   "Remove all saved registers."
@@ -1238,12 +1316,22 @@ Better naming to improve the chances to find it."
       (delete-file filename)
       (kill-buffer buffer))))
 
+(defun bk/indent-buffer ()
+  "Fix indentation of buffer."
+  (interactive)
+  (indent-region (point-min) (point-max)))
+
+(defun bk/untabify-buffer ()
+  "Remove tabs from buffer."
+  (interactive)
+  (untabify (point-min) (point-max)))
+
 (defun bk/cleanup-buffer ()
   "Perform a bunch of operations on the whitespace content of a buffer."
   (interactive)
-  (untabify (point-min) (point-max))
+  (bk/untabify-buffer)
   (delete-trailing-whitespace)
-  (indent-region (point-min) (point-max)))
+  (bk/indent-buffer))
 
 (defun bk/sudo-edit (&optional arg)
   "Function to edit file with super-user with optional ARG."
@@ -1251,6 +1339,13 @@ Better naming to improve the chances to find it."
   (if (or arg (not buffer-file-name))
       (find-file (concat "/sudo:root@localhost:" (read-file-name "File: ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
+(defun bk/touch-buffer-file ()
+  "Touch buffer."
+  (interactive)
+  (insert " ")
+  (backward-delete-char 1)
+  (save-buffer))
 
 (defun bk/beginning-of-line ()
   "Go back at the first non-whitespace character."
@@ -1384,12 +1479,12 @@ Better naming to improve the chances to find it."
 (use-package flyspell-correct
   :ensure t
   :commands (flyspell-correct-word-generic
-	     flyspell-correct-previous-word-generic)
+             flyspell-correct-previous-word-generic)
   :config
   (require 'flyspell-correct-ido)
   (setq flyspell-correct-interface #'flyspell-correct-ido)
   :bind (:map flyspell-mode-map
-	      ("C-;" . flyspell-correct-wrapper)))
+              ("C-;" . flyspell-correct-wrapper)))
 
 
 ;;; Spell Checking
@@ -1455,11 +1550,11 @@ Better naming to improve the chances to find it."
   "Add resource to Org Roam buffer."
   (interactive)
   (let* ((candidates (mapcar (lambda (x)
-			       (replace-regexp-in-string "~/resources/" "" x))
-			     (directory-files-recursively "~/resources" "")))
-	 (resource (ido-completing-read "Resource: " candidates))
-	 (link-location (concat "file:~/resources/" resource))
-	 (description (ido-completing-read "Description: " "")))
+                               (replace-regexp-in-string "~/resources/" "" x))
+                             (directory-files-recursively "~/resources" "")))
+         (resource (ido-completing-read "Resource: " candidates))
+         (link-location (concat "file:~/resources/" resource))
+         (description (ido-completing-read "Description: " "")))
     (org-insert-link t link-location description)))
 
 (use-package org-roam
@@ -1571,8 +1666,8 @@ Better naming to improve the chances to find it."
   (setq ledger-report-auto-width t)
   (add-hook 'before-save-hook 'bk/clean-leader-on-save)
   :bind (:map ledger-mode-map
-	      ("C-M-." . bk/ledger-increment-date)
-	      ("C-M-," . bk/ledger-decrement-date)))
+              ("C-M-." . bk/ledger-increment-date)
+              ("C-M-," . bk/ledger-decrement-date)))
 
 (use-package hledger-mode
   :ensure t
@@ -1586,7 +1681,7 @@ Better naming to improve the chances to find it."
   "Add env variables to your docker build."
   (interactive)
   (let* ((vars (read-from-minibuffer "sequence of <envName>=<envValue>: "))
-	 (split-vars (split-string vars " ")))
+         (split-vars (split-string vars " ")))
     (setq dockerfile-build-args nil)
     (dolist (v split-vars)
       (add-to-list 'dockerfile-build-args v))
@@ -1597,8 +1692,8 @@ Better naming to improve the chances to find it."
   "Add usual env variables to Emacs environment."
   (interactive)
   (let* ((idu (shell-command-to-string "id -u"))
-	 (idg (shell-command-to-string "id -g"))
-	 (uid (string-join (vector (string-trim idu) ":" (string-trim idg)))))
+         (idg (shell-command-to-string "id -g"))
+         (uid (string-join (vector (string-trim idu) ":" (string-trim idg)))))
     (setenv "WEBSERVER_PORT" "3000")
     (setenv "CURRENT_UID" uid)
     (message "setenv WEBSERVER_PORT=3000 CURRENT_UID=$(id -u):$(id -g) done!")))
@@ -1706,7 +1801,7 @@ Better naming to improve the chances to find it."
 (use-package racket-mode
   :ensure t
   :bind (:map racket-mode-map
-	      ("C-c C-k" . racket-run))
+              ("C-c C-k" . racket-run))
   :config
   (add-hook 'racket-mode-hook #'racket-unicode-input-method-enable)
   (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable))
@@ -1723,6 +1818,12 @@ Better naming to improve the chances to find it."
 
 
 ;;; Misc. Custom Functions
+
+(use-package disable-mouse
+  :ensure t
+  :config
+  (disable-mouse-mode +1))
+
 
 (use-package windresize
   :ensure t)
@@ -1935,6 +2036,11 @@ Better naming to improve the chances to find it."
   (prodigy-define-tag
     :name 'esource-run
     :ready-message "WARNING: .*"))
+
+(use-package browse-kill-ring
+  :ensure t
+  :config
+  (browse-kill-ring-default-keybindings))
 
 ;;; End of file
 
