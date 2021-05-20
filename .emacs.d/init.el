@@ -27,12 +27,12 @@
 
 (use-package emacs
   :init
+  (setq-local indent-tabs-mode nil)
   (setq tab-always-indent 'complete
         ring-bell-function 'ignore
         visible-bell nil
         create-lockfiles nil
         custom-safe-themes t
-        indent-tabs-mode nil
         delete-by-moving-to-trash t ;move files to trash when deleting
         echo-keystrokes 0.1         ;show keystrokes in progress
         tab-width 4
@@ -48,12 +48,23 @@
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
-;;; this will save the buffer for me...
+;; this will save the buffer for me...
 (auto-save-visited-mode +1)
 (add-function :after after-focus-change-function
               (lambda ()
                 (unless (frame-focus-state)
                   (save-some-buffers t))))
+
+;; save buffer when you move between windows
+(defadvice switch-to-buffer (before save-buffer-now activate)
+  (when buffer-file-name (save-buffer)))
+
+(defadvice other-window (before other-window-now activate)
+  (when buffer-file-name (save-buffer)))
+
+(defadvice other-frame (before other-frame-now activate)
+  (when buffer-file-name (save-buffer)))
+
 
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
@@ -639,7 +650,8 @@
   :ensure t
   :bind (("C-c >" . mc/mark-next-like-this)
          ("C-c <" . mc/mark-previous-like-this)
-         ("<mouse-3>" . mc/toggle-cursor-on-click)))
+         ("<mouse-3>" . mc/add-cursor-on-click)))
+
 
 (use-package move-text
   :ensure t
@@ -1244,6 +1256,48 @@ Better naming to improve the chances to find it."
   (which-key-mode))
 
 ;;; Custom Functions
+
+(defun bk/align-whitespace (start end)
+  "Align columns by whitespace"
+  (interactive "r")
+  (align-regexp start end
+                "\\(\\s-*\\)\\s-" 1 0 t))
+
+(defun bk/align-ampersand (start end)
+  "Align columns by ampersand"
+  (interactive "r")
+  (align-regexp start end
+                "\\(\\s-*\\)&" 1 1 t))
+
+(defun bk/align-quote-space (start end)
+  "Align columns by quote and space"
+  (interactive "r")
+  (align-regexp start end
+                "\\(\\s-*\\).*\\s-\"" 1 0 t))
+
+(defun bk/align-equals (start end)
+  "Align columns by equals sign"
+  (interactive "r")
+  (align-regexp start end
+                "\\(\\s-*\\)=" 1 0 t))
+
+(defun bk/align-comma (start end)
+  "Align columns by comma"
+  (interactive "r")
+  (align-regexp start end
+                "\\(\\s-*\\)," 1 1 t))
+
+(defun bk/align-dot (start end)
+  "Align columns by dot"
+  (interactive "r")
+  (align-regexp start end
+                "\\(\\s-*\\)\\\." 1 1 t))
+
+(defun bk/align-colon (start end)
+  "Align columns by equals sign"
+  (interactive "r")
+  (align-regexp start end
+                "\\(\\s-*\\):" 1 0 t))
 
 (defun bk/shame-on-you ()
   "Shame."
