@@ -141,10 +141,10 @@
 (defvar symbol-focus-mode-map (make-sparse-keymap)
   "symbol-focus-mode keymap")
 
-(define-key symbol-focus-mode-map (kbd "M-s-b") 'sf/back)
-(define-key symbol-focus-mode-map (kbd "M-s-n") 'sf/next)
-(define-key symbol-focus-mode-map (kbd "M-s-p") 'sf/prev)
-(define-key symbol-focus-mode-map (kbd "M-s-r") 'sf/reset)
+(define-key symbol-focus-mode-map (kbd "C-c f b") 'sf/back)
+(define-key symbol-focus-mode-map (kbd "C-c f n") 'sf/next)
+(define-key symbol-focus-mode-map (kbd "C-c f p") 'sf/prev)
+(define-key symbol-focus-mode-map (kbd "C-c f r") 'sf/reset)
 
 (define-minor-mode symbol-focus-mode
   "Focuses on a symbol, hides all top-level forms that does not
