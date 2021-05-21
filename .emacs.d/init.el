@@ -324,11 +324,19 @@
           "*cvs*"
           "*Buffer List*"
           "*Ibuffer*"
-          "*esh command on file*"))
+          "*esh command on file*"
+	  "*kaocha-error*"))
   :config
   (winner-mode +1)
   (global-set-key (kbd "C-x 4 u") 'winner-undo)
   (global-set-key (kbd "C-x 4 U") 'winner-redo))
+
+(use-package shackle
+  :ensure t
+  :config
+  (setq shackle-rules
+	'(("*kaocha-error*" :ignore t)))
+  (shackle-mode +1))
 
 (use-package recentf
   :config
@@ -828,13 +836,65 @@
   :bind (("M-n" . jump-char-forward)
          ("M-p" . jump-char-backward)))
 
+;;; Emacs utils
+
+(defun util/get-frame->selected-window ()
+  "Return a list of pairs of (frame `selected-window')."
+  (let* ((original-frame (window-frame))
+         (result (->> (visible-frame-list)
+                   (-map (lambda (f)
+                           (select-frame f t)
+                           (list f (selected-window)))))))
+    (select-frame original-frame t)
+    result))
+
+(defun util/preserve-seelcted-window (f)
+  "Run the given function F and then restore focus to the original window.
+Useful when you want to invoke a function (like showing
+documentation) but desire to keep your current window focused."
+  (let* ((original-frame (selected-frame))
+         (frames->windows (util/get-frame->selected-window))
+         (result (funcall f)))
+    (-each frames->windows (lambda (x)
+                             (select-frame (first x) t)
+                             (select-window (second x) t)))
+    (select-frame-set-input-focus original-frame t)
+    result))
+
 ;;; Git
+
+(defun init-git-commit-mode ()
+  "Move cursor to the beginning of the buffer when the git commit window is shown."
+  (end-of-line))
+
+(defun with-magit-output-buffer (f)
+  "Display the result of function F in a new buffer."
+  (let ((f f))
+    (util/preserve-seelcted-window
+     (lambda ()
+       (funcall f)
+       (display-buffer (magit-process-buffer t))))))
+
+(defun git-pull ()
+  "Run git pull in a dedicated buffer."
+  (interactive)
+  (with-magit-output-buffer (lambda () (call-interactively 'magit-pull-from-upstream))))
 
 (use-package magit
   :ensure t
   :init
   (setq magit-log-show-gpg-status t
         magit-completing-read-function 'magit-ido-completing-read
+
+        ;; when committing, don't have Magit show the diff of what's changed
+        magit-commit-show-diff nil
+
+        ;; don't refresh the status buffer unless it's currently focused. This should increase performace
+        magit-refresh-status-buffer nil
+
+        ;; have magit open buffers in the current window, rather than a new split
+        magit-display-buffer-function (lambda (buffer)
+                                        (display-buffer buffer '(display-buffer-same-window)))
         magit-section-initial-visibility-alist
         '((untracked . show)
           (unstaged . show)
@@ -848,8 +908,7 @@
   (set-default 'magit-revert-buffers 'silent)
   (set-default 'magit-no-confirm '(stage-all-changes unstage-all-changes))
 
-  ;; fix cursor when entering git commit buffer
-  (add-hook 'git-commit-setup-hook (lambda () (beginning-of-buffer)))
+  (add-hook 'git-commit-mode-hook 'init-git-commit-mode)
 
   ;; Real dates, please
   (set-default 'magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
@@ -1030,34 +1089,43 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (add-hook 'clojure-mode-hook #'subword-mode) ;; deal with java class and method names
   )
 
+(require 's)
+
+(defun clj--src-file-name-from-test (name)
+  (s-with name
+    (s-replace "/test/" "/src/")
+    (s-replace "_test.clj" ".clj")))
+
+(defun clj--test-file-name-from-src (name)
+  (s-with name
+    (s-replace "/src/" "/test/")
+    (s-replace ".clj" "_test.clj")))
+
+(defun clj--is-test? (name)
+  (string-match-p "/test/" name))
+
+(defun clj-other-file-name ()
+  (let ((name (buffer-file-name)))
+    (cond
+     ((clj--is-test? name) (clj--src-file-name-from-test name))
+     (:else (clj--test-file-name-from-src name)))))
+
+(defun clj-find-alternative-name (file)
+  (cond
+   ((s-ends-with? ".cljs" file)
+    (s-replace ".cljs" ".cljc" file))
+   ((s-ends-with? ".clj" file)
+    (s-replace ".clj" ".cljc" file))
+   ((s-ends-with? ".cljc" file)
+    (s-replace ".cljc" ".clj" file))))
+
 (use-package kaocha-runner
   :ensure t
-  :preface
-
-  (defun kaocha-runner-run-relevant-tests ()
-    (when (cljr--project-depends-on-p "kaocha")
-      (if (clj--is-test? (buffer-file-name))
-          (kaocha-runner--run-tests
-           (kaocha-runner--testable-sym (cider-current-ns) nil (eq major-mode 'clojurescript-mode))
-           nil t)
-        (let ((original-buffer (current-buffer)))
-          (save-window-excursion
-            (let* ((file (clj-other-file-name))
-                   (alternative-file (clj-find-alternative-name file)))
-              (cond
-               ((file-exists-p file) (find-file file))
-               ((file-exists-p alternative-file) (find-file alternative-file))))
-            (when (clj--is-test? (buffer-file-name))
-              (kaocha-runner--run-tests
-               (kaocha-runner--testable-sym (cider-current-ns) nil (eq major-mode 'clojurescript-mode))
-               nil t original-buffer)))))))
-
   :init
   (setq kaocha-runner-repl-invocation-template
         "(do (require 'kaocha.repl) %s)")
   :config
   (require 'patch-kaocha-runner)
-  (add-hook 'cider-file-loaded-hook #'kaocha-runner-run-relevant-tests)
   :bind
   (:map clojure-mode-map
         ("C-c k t" . kaocha-runner-run-test-at-point)
