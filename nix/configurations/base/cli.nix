@@ -33,6 +33,7 @@
     silver-searcher
     mpv
     nodePackages.prettier
+    pgformatter
   ];
 
   services.openssh.enable = true;
