@@ -86,11 +86,18 @@
       #   "1: coding" = [{ class = "^Emacs$"; }];
       # };
 
-      # bars = [
-      #   {
-      #     fonts = [ "IBM Plex Mono 10" ];
-      #   }
-      # ];
+      bars = [
+        {
+          mode = "dock";
+          hiddenState = "hide";
+          position = "bottom";
+          statusCommand = "${pkgs.i3status}/bin/i3status";
+          # command = "${pkgs.i3bar}/bin/i3bar";
+          workspaceButtons = true;
+          trayOutput = "primary";
+          fonts = [ "IBM Plex Mono 10" ];
+        }
+      ];
 
       floating.criteria = [
         { class = "Pavucontrol"; }

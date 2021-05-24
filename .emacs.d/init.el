@@ -33,8 +33,11 @@
         visible-bell nil
         create-lockfiles nil
         custom-safe-themes t
-        delete-by-moving-to-trash t ;move files to trash when deleting
-        echo-keystrokes 0.1         ;show keystrokes in progress
+        ;; move files to trash when deleting
+        delete-by-moving-to-trash t
+
+        ;; show keystrokes in progress
+        echo-keystrokes 0.1
         tab-width 4
         make-backup-files nil
         gc-cons-threshold (* 100 1024 1024)
@@ -64,7 +67,6 @@
 
 (defadvice other-frame (before other-frame-now activate)
   (when buffer-file-name (save-buffer)))
-
 
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
@@ -217,19 +219,10 @@
 
 (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
 
-(add-hook 'after-init-hook (lambda ()
-                             (abbrev-mode +1)
-                             (diminish 'abbrev-mode)))
-
-;;; Saving data between sessions
-
-(use-package session
-  :ensure t
-  :init
-  (setq session-use-package t)
-  :config
-  (add-hook 'after-init-hook 'session-initialize))
-
+(add-hook 'after-init-hook
+          (lambda ()
+            (abbrev-mode +1)
+            (diminish 'abbrev-mode)))
 
 ;;; Bookmarks
 
@@ -259,6 +252,7 @@
   (global-set-key (kbd "<S-f2>") 'bm-previous))
 
 ;;; Authentication
+
 (use-package pinentry
   :ensure t
   :init
@@ -325,7 +319,7 @@
           "*Buffer List*"
           "*Ibuffer*"
           "*esh command on file*"
-	  "*kaocha-error*"))
+          "*kaocha-error*"))
   :config
   (winner-mode +1)
   (global-set-key (kbd "C-x 4 u") 'winner-undo)
@@ -334,8 +328,7 @@
 (use-package shackle
   :ensure t
   :config
-  (setq shackle-rules
-	'(("*kaocha-error*" :ignore t)))
+  (setq shackle-rules '(("*kaocha-error*" :ignore t)))
   (shackle-mode +1))
 
 (use-package recentf
@@ -413,13 +406,13 @@
   :init
   (setq dired-listing-switches "-alh"
         dired-recursive-copies 'always
-        dired-recursive-deletes 'always)
+        dired-recursive-deletes 'always
+        dired-omit-files "^\\...+$")
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
 
-  ;; make dired less verbose
-  (add-hook 'dired-mode-hook (lambda () (dired-hide-details-mode 1)))
+  (add-hook 'dired-mode-hook 'dired-omit-mode)
 
   ;; enable 'a'-keybinding in dired - which opens the file and closes dired buffer
   (put 'dired-find-alternate-file 'disabled nil)
@@ -472,8 +465,7 @@
   :config
   (ido-vertical-mode +1))
 
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
+(setq minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
 (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
 (use-package ido-at-point
@@ -527,7 +519,9 @@
   (set-background-color "honeydew"))
 
 (use-package rainbow-mode
-  :ensure t)
+  :ensure t
+  :commands
+  (rainbow-mode))
 
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 0))
@@ -572,8 +566,7 @@
   (bk/presentation-theme)
   (set-frame-parameter (selected-frame) 'alpha 80))
 
-
-(bk/default-theme)
+(bk/light-theme)
 
 
 ;;; Projects
@@ -588,12 +581,9 @@
         projectile-globally-ignored-file-suffixes '(".elc" ".pyc" ".o")
         projectile-globally-ignored-files '(".DS_Store" "TAGS" "ido.last" "recentf" "smex-items")
         )
-  :bind (("C-c p p" . projectile-switch-project)
-         ("C-c p f" . projectile-find-file)
-         :map projectile-mode-map
-         ("C-c p" . projectile-command-map))
   :config
   (require 'subr-x)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
   (projectile-mode +1))
 
 ;; find file in project, with specific patterns
@@ -659,7 +649,6 @@
   :bind (("C-c >" . mc/mark-next-like-this)
          ("C-c <" . mc/mark-previous-like-this)
          ("<mouse-3>" . mc/add-cursor-on-click)))
-
 
 (use-package move-text
   :ensure t
@@ -1051,6 +1040,27 @@ documentation) but desire to keep your current window focused."
   :init
   (setq markdown-command "pandoc"))
 
+;;; Python
+
+(defun bk/elpy-setup ()
+  (pyvenv-activate "~/miniconda3")
+  (delete `elpy-module-django elpy-modules)
+  (delete `elpy-module-highlight-indentation elpy-modules))
+
+(use-package elpy
+  :ensure t
+  :config
+  (add-hook 'python-mode-hook #'elpy-enable)
+  (add-hook 'python-mode-hook #'bk/elpy-setup))
+
+(use-package py-autopep8
+  :ensure t
+  :after elpy
+  :init
+  (setq py-autopep8-options '("--max-line-length=100"))
+  :config
+  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+
 ;;; Clojure
 
 (use-package clojure-snippets :ensure t)
@@ -1080,14 +1090,15 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   :config
   (symbol-focus-mode +1))
 
+(use-package subword
+  :diminish subword-mode
+  :config
+  (add-hook 'clojure-mode-hook #'subword-mode))
+
 (use-package clojure-mode
   :ensure t
   :init
-  (setq clojure-toplevel-inside-comment-form t)
-  :config
-  (use-package subword :diminish subword-mode)
-  (add-hook 'clojure-mode-hook #'subword-mode) ;; deal with java class and method names
-  )
+  (setq clojure-toplevel-inside-comment-form t))
 
 (require 's)
 
@@ -1372,9 +1383,6 @@ Better naming to improve the chances to find it."
   (interactive)
   (message "Stop this bad habbit!"))
 
-;; stop pressing C-x C-s to save buffers, we already have a minor mode enabled to do that
-(global-set-key (kbd "C-x C-s") #'bk/shame-on-you)
-
 (defun bk/days-since ()
   "Number of days since DATE to today."
   (interactive)
@@ -1617,8 +1625,6 @@ Better naming to improve the chances to find it."
   (setq langtool-language-tool-jar
         "~/.emacs.d/bin/languagetool-commandline.jar"))
 
-(use-package google-this :ensure t)
-
 (use-package popup :ensure t)
 
 ;;; Org mode
@@ -1659,10 +1665,20 @@ Better naming to improve the chances to find it."
            "* TODO %^{Title}\n %i" :clock-in t :clock-resume t))
         ))
 
+;; edit blocks
+(use-package edit-indirect
+  :ensure t)
+
 (use-package org-download
   :ensure t
   :config
   (setq org-image-actual-width nil))
+
+;; disable flycheck in org buffers
+(defun disable-flycheck-in-org-src-block ()
+  (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
+
+(add-hook 'org-src-mode-hook 'disable-flycheck-in-org-src-block)
 
 ;;; Zettelkasten
 
@@ -1831,7 +1847,8 @@ Better naming to improve the chances to find it."
   :config
   (put 'dockerfile-image-name 'safe-local-variable-p #'stringp))
 
-(use-package docker-compose-mode :ensure t)
+(use-package docker-compose-mode
+  :ensure t)
 
 (use-package docker
   :ensure t
@@ -1848,6 +1865,15 @@ Better naming to improve the chances to find it."
   (add-to-list 'auto-mode-alist '("\\.pom$" . nxml-mode)))
 
 ;;; SQL
+
+;; reformat SQL using external program pgformatter
+(use-package sqlformat
+  :ensure t
+  :init
+  (setq sqlformat-command 'pgformatter)
+  :config
+  (add-hook 'sql-mode-hook 'sqlformat-on-save-mode))
+
 
 (use-package sql-indent
   :ensure t
@@ -1877,9 +1903,14 @@ Better naming to improve the chances to find it."
 
 (use-package wgrep :ensure t)
 
+;; remap M-s .  because M-s was taken by paredit. Similar to vim * command
+(global-set-key (kbd "C-c .") 'isearch-forward-symbol-at-point)
+
+
 ;;; nixOS
 
-(use-package nix-mode :ensure t)
+(use-package nix-mode
+  :ensure t)
 
 ;;; Reify Health
 
@@ -1930,6 +1961,7 @@ Better naming to improve the chances to find it."
 
 
 ;;; PlantUML
+
 (use-package plantuml-mode
   :ensure t
   :mode ("\\.plantuml\\'" "\\.puml\\'")
@@ -1938,14 +1970,14 @@ Better naming to improve the chances to find it."
   :config
   (require 'ob-plantuml))
 
+(use-package flycheck-plantuml
+  :ensure t
+  :after flycheck
+  :config
+  (flycheck-plantuml-setup))
+
 
 ;;; Misc. Custom Functions
-
-(use-package disable-mouse
-  :ensure t
-  :config
-  (disable-mouse-mode +1))
-
 
 (use-package windresize
   :ensure t)
