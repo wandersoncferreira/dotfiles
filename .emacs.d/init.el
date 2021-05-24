@@ -1963,9 +1963,9 @@ Better naming to improve the chances to find it."
 (use-package plantuml-mode
   :ensure t
   :mode ("\\.plantuml\\'" "\\.puml\\'")
-  :init
-  (setq org-plantuml-jar-path "~/.emacs.d/bin/plantuml.jar")
   :config
+  (setq org-plantuml-jar-path "~/.emacs.d/bin/plantuml.jar"
+        plantuml-default-exec-mode 'jar)
   (require 'ob-plantuml))
 
 (use-package flycheck-plantuml
