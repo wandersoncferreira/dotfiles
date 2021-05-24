@@ -544,8 +544,7 @@
   "Default theme to be used."
   (interactive)
   (load-theme 'default-black t)
-  (bk/set-ibm-font 110)
-  (set-frame-parameter (selected-frame) 'alpha 90))
+  (bk/set-ibm-font 110))
 
 
 (defun bk/presentation-theme ()
@@ -563,8 +562,7 @@
 (defun bk/light-theme ()
   "Light theme default."
   (interactive)
-  (bk/presentation-theme)
-  (set-frame-parameter (selected-frame) 'alpha 80))
+  (bk/presentation-theme))
 
 (bk/light-theme)
 
