@@ -1,3 +1,4 @@
+
 ;;; init.el --- Wand's config  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
@@ -27,7 +28,6 @@
 
 (use-package emacs
   :init
-  (setq-local indent-tabs-mode nil)
   (setq tab-always-indent 'complete
         ring-bell-function 'ignore
         visible-bell nil
@@ -47,7 +47,9 @@
          ("C-x C-b" . ibuffer)
          ("C-x e" . eshell)
          :map emacs-lisp-mode-map
-         ("C-c C-k" . bk/eval-buffer)))
+         ("C-c C-k" . bk/eval-buffer))
+  :config
+  (setq-default indent-tabs-mode nil))
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
@@ -544,15 +546,16 @@
   "Default theme to be used."
   (interactive)
   (load-theme 'default-black t)
-  (bk/set-ibm-font 110))
+  (bk/set-ibm-font 110)
+  (set-frame-parameter (selected-frame) 'alpha 90))
 
 
 (defun bk/presentation-theme ()
   "Presentation theme."
   (interactive)
-  (bk/set-ibm-font 110)
+  (bk/set-ibm-font 120)
   (disable-theme 'default-black)
-  (set-frame-parameter (selected-frame) 'alpha 100)
+  (set-frame-parameter (selected-frame) 'alpha 95)
   (set-face-attribute 'lazy-highlight nil :background "khaki1")
   (set-face-attribute 'isearch nil :background "khaki1")
   (set-face-attribute 'region nil :background "khaki1")
@@ -562,10 +565,10 @@
 (defun bk/light-theme ()
   "Light theme default."
   (interactive)
-  (bk/presentation-theme))
+  (bk/presentation-theme)
+  (set-frame-parameter (selected-frame) 'alpha 90))
 
 (bk/light-theme)
-
 
 ;;; Projects
 
@@ -1334,6 +1337,11 @@ Better naming to improve the chances to find it."
 
 ;;; Custom Functions
 
+(defun bk/packages-count ()
+  "How many packages do I have installed."
+  (interactive)
+  (message "Packages installed: %s" (length package-alist)))
+
 (defun bk/align-whitespace (start end)
   "Align columns by whitespace"
   (interactive "r")
@@ -1944,6 +1952,8 @@ Better naming to improve the chances to find it."
   :magic ("%PDF" . pdf-view-mode)
   :config
   (pdf-tools-install :no-query)
+  (require 'pdf-continuous-scroll-mode)
+  (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
   (require 'pdf-occur))
 
 
@@ -2193,6 +2203,41 @@ Better naming to improve the chances to find it."
   :ensure t
   :config
   (browse-kill-ring-default-keybindings))
+
+;;; Writing
+
+(use-package writeroom-mode
+  :ensure t
+  :config
+  (setq writeroom-extra-line-spacing t
+        writeroom-mode-line t
+        writeroom-restore-window-config t
+        writeroom-fullscreen-effect 'maximized))
+
+;;; IIRC
+
+(use-package erc
+  :init
+  (setq erc-server "irc.libera.chat"
+        erc-prompt-for-nickserv-password nil
+        erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#clojure"))
+        erc-autojoin-timing 'ident
+        erc-hide-list '("JOIN" "PART" "QUIT")
+        erc-lurker-hide-list '("JOIN" "PART" "QUIT")
+        erc-track-exclude-types '("JOIN" "PART" "QUIT"))
+  :config
+  (add-to-list 'erc-modules 'spelling)
+  (erc-services-mode 1)
+  (erc-update-modules))
+
+
+(defun bk/erc-start ()
+  "Start ERC mode."
+  (interactive)
+  (if (get-buffer "irc.libera.chat:6667")
+      (erc-track-switch-buffer 1)
+    (when (y-or-n-p "Start ERC? ")
+      (erc :server "irc.libera.chat" :port 6667 :nick "bartuka"))))
 
 ;;; End of file
 
