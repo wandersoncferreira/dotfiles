@@ -12,3 +12,4 @@ graphviz
 mpv
 pandoc
 htop
+rlwrap
