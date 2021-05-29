@@ -16,5 +16,15 @@ dnf install yarn
 
 # enable flathub
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-
 flatpak -y install $(cat flatpak.txt)
+
+# install docker
+dnf -y install dnf-plugins-core
+dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo
+dnf -y install docker-ce docker-ce-cli "containerd.io"
+systemctl start docker
+systemctl enable docker.service
+systemctl enable containerd.service
+groupadd docker
+usermod -aG docker $USER
+dnf -y install docker-compose
