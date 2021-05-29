@@ -4,7 +4,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(olivetti olivetti-mode shackle rainbow-blocks js2-refactor js2-mode browse-kill-ring disable-mouse rainbow-mode ido-vertical-mode vertico elfeed org-roam popup typescript-mode clojure-mode paredit yasnippet flycheck magit multiple-cursors expand-region racket-mode flycheck-pos-tip flycheck-projectile modus-operandi-theme rainbow-delimiters zygospore zprint-mode writeroom-mode windresize whitespace-cleanup-mode which-key wakatime-mode vlf uuidgen use-package try toggle-test tide sql-indent smex session rg restclient quickrun projectile prodigy prettier-js plantuml-mode pinentry perspective pdf-tools org-roam-server org-download nix-mode move-text monokai-theme magit-todos ledger-mode langtool kaocha-runner jump-char ido-completing-read+ ido-at-point hledger-mode goto-chg google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flyspell-correct flymd fix-word find-file-in-project envrc elfeed-org dtrt-indent dockerfile-mode docker-compose-mode docker diminish clojure-snippets clj-refactor change-inner buffer-move browse-at-remote bm bicycle ag add-node-modules-path))
+   '(flycheck-clj-kondo doom-modeline doom-themes olivetti olivetti-mode shackle rainbow-blocks js2-refactor js2-mode browse-kill-ring disable-mouse rainbow-mode ido-vertical-mode vertico elfeed org-roam popup typescript-mode clojure-mode paredit yasnippet flycheck magit multiple-cursors expand-region racket-mode flycheck-pos-tip flycheck-projectile modus-operandi-theme rainbow-delimiters zygospore zprint-mode writeroom-mode windresize whitespace-cleanup-mode which-key wakatime-mode vlf uuidgen use-package try toggle-test tide sql-indent smex session rg restclient quickrun projectile prodigy prettier-js plantuml-mode pinentry perspective pdf-tools org-roam-server org-download nix-mode move-text monokai-theme magit-todos ledger-mode langtool kaocha-runner jump-char ido-completing-read+ ido-at-point hledger-mode goto-chg google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flyspell-correct flymd fix-word find-file-in-project envrc elfeed-org dtrt-indent dockerfile-mode docker-compose-mode docker diminish clojure-snippets clj-refactor change-inner buffer-move browse-at-remote bm bicycle ag add-node-modules-path))
  '(safe-local-variable-values
    '((writeroom-mode-line . t)
      (writeroom-fullscreen-effect . maximized)
@@ -12,14 +12,14 @@
      (writeroom-mode-line t)
      (writeroom-extra-line-spacing . t)
      (eval progn
-	   (turn-off-auto-fill)
-	   (text-scale-set 1)
-	   (writeroom-mode))
+           (turn-off-auto-fill)
+           (text-scale-set 1)
+           (writeroom-mode))
      (visual-fill-column-width . 80)
      (eval progn
-	   (turn-off-auto-fill)
-	   (text-scale-set 1)
-	   (turn-on-olivetti-mode))
+           (turn-off-auto-fill)
+           (text-scale-set 1)
+           (turn-on-olivetti-mode))
      (tgt-projects
       ((:root-dir "/home/wanderson/projects/atvi-broadcast-stats-portico")
        (:src-dirs "src")
@@ -63,7 +63,7 @@
        (:test-dirs "test/clj")
        (:test-suffixes "_test")))
      (cider-known-endpoints quote
-			    (("localhost" "8777")))
+                            (("localhost" "8777")))
      (tgt-projects
       ((:root-dir "/home/wanderson/repos/experiments/tempo")
        (:src-dirs "src/clj")

@@ -262,7 +262,8 @@
         epa-file-cache-passphrase-for-symmetric-encryption t
         epa-pinentry-mode 'loopback)
   :config
-  (pinentry-start))
+  (when (not (process-live-p pinentry--server-process))
+    (pinentry-start)))
 
 (use-package epa
   :ensure nil
@@ -549,26 +550,41 @@
   (bk/set-ibm-font 110)
   (set-frame-parameter (selected-frame) 'alpha 90))
 
+(defun bk/appearance ()
+  "Set of parameters to be used in several places."
+  (set-face-attribute 'lazy-highlight nil :background "khaki1")
+  (set-face-attribute 'isearch nil :background "khaki1")
+  (set-face-attribute 'region nil :background "khaki1")
+  (set-background-color "honeydew"))
 
 (defun bk/presentation-theme ()
   "Presentation theme."
   (interactive)
   (bk/set-ibm-font 120)
   (disable-theme 'default-black)
-  (set-frame-parameter (selected-frame) 'alpha 95)
-  (set-face-attribute 'lazy-highlight nil :background "khaki1")
-  (set-face-attribute 'isearch nil :background "khaki1")
-  (set-face-attribute 'region nil :background "khaki1")
-  (set-background-color "honeydew"))
+  (bk/appearance))
 
 
 (defun bk/light-theme ()
   "Light theme default."
   (interactive)
-  (bk/presentation-theme)
-  (set-frame-parameter (selected-frame) 'alpha 90))
+  (bk/appearance)
+  (bk/set-ibm-font 110))
 
-(bk/light-theme)
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-one t)
+  (bk/set-ibm-font 110))
+
+(use-package doom-modeline
+  :ensure t
+  :config
+  (doom-modeline-mode +1))
+
+(use-package all-the-icons
+  :ensure t)
+
 
 ;;; Projects
 
@@ -905,8 +921,10 @@ documentation) but desire to keep your current window focused."
 
 (use-package magit-todos
   :ensure t
+  :commands (magit-todos-mode)
   :config
-  (magit-todos-mode +1))
+  (setq magit-todos-recursive t
+        magit-todos-depth 100))
 
 (use-package forge
   :ensure t
@@ -961,6 +979,9 @@ documentation) but desire to keep your current window focused."
   :config
   (setq flycheck-check-syntax-automatically '(save mode-enabled)
         flycheck-checker-error-threshold 4000))
+
+(use-package flycheck-clj-kondo
+  :ensure t)
 
 (use-package flycheck-projectile
   :ensure t)
@@ -1099,7 +1120,9 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 (use-package clojure-mode
   :ensure t
   :init
-  (setq clojure-toplevel-inside-comment-form t))
+  (setq clojure-toplevel-inside-comment-form t)
+  :config
+  (require 'flycheck-clj-kondo))
 
 (require 's)
 
@@ -2217,6 +2240,7 @@ Better naming to improve the chances to find it."
 ;;; IIRC
 
 (use-package erc
+  :commands (erc)
   :init
   (setq erc-server "irc.libera.chat"
         erc-prompt-for-nickserv-password nil
