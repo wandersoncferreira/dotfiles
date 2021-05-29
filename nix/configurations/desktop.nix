@@ -24,39 +24,16 @@
       enable = true;
       layout = "us,br";
 
-      desktopManager = {
-        xterm.enable = false;
-        xfce = {
-          enable = true;
-          thunarPlugins = [
-            pkgs.xfce.thunar-archive-plugin
-            pkgs.xfce.thunar-volman
-          ];
-          noDesktop = true;
-          enableXfwm = false;
-        };
-      };
-
-      displayManager.defaultSession = "xfce+i3";
-      displayManager.lightdm.enable = true;
-
-      windowManager.i3 = {
-        enable = true;
-        extraPackages = with pkgs; [
-          rofi
-          i3status
-          i3lock
-          alacritty
-          lxappearance
-          arandr
-          feh
-          evince
-        ];
-      };
+      displayManager.gdm.enable = true;
+      displayManager.gdm.wayland = true;
+      desktopManager.gnome3.enable = true;
 
       xkbVariant = "intl,abnt2";
       xkbOptions = "ctrl:nocaps";
       videoDrivers = [ "intel" ];
+
+      dbus.packages = [ pkgs.gnome3.dconf ];
+      udev.packages = with pkgs; [ gnome3.gnome-settings-daemon ];
 
       modules = [ pkgs.xorg.xf86inputlibinput ];
 
@@ -67,10 +44,31 @@
     };
   };
 
+  environment.systemPackages = with pkgs; [
+    # Apps
+    gnome3.evince
+    gnome3.gnome-tweak-tool
+    gnome3.gnome-terminal
+    gnome3.nautilus
+    gnome3.file-roller
+    gnome3.eog
+    gnome3.gnome-calculator
+
+    # Extensions
+    gnomeExtensions.appindicator
+  ];
+
+  services.gnome3 = {
+    core-shell.enable = true;
+    core-utilities.enable = false;
+    games.enable = false;
+  };
+
+  programs.gnome-terminal.enable = true;
   security.hideProcessInformation = false;
   services.gnome3.gnome-keyring.enable = true;
   programs.seahorse.enable = true;
-  security.pam.services.lightdm.enableGnomeKeyring = true;
+  # security.pam.services.lightdm.enableGnomeKeyring = true;
 
   fonts = {
     fonts = with pkgs; [
