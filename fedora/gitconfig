@@ -1,0 +1,14 @@
+[core]
+	editor = emacs
+	quotepath = false
+
+[user]
+	name = Wanderson Ferreira
+	email = wand@hey.com
+	signingkey = 56840A614DBE37AE
+	
+[github]
+	user = wandersoncferreira
+	oauth-token = b35352a796fc41f724a6588e4ca19fc2a0cbf068
+[commit]
+	gpgsign = true

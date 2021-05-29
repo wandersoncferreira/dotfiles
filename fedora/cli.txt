@@ -1,0 +1,14 @@
+util-linux-user
+zsh
+zsh-autosuggestions
+direnv
+simplescreenrecorder
+ledger
+ripgrep
+ffmpeg
+youtube-dl
+the_silver_searcher
+graphviz
+mpv
+pandoc
+htop

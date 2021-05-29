@@ -1,0 +1,7 @@
+telegram
+slack
+zulip
+app/org.videolan.VLC/x86_64/stable
+bitwarden
+spotify
+transmission
