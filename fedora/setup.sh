@@ -26,6 +26,16 @@ if [[ ! -f "$HOME/bin/clj-kondo" ]]
 fi
 
 # setup clojure
+if [[ ! -f "$HOME/bin/clojure" ]]
+then
+    curl -O https://download.clojure.org/install/linux-install-1.10.3.855.sh
+    chmod +x linux-install-1.10.3.855.sh
+    ./linux-install-1.10.3.855.sh --prefix /home/wanderson/bin
+    ln -sf $HOME/bin/bin/clojure $HOME/bin/clojure
+    ln -sf $HOME/bin/bin/clj $HOME/bin/clj
+    rm linux-install-1.10.3.855.sh
+fi
+
 mkdir -p $HOME/.clojure
 mkdir -p $HOME/.config/clj-kondo
 mkdir -p $HOME/.lsp
