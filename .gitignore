@@ -32,3 +32,5 @@ clojure/lsp/sqlite.db
 .emacs.d/.session
 .emacs.d/tutorial
 .emacs.d/racket-mode
+.emacs.d/screenshots
+.emacs.d/tramp

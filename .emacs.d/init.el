@@ -1,9 +1,17 @@
 ;;; init.el --- Wand's config  -*- lexical-binding: t; -*-
-
+;;
+;; Copyright (c) 2021 Wanderson Ferreira
+;;
+;; Author: Wanderson Ferreira <wand@hey.com>
+;; URL: https://github.com/wandersoncferreira/dotfiles
+;; Keywords: convenience
+;;
+;; This file is not part of GNU Emacs.
+;;
 ;;; Commentary:
-
+;;
 ;; Here be dragons!
-
+;;
 ;;; Code:
 
 ;;; Security
@@ -213,13 +221,6 @@
         (deactivate-mark))
     (message "No selected region!")))
 
-(define-abbrev-table 'global-abbrev-table
-  '(
-    ("reuslt" "result" nil 0)
-    ("requie" "require" nil 0)
-    ("requier" "require" nil 0)
-    ))
-
 (setq abbrev-file-name "~/.emacs.d/abbrev_defs")
 
 (add-hook 'after-init-hook
@@ -410,13 +411,10 @@
   :init
   (setq dired-listing-switches "-alh"
         dired-recursive-copies 'always
-        dired-recursive-deletes 'always
-        dired-omit-files "^\\...+$")
+        dired-recursive-deletes 'always)
   :config
   (require 'dired-x)
   (setq dired-dwim-target t)
-
-  (add-hook 'dired-mode-hook 'dired-omit-mode)
 
   ;; enable 'a'-keybinding in dired - which opens the file and closes dired buffer
   (put 'dired-find-alternate-file 'disabled nil)
@@ -572,22 +570,7 @@
   (bk/appearance)
   (bk/set-ibm-font 110))
 
-(use-package doom-themes
-  :ensure t
-  :config
-  (load-theme 'doom-one t)
-  (bk/set-ibm-font 110))
-
-(use-package doom-modeline
-  :ensure t
-  :init
-  (setq inhibit-compacting-font-caches t
-        find-file-visit-truename t)
-  :config
-  (doom-modeline-mode +1))
-
-(use-package all-the-icons
-  :ensure t)
+(bk/light-theme)
 
 ;;; Projects
 
@@ -2250,12 +2233,13 @@ Better naming to improve the chances to find it."
 ;;; IIRC
 
 (defun erc-sound-if-not-server (match-type nickuserhost msg)
+  "ERC sound alert based on MATCH-TYPE and NICKUSERHOST and MSG."
   (unless (or
            (string-match "Serv" nickuserhost)
            (string-match nickuserhost (erc-current-nick))
            (string-match "Server" nickuserhost))
     (when (string= match-type "current-nick")
-      (start-process-shell-command "lolsound" nil "mplayer ~/.emacs.d/sounds/icq-message.wav"))
+      (start-process-shell-command "lolsound" nil "mpv ~/.emacs.d/sounds/icq-message.wav"))
 
     (message
      (format "[%s|<%s:%s> %s]"
@@ -2287,7 +2271,8 @@ Better naming to improve the chances to find it."
   :config
   (add-to-list 'erc-modules 'spelling)
   (erc-services-mode 1)
-  (erc-update-modules))
+  (erc-update-modules)
+  (add-hook 'erc-text-matched-hook 'erc-sound-if-not-server))
 
 
 (defun bk/erc-start ()
@@ -2297,6 +2282,21 @@ Better naming to improve the chances to find it."
       (erc-track-switch-buffer 1)
     (when (y-or-n-p "Start ERC? ")
       (erc :server "irc.libera.chat" :port 6667 :nick "bartuka"))))
+
+;;; Presentation
+
+(use-package keycast
+  :ensure t)
+
+(use-package gif-screencast
+  :ensure nil
+  :load-path "~/.emacs.d/lisps/gif-screencast.el" 
+  :config
+  (setq gif-screencast-program "maim"
+        gif-screencast-args '("--quality" "1")
+        gifgif-screencast-want-optimized t
+        gif-screencast-output-directory "~/Videos/emacs/"
+        gif-screencast-screenshot-directory "~/.emacs.d/screenshots"))
 
 ;;; EPUB
 
