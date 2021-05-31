@@ -1,7 +1,12 @@
 #!/bin/env bash
 
+fedoraFiles=$HOME/dotfiles/fedora
+
+echo "Update Fedora"
+sudo dnf update
+
 echo "Install packages and Repositories"
-sudo ./packages.sh
+sudo ${fedoraFiles}/packages.sh
 
 echo "Start configuration"
-./config.sh
+${fedoraFiles}/config.sh

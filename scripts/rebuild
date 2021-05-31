@@ -1,0 +1,3 @@
+#!/bin/env bash
+
+$HOME/dotfiles/fedora/setup.sh

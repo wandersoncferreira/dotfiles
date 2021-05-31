@@ -1,5 +1,7 @@
 #!/bin/env bash
 
+fedoraFiles=/home/wanderson/dotfiles/fedora
+
 # enable RPM Fusion repository
 if [[ -z "$(dnf repolist | grep rpmfusion)" ]]
 then
@@ -7,10 +9,10 @@ then
 fi
 
 # Command Line Applications
-dnf -y install $(cat cli.txt)
+dnf -y install $(cat "${fedoraFiles}/dnf.txt")
 
 # Fonts
-dnf -y install $(cat fonts.txt)
+dnf -y install $(cat "${fedoraFiles}/fonts.txt")
 
 # install nodejs and yarn
 if [[ -z "$(dnf repolist | grep yarn)" ]]
@@ -22,7 +24,7 @@ fi
 
 # enable flathub
 flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo
-flatpak -y install $(cat flatpak.txt)
+flatpak -y install $(cat "${fedoraFiles}/flatpak.txt")
 
 # install docker
 if [[ -z "$(rpm -qa | grep docker-ce)" ]]

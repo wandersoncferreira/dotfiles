@@ -13,3 +13,5 @@ mpv
 pandoc
 htop
 rlwrap
+steam
+seahorse
