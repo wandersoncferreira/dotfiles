@@ -1,4 +1,3 @@
-
 ;;; init.el --- Wand's config  -*- lexical-binding: t; -*-
 
 ;;; Commentary:
@@ -26,30 +25,29 @@
   (eval-buffer)
   (message "Buffer evaluated!"))
 
-(use-package emacs
-  :init
-  (setq tab-always-indent 'complete
-        ring-bell-function 'ignore
-        visible-bell nil
-        create-lockfiles nil
-        custom-safe-themes t
-        ;; move files to trash when deleting
-        delete-by-moving-to-trash t
+(setq tab-always-indent 'complete
+      ring-bell-function 'ignore
+      visible-bell nil
+      create-lockfiles nil
+      custom-safe-themes t
+      ;; move files to trash when deleting
+      delete-by-moving-to-trash t
 
-        ;; show keystrokes in progress
-        echo-keystrokes 0.1
-        tab-width 4
-        make-backup-files nil
-        gc-cons-threshold (* 100 1024 1024)
-        read-process-output-max (* 4 1024 1024)
-        custom-file (expand-file-name "custom.el" user-emacs-directory))
-  :bind (("C-x p" . pop-to-mark-command)
-         ("C-x C-b" . ibuffer)
-         ("C-x e" . eshell)
-         :map emacs-lisp-mode-map
-         ("C-c C-k" . bk/eval-buffer))
-  :config
-  (setq-default indent-tabs-mode nil))
+      ;; show keystrokes in progress
+      echo-keystrokes 0.1
+      tab-width 4
+      make-backup-files nil
+      gc-cons-threshold (* 100 1024 1024)
+      read-process-output-max (* 4 1024 1024)
+      custom-file (expand-file-name "custom.el" user-emacs-directory))
+
+(setq-default indent-tabs-mode nil)
+
+(global-set-key (kbd "C-x p") 'pop-to-mark-command)
+(global-set-key (kbd "C-x C-b") 'ibuffer)
+(global-set-key (kbd "C-x e") 'eshell)
+
+(define-key emacs-lisp-mode-map (kbd "C-c C-k") 'bk/eval-buffer)
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
@@ -62,12 +60,15 @@
 
 ;; save buffer when you move between windows
 (defadvice switch-to-buffer (before save-buffer-now activate)
+  "Save buffer when move between windows."
   (when buffer-file-name (save-buffer)))
 
 (defadvice other-window (before other-window-now activate)
+  "Save buffer when move between windows."
   (when buffer-file-name (save-buffer)))
 
 (defadvice other-frame (before other-frame-now activate)
+  "Save buffer when move between windows."
   (when buffer-file-name (save-buffer)))
 
 (setq max-specpdl-size (* 15 max-specpdl-size))
@@ -186,11 +187,11 @@
 
 (use-package buffer-move
   :ensure t
-  :bind
-  (("M-s-<up>" . buf-move-up)
-   ("M-s-<down>" . buf-move-down)
-   ("M-s-<left>" . buf-move-left)
-   ("M-s-<right>" . buf-move-right)))
+  :config
+  (global-set-key (kbd "M-s-<up>") 'buf-move-up)
+  (global-set-key (kbd "M-s-<down>") 'buf-move-down)
+  (global-set-key (kbd "M-s-<left>") 'buf-move-left)
+  (global-set-key (kbd "M-s-<right>") 'buf-move-right))
 
 ;;; Abbreviations
 
@@ -340,7 +341,7 @@
 
 (use-package replace
   :bind
-  ("C-c o" . #'bk/occur-dwim))
+  (("C-c o" . #'bk/occur-dwim)))
 
 (use-package uniquify
   :config
@@ -579,12 +580,14 @@
 
 (use-package doom-modeline
   :ensure t
+  :init
+  (setq inhibit-compacting-font-caches t
+        find-file-visit-truename t)
   :config
   (doom-modeline-mode +1))
 
 (use-package all-the-icons
   :ensure t)
-
 
 ;;; Projects
 
@@ -1065,6 +1068,7 @@ documentation) but desire to keep your current window focused."
 ;;; Python
 
 (defun bk/elpy-setup ()
+  "Setup python mode."
   (pyvenv-activate "~/miniconda3")
   (delete `elpy-module-django elpy-modules)
   (delete `elpy-module-highlight-indentation elpy-modules))
@@ -1127,25 +1131,30 @@ Please run M-x cider or M-x cider-jack-in to connect"))
 (require 's)
 
 (defun clj--src-file-name-from-test (name)
+  "Find clojure test files by NAME."
   (s-with name
     (s-replace "/test/" "/src/")
     (s-replace "_test.clj" ".clj")))
 
 (defun clj--test-file-name-from-src (name)
+  "Find clojure test files by NAME."
   (s-with name
     (s-replace "/src/" "/test/")
     (s-replace ".clj" "_test.clj")))
 
 (defun clj--is-test? (name)
+  "Find clojure test files by NAME."
   (string-match-p "/test/" name))
 
 (defun clj-other-file-name ()
+  "Find clojure test file."
   (let ((name (buffer-file-name)))
     (cond
      ((clj--is-test? name) (clj--src-file-name-from-test name))
      (:else (clj--test-file-name-from-src name)))))
 
 (defun clj-find-alternative-name (file)
+  "Clojure test FILE."
   (cond
    ((s-ends-with? ".cljs" file)
     (s-replace ".cljs" ".cljc" file))
@@ -1366,43 +1375,43 @@ Better naming to improve the chances to find it."
   (message "Packages installed: %s" (length package-alist)))
 
 (defun bk/align-whitespace (start end)
-  "Align columns by whitespace"
+  "Align columns by whitespace from START to END."
   (interactive "r")
   (align-regexp start end
                 "\\(\\s-*\\)\\s-" 1 0 t))
 
 (defun bk/align-ampersand (start end)
-  "Align columns by ampersand"
+  "Align columns by ampersand from START to END."
   (interactive "r")
   (align-regexp start end
                 "\\(\\s-*\\)&" 1 1 t))
 
 (defun bk/align-quote-space (start end)
-  "Align columns by quote and space"
+  "Align columns by quote and space from START to END."
   (interactive "r")
   (align-regexp start end
                 "\\(\\s-*\\).*\\s-\"" 1 0 t))
 
 (defun bk/align-equals (start end)
-  "Align columns by equals sign"
+  "Align columns by equals sign from START to END."
   (interactive "r")
   (align-regexp start end
                 "\\(\\s-*\\)=" 1 0 t))
 
 (defun bk/align-comma (start end)
-  "Align columns by comma"
+  "Align columns by comma from START to END."
   (interactive "r")
   (align-regexp start end
                 "\\(\\s-*\\)," 1 1 t))
 
 (defun bk/align-dot (start end)
-  "Align columns by dot"
+  "Align columns by dot from START to END."
   (interactive "r")
   (align-regexp start end
                 "\\(\\s-*\\)\\\." 1 1 t))
 
 (defun bk/align-colon (start end)
-  "Align columns by equals sign"
+  "Align columns by equals sign from START to END."
   (interactive "r")
   (align-regexp start end
                 "\\(\\s-*\\):" 1 0 t))
@@ -1705,6 +1714,7 @@ Better naming to improve the chances to find it."
 
 ;; disable flycheck in org buffers
 (defun disable-flycheck-in-org-src-block ()
+  "Disable flycheck inside ORG src blocks."
   (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
 
 (add-hook 'org-src-mode-hook 'disable-flycheck-in-org-src-block)
@@ -2239,12 +2249,37 @@ Better naming to improve the chances to find it."
 
 ;;; IIRC
 
+(defun erc-sound-if-not-server (match-type nickuserhost msg)
+  (unless (or
+           (string-match "Serv" nickuserhost)
+           (string-match nickuserhost (erc-current-nick))
+           (string-match "Server" nickuserhost))
+    (when (string= match-type "current-nick")
+      (start-process-shell-command "lolsound" nil "mplayer ~/.emacs.d/sounds/icq-message.wav"))
+
+    (message
+     (format "[%s|<%s:%s> %s]"
+             (format-time-string "%Hh%M" (date-to-time (current-time-string)))
+             (subseq nickuserhost 0 (string-match "!" nickuserhost))
+             (or (erc-default-target) "")
+             (subseq msg 0 (- (length msg) 1))
+             ;; (if (eq (string-match (erc-current-nick) msg) 0)
+             ;;           (subseq msg (+ 1 (length (erc-current-nick))) 40)
+             ;;           msg
+             ;;           )
+             )
+     ;; Show msg for 20s
+     (run-with-timer 20 nil
+                     (lambda ()
+                       (message nil)))
+     )))
+
 (use-package erc
   :commands (erc)
   :init
   (setq erc-server "irc.libera.chat"
         erc-prompt-for-nickserv-password nil
-        erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#clojure"))
+        erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#clojure" "#systemcrafters"))
         erc-autojoin-timing 'ident
         erc-hide-list '("JOIN" "PART" "QUIT")
         erc-lurker-hide-list '("JOIN" "PART" "QUIT")
@@ -2262,6 +2297,12 @@ Better naming to improve the chances to find it."
       (erc-track-switch-buffer 1)
     (when (y-or-n-p "Start ERC? ")
       (erc :server "irc.libera.chat" :port 6667 :nick "bartuka"))))
+
+;;; EPUB
+
+(use-package nov
+  :ensure t
+  :mode (("\\.epub\\'" . nov-mode)))
 
 ;;; End of file
 
