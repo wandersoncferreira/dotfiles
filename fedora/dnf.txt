@@ -15,3 +15,6 @@ htop
 rlwrap
 steam
 seahorse
+gifsicle
+ImageMagick
+postgresql

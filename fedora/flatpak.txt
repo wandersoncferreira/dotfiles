@@ -7,3 +7,4 @@ spotify
 transmission
 skype
 app/us.zoom.Zoom/x86_64/stable
+datagrip
