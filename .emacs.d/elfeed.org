@@ -14,6 +14,8 @@
 **** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g][Protesilaos]]                                                    :youtube:
 **** [[https://notes.neeasade.net/rss.xml][Neeasade]]
 **** [[http://xenodium.com/][Alvaro Ramirez]]
+**** [[https://ambrevar.xyz/atom.xml][Ambrevar]]
+**** [[https://www.reddit.com/r/emacs/.rss][Emacs Reddit]]
 **** [[https://lchsk.com/posts.xml%0A][Maciej Lechowski]]
 **** [[https://bendersteed.tech/feed.xml][Bendersteed]]
 **** [[https://arenzana.org/feed/][Arenzana]]

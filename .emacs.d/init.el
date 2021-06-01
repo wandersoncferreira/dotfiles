@@ -54,7 +54,6 @@
 
 (global-set-key (kbd "C-x p") 'pop-to-mark-command)
 (global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-x e") 'eshell)
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-k") 'bk/eval-buffer)
 
@@ -309,6 +308,25 @@
             (eshell/alias "e" "find-file $1")
             (eshell/alias "ee" "find-file-other-window $1")))
 
+
+(use-package eshell-toggle
+  :ensure t
+  :bind ("C-x e" . eshell-toggle)
+  :custom
+  (eshell-toggle-size-fraction 3)
+  (eshell-toggle-use-projectile-root t)
+  (eshell-toggle-run-command nil))
+
+(use-package eshell-syntax-highlighting
+  :ensure t
+  :after esh-mode
+  :config
+  (eshell-syntax-highlighting-global-mode +1))
+
+(use-package fish-completion
+  :ensure t
+  :hook (eshell-mode . fish-completion-mode))
+
 ;;; Buffers
 
 (use-package winner
@@ -362,6 +380,23 @@
   :ensure t
   :config
   (add-hook 'compilation-filter-hook 'bk/ansi-colorize-buffer))
+
+;; automatically group all of your Emacs buffers into workspaces by defining a series of
+;; grouping rules. I find this a lot better than perspective-mode which I have to manually
+;; add buffers to each workspace.
+
+(use-package bufler
+  :ensure t
+  :bind
+  (("C-c b" . bufler-switch-buffer)
+   ("C-c s f" . bufler-workspace-frame-set))
+  :config
+  (bufler-mode +1)
+  (setf bufler-groups
+        (bufler-defgroups
+          (group
+           (auto-projectile))
+          (auto-directory))))
 
 ;;; Dired
 
@@ -905,6 +940,11 @@ documentation) but desire to keep your current window focused."
 
   ;; Real dates, please
   (set-default 'magit-log-margin '(t "%Y-%m-%d %H:%M " magit-log-margin-width t 18)))
+
+(use-package git-link
+  :ensure t
+  :config
+  (setq git-link-open-in-browser t))
 
 (use-package magit-todos
   :ensure t
@@ -1688,6 +1728,7 @@ Better naming to improve the chances to find it."
   :diminish org-roam-mode
   :init
   (setq org-roam-directory bk-zettelkasten-dir
+        org-roam-completion-everywhere t
         org-roam-completion-system 'ido)
   :bind (("C-c z f" . org-roam-find-file)
          ("C-c z i" . org-roam-insert)
@@ -1985,6 +2026,8 @@ Better naming to improve the chances to find it."
 (defun bk/elfeed-disable-mode-setup ()
   "Some packages that I want to disable when reading rss feeds."
   (interactive)
+  (setq-local right-margin-width 15
+              left-margin-width 15)
   (abbrev-mode -1)
   (yas-minor-mode -1)
   (dired-async-mode -1)
@@ -2034,6 +2077,11 @@ Better naming to improve the chances to find it."
   '(progn
      (define-key elfeed-search-mode-map "v" #'ambrevar/elfeed-play-with-mpv)
      (define-key elfeed-show-mode-map "v" #'ambrevar/elfeed-play-with-mpv)))
+
+;;; Media
+
+(use-package helm-spotify-plus
+  :ensure t)
 
 ;;; API
 
@@ -2228,6 +2276,7 @@ Better naming to improve the chances to find it."
   :commands (erc)
   :init
   (setq erc-server "irc.libera.chat"
+        erc-user-full-name "Wanderson Ferreira"
         erc-prompt-for-nickserv-password nil
         erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#clojure" "#systemcrafters"))
         erc-autojoin-timing :ident
