@@ -53,3 +53,11 @@ ln -sf ${dotfilesDir}/fedora/gitconfig $HOME/.gitconfig
 dconf write /org/gnome/desktop/peripherals/keyboard/repeat true
 dconf write /org/gnome/desktop/peripherals/keyboard/repeat-interval 30
 dconf write /org/gnome/desktop/peripherals/keyboard/delay 400
+
+
+## JVM missing library
+if [[ ! -f "/usr/lib/jvm/java-11-openjdk-11.0.11.0.9-2.fc34.x86_64/lib/libawt_xawt.so" ]]
+then
+    sudo dnf provides /usr/lib/jvm/java-11-openjdk-11.0.11.0.9-2.fc34.x86_64/lib/libawt_xawt.so
+    sudo dnf install java-11-openjdk-11.0.11.0.9-2.fc34.x86_64
+fi
