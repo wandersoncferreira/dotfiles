@@ -15,6 +15,7 @@
 ;;; Code:
 
 ;;; Security
+
 (eval-after-load "enriched"
   '(defun enriched-decode-display-prop (start end &optional param)
      (ignore param)
@@ -1110,41 +1111,6 @@ Please run M-x cider or M-x cider-jack-in to connect"))
   (setq clojure-toplevel-inside-comment-form t)
   :config
   (require 'flycheck-clj-kondo))
-
-(require 's)
-
-(defun clj--src-file-name-from-test (name)
-  "Find clojure test files by NAME."
-  (s-with name
-    (s-replace "/test/" "/src/")
-    (s-replace "_test.clj" ".clj")))
-
-(defun clj--test-file-name-from-src (name)
-  "Find clojure test files by NAME."
-  (s-with name
-    (s-replace "/src/" "/test/")
-    (s-replace ".clj" "_test.clj")))
-
-(defun clj--is-test? (name)
-  "Find clojure test files by NAME."
-  (string-match-p "/test/" name))
-
-(defun clj-other-file-name ()
-  "Find clojure test file."
-  (let ((name (buffer-file-name)))
-    (cond
-     ((clj--is-test? name) (clj--src-file-name-from-test name))
-     (:else (clj--test-file-name-from-src name)))))
-
-(defun clj-find-alternative-name (file)
-  "Clojure test FILE."
-  (cond
-   ((s-ends-with? ".cljs" file)
-    (s-replace ".cljs" ".cljc" file))
-   ((s-ends-with? ".clj" file)
-    (s-replace ".clj" ".cljc" file))
-   ((s-ends-with? ".cljc" file)
-    (s-replace ".cljc" ".clj" file))))
 
 (use-package kaocha-runner
   :ensure t
@@ -2264,10 +2230,25 @@ Better naming to improve the chances to find it."
   (setq erc-server "irc.libera.chat"
         erc-prompt-for-nickserv-password nil
         erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#clojure" "#systemcrafters"))
-        erc-autojoin-timing 'ident
-        erc-hide-list '("JOIN" "PART" "QUIT")
-        erc-lurker-hide-list '("JOIN" "PART" "QUIT")
-        erc-track-exclude-types '("JOIN" "PART" "QUIT"))
+        erc-autojoin-timing :ident
+        erc-autojoin-delay 40
+        erc-join-buffer 'bury
+        erc-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE")
+        erc-lurker-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE")
+        erc-track-exclude-server-buffer t
+        erc-keywords '("programming" "functional" "emacs" "design"))
+
+  ;; show only when my nickname is mentioned in any channel
+  (setq erc-current-nick-highlight-type 'nick
+        erc-track-exclude-types '("JOIN" "PART" "QUIT" "NICK" "MODE")
+        erc-track-use-faces t
+        erc-track-faces-priority-list '(erc-current-nick-face
+                                        erc-keyword-face
+                                        erc-direct-msg-face)
+        erc-track-priority-faces-only 'all)
+  
+  ;; prevent the new created buffer to be brought visible
+  (setq erc-auto-query 'bury)
   :config
   (add-to-list 'erc-modules 'spelling)
   (erc-services-mode 1)
