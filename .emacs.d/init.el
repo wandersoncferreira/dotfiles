@@ -2285,7 +2285,7 @@ Better naming to improve the chances to find it."
         erc-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE")
         erc-lurker-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE")
         erc-track-exclude-server-buffer t
-        erc-keywords '("programming" "functional" "emacs" "design"))
+        erc-keywords '("programming" "functional" "design"))
 
   ;; show only when my nickname is mentioned in any channel
   (setq erc-current-nick-highlight-type 'nick
@@ -2302,8 +2302,20 @@ Better naming to improve the chances to find it."
   (add-to-list 'erc-modules 'spelling)
   (erc-services-mode 1)
   (erc-update-modules)
-  (add-hook 'erc-text-matched-hook 'erc-sound-if-not-server))
+  (add-hook 'erc-text-matched-hook 'erc-sound-if-not-server)
+  )
 
+(require 'erc-compat)
+(require 'erc-nicklist)
+(setq erc-nicklist-icons-directory "~/.emacs.d/images/")
+
+(defun bk/nicklist-toggle ()
+  "Function to toggle the nicklist in ERC mode."
+  (interactive)
+  (let ((nicklist-buffer-name (format " *%s-nicklist*" (buffer-name))))
+    (if (get-buffer nicklist-buffer-name)
+        (kill-buffer nicklist-buffer-name)
+      (erc-nicklist))))
 
 (defun bk/erc-start ()
   "Start ERC mode."
