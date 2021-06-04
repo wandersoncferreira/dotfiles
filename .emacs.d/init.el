@@ -2244,6 +2244,44 @@ Better naming to improve the chances to find it."
         writeroom-restore-window-config t
         writeroom-fullscreen-effect 'maximized))
 
+;;; Telegram
+
+(use-package alert
+  :ensure t)
+
+(use-package all-the-icons :ensure t)
+
+(use-package telega
+  :ensure t
+  :init
+  (setq telega-animation-play-inline nil
+        telega-chat-reply-prompt "R>> "
+        telega-chat-use-markdown-version 2
+        telega-chat-mode-line-format
+        '((:eval
+           (telega-chatbuf-mode-line-unread))
+          (:eval
+           (telega-chatbuf-mode-line-marked))
+          (:eval
+           (telega-chatbuf-mode-line-members nil))
+          (:eval
+           (telega-chatbuf-mode-line-pinned-msg 20))))
+  :config
+  (eval-after-load 'alert
+    '(add-to-list 'alert-user-configuration
+                  '(((:mode . "telega-chat-mode"))
+                    log nil)))
+
+  (eval-after-load 'alert
+    '(add-to-list 'alert-user-configuration
+                  '(((:message . "@bartuka\\|Wanderson")
+                     (:mode . "telega-chat-mode"))
+                    libnotify nil)))
+  (require 'telega-alert)
+  (telega-alert-mode t)
+
+  (require 'telega-dired-dwim))
+
 ;;; IIRC
 
 (defun erc-sound-if-not-server (match-type nickuserhost msg)
