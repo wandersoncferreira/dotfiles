@@ -12,7 +12,17 @@ about this configuration.
   documentation either for learning/refreshing purpose or to identify
   inefficiencies in current configuration.
 
-  | Key | Custom OR Builtin | Main   | Description                | Frequency used AND  target | Why?     |
-  |-----+-------------------+--------+----------------------------+----------------------------+----------|
-  | C-s | Custom            | Search | Search forward in a buffer | 40% AND 80%                | Moviment |
-  |     |                   |        |                            |                            |          |
+** Moviment  
+
+  | Key | Custom OR Builtin | Main   | Description                | Frequency used | Frequency target |
+  |-----+-------------------+--------+----------------------------+----------------+------------------|
+  | C-s | Built-in          | Search | Search forward in a buffer |            40% |              80% |
+
+
+** Editing
+
+  | Key | Custom OR Builtin | Main | Description                           | Frequency used | Frequency target |
+  |-----+-------------------+------+---------------------------------------+----------------+------------------|
+  | M-i | Custom            | Sexp | Delete chars limited by operator      |            20% |              70% |
+  | M-o | Custom            | Sexp | Delete chars outside limited operator |             5% |              60% |
+  |     |                   |      |                                       |                |                  |
