@@ -1,0 +1,18 @@
+#+TITLE: Bartuka's Emacs Manual
+#+AUTHOR: Wanderson Ferreira
+
+
+Emacs manual with useful information about Emacs and more specifically
+about this configuration.
+
+
+* Keybindings
+
+  Very important aspect of Emacs daily usage that deserves some
+  documentation either for learning/refreshing purpose or to identify
+  inefficiencies in current configuration.
+
+  | Key | Custom OR Builtin | Main   | Description                | Frequency used AND  target | Why?     |
+  |-----+-------------------+--------+----------------------------+----------------------------+----------|
+  | C-s | Custom            | Search | Search forward in a buffer | 40% AND 80%                | Moviment |
+  |     |                   |        |                            |                            |          |
