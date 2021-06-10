@@ -35,6 +35,7 @@
 (require 'setup-defaults)
 (require 'setup-keybindings)
 (require 'setup-appearance)
+(require 'setup-completion)
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
@@ -60,34 +61,6 @@
 
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
-
-;; more complex clipboard management
-(setq save-interprogram-paste-before-kill t)
-
-;;; real emacs knights don't use shift to mark things
-(setq shift-select-mode nil)
-
-;; don't warn for following symlinked files
-(setq vc-follow-symlinks t)
-
-;; ellispis are nice
-(setq truncate-string-ellipsis "…")
-
-;; don't warn when advice is added for functions
-(setq ad-redefinition-action 'accept)
-
-;; user configs
-(setq user-mail-address "wand@hey.com"
-      user-full-name "Wanderson Ferreira")
-
-(setq display-time-world-list
-      '(("Etc/UTC" "UTC")
-        ("America/Sao_Paulo" "Sao Paulo")
-        ("Europe/Paris" "Paris")
-        ("America/Boston" "Boston")))
-
-;; truncate lines
-(setq-default truncate-lines t)
 
 ;; transparently open compressed files
 (auto-compression-mode t)
@@ -422,65 +395,11 @@
      (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
      (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)))
 
-;;; Ido Completion
-
-(use-package ido
-  :init
-  (setq ido-enable-flex-matching t
-        ido-use-virtual-buffers t
-        ido-everywhere t
-        ido-show-dot-for-dired t
-        ido-create-new-buffer 'always
-        confirm-nonexistent-file-or-buffer nil
-        ido-auto-merge-work-directories-length -1
-        ido-confirm-unique-completion t
-        confirm-nonexistent-file-or-buffer nil)
-  :bind (:map ido-file-completion-map
-              ("C-n" . ido-next-match)
-              ("C-p" . ido-prev-match)
-              ("C-w" . ido-delete-backward-updir)
-              ("C-x C-w" . ido-copy-current-file-name)
-              :map ido-common-completion-map
-              ("SPC" . self-insert-command)
-              ("M-SPC" . just-one-space)
-              :map ido-file-dir-completion-map
-              ("C-w" . ido-delete-backward-updir)
-              ("C-x C-w" . ido-copy-current-file-name))
-  :config
-  (ido-mode +1)
-  (add-to-list 'ido-ignore-directories "target")
-  (add-to-list 'ido-ignore-directories "node_modules")
-  (add-to-list 'ido-ignore-directories ".cpcache")
-  (add-to-list 'ido-ignore-directories "eln-cache")
-  (define-key minibuffer-local-completion-map (kbd "SPC") 'self-insert-command))
-
-(use-package ido-vertical-mode
-  :ensure t
-  :init
-  (setq ido-vertical-define-keys 'C-n-and-C-p-only
-        ido-vertical-show-count t)
-  :config
-  (ido-vertical-mode +1))
-
-(setq minibuffer-prompt-properties '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
-
-(use-package ido-at-point
-  :ensure t
-  :config
-  (ido-at-point-mode +1))
-
 (use-package smex
   :ensure t
   :bind (("M-x" . smex)
          ("C-x C-m" . smex)
          ("C-c C-m" . smex)))
-
-(use-package ido-completing-read+
-  :ensure t
-  :after ido
-  :config
-  (ido-ubiquitous-mode +1))
 
 ;; hippie expand
 

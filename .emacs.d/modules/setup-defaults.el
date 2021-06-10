@@ -32,7 +32,38 @@
 (setq use-file-dialog nil)
 
 ;; no ugly button for checkboxes
+(require 'wid-edit)
 (setq widget-image-enable nil)
+
+;; more complex clipboard management
+(setq save-interprogram-paste-before-kill t)
+
+;;; real emacs knights don't use shift to mark things
+(setq shift-select-mode nil)
+
+;; don't warn for following symlinked files
+(setq vc-follow-symlinks t)
+
+;; ellispis are nice
+(require 'mule-util)
+(setq truncate-string-ellipsis "…")
+
+;; don't warn when advice is added for functions
+(setq ad-redefinition-action 'accept)
+
+;; user configs
+(setq user-mail-address "wand@hey.com"
+      user-full-name "Wanderson Ferreira")
+
+(require 'time)
+(setq world-clock-list
+      '(("Etc/UTC" "UTC")
+        ("America/Sao_Paulo" "Sao Paulo")
+        ("Europe/Paris" "Paris")
+        ("America/Boston" "Boston")))
+
+;; truncate lines
+(setq-default truncate-lines t)
 
 ;; * Functions
 
