@@ -34,3 +34,6 @@ clojure/lsp/sqlite.db
 .emacs.d/racket-mode
 .emacs.d/screenshots
 .emacs.d/tramp
+.emacs.d/workspace
+.emacs.d/nov-places
+.emacs.d/request

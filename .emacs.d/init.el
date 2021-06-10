@@ -24,38 +24,16 @@
 
 ;;; Emacs basic
 
+(setq modules-dir (expand-file-name "modules" user-emacs-directory))
+(add-to-list 'load-path modules-dir)
+
 (set-register ?t '(file . "/home/wanderson/agenda/todo.org"))
+(set-register ?m '(file . "~/.emacs.d/manual.org"))
 (set-register ?l '(file . "/home/wanderson/ledger"))
 (set-register ?e '(file . "/home/wanderson/.emacs.d/init.el"))
 
-(defun bk/eval-buffer ()
-  "Provide some feedback after evaluating the buffer."
-  (interactive)
-  (eval-buffer)
-  (message "Buffer evaluated!"))
-
-(setq tab-always-indent 'complete
-      ring-bell-function 'ignore
-      visible-bell nil
-      create-lockfiles nil
-      custom-safe-themes t
-      ;; move files to trash when deleting
-      delete-by-moving-to-trash t
-
-      ;; show keystrokes in progress
-      echo-keystrokes 0.1
-      tab-width 4
-      make-backup-files nil
-      gc-cons-threshold (* 100 1024 1024)
-      read-process-output-max (* 4 1024 1024)
-      custom-file (expand-file-name "custom.el" user-emacs-directory))
-
-(setq-default indent-tabs-mode nil)
-
-(global-set-key (kbd "C-x p") 'pop-to-mark-command)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-
-(define-key emacs-lisp-mode-map (kbd "C-c C-k") 'bk/eval-buffer)
+(require 'setup-defaults)
+(require 'setup-keybindings)
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
@@ -82,18 +60,7 @@
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
 
-;; handling long lines
-(setq bidi-paragraph-direction 'left-to-right
-      bidi-inhibit-bpa t)
 
-;; disable dialog boxes
-(setq use-dialog-box nil)
-
-;; disable file dialog
-(setq use-file-dialog nil)
-
-;; no ugly button for checkboxes
-(setq widget-image-enable nil)
 
 ;; enable line number modes
 (dolist (mode '(prog-mode-hook conf-mode-hook))
@@ -528,7 +495,7 @@
 (require 'patch-hippie-expand)
 
 (global-set-key (kbd "C-.") 'hippie-expand-no-case-fold)
-(global-set-key (kbd "C-c l") 'hippie-expand-lines)
+(global-set-key (kbd "C-x l") 'hippie-expand-lines)
 (global-set-key (kbd "C-,") 'completion-at-point)
 
 ;;; Appearance
@@ -582,8 +549,15 @@
   "Default theme to be used."
   (interactive)
   (load-theme 'default-black t)
-  (bk/set-ibm-font 110)
-  (set-frame-parameter (selected-frame) 'alpha 90))
+  (bk/set-ibm-font 110))
+
+(use-package zenburn-theme :ensure t)
+
+(defun bk/dark-theme ()
+  "Dark theme option."
+  (interactive)
+  (load-theme 'zenburn t)
+  (bk/set-ibm-font 110))
 
 (defun bk/appearance ()
   "Set of parameters to be used in several places."
@@ -599,14 +573,31 @@
   (disable-theme 'default-black)
   (bk/appearance))
 
-
 (defun bk/light-theme ()
   "Light theme default."
   (interactive)
+  (disable-theme 'zenburn)
+  (set-face-attribute 'mode-line nil :background "grey75" :foreground "black")
   (bk/appearance)
   (bk/set-ibm-font 110))
 
+(setq current-theme '(bk/light-theme))
+
+(defun synchronize-theme ()
+  "Choose appropriate theme based on what time is it."
+  (setq hour (string-to-number (substring (current-time-string) 11 13)))
+  (if (member hour (number-sequence 6 16))
+      (setq now '(bk/light-theme))
+    (setq now '(bk/dark-theme)))
+  (if (equal now current-theme)
+      nil
+    (setq current-theme now)
+    (eval now)))
+
 (bk/light-theme)
+
+(run-with-timer 0 3600 (lambda () (synchronize-theme)))
+
 
 ;;; Projects
 
@@ -658,6 +649,22 @@
 
 
 ;;; Emacs Editor
+
+;; enable narrowing commands
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
+
+;; enable erase-buffer command
+(put 'erase-buffer 'disabled nil)
+
+(use-package crux
+  :ensure t
+  :config
+  (global-set-key (kbd "C-c n") #'crux-cleanup-buffer-or-region)
+  (global-set-key (kbd "C-c d l") #'crux-duplicate-current-line-or-region)
+  (global-set-key [remap move-beginning-of-line] #'crux-move-beginning-of-line)
+  (global-set-key [remap kill-whole-line] #'crux-kill-whole-line))
 
 (use-package ediff
   :config
@@ -721,36 +728,6 @@
     (goto-char start)
     (dotimes (_ num)
       (insert region))))
-
-(defun paredit-duplicate-current-line ()
-  "Duplicate current line if paredit-mode is enabled."
-  (back-to-indentation)
-  (let (kill-ring kill-ring-yank-pointer)
-    (paredit-kill)
-    (yank)
-    (newline-and-indent)
-    (yank)))
-
-(defun duplicate-current-line (num)
-  "Duplicate the current line NUM times."
-  (interactive "p")
-  (if (bound-and-true-p paredit-mode)
-      (paredit-duplicate-current-line)
-    (when (eq (point-at-eol) (point-max))
-      (goto-char (point-max))
-      (newline)
-      (forward-char -1)))
-  (duplicate-region num (point-at-bol) (1+ (point-at-eol))))
-
-(defun bk/duplicate-current-line-or-region (arg)
-  "Duplicate the current line or region ARG times."
-  (interactive "p")
-  (save-excursion
-    (if (region-active-p)
-        (duplicate-region arg)
-      (duplicate-current-line arg))))
-
-(global-set-key (kbd "C-c d l") #'bk/duplicate-current-line-or-region)
 
 
 ;; automatically indenting yanked text if in programming modes
@@ -987,6 +964,17 @@ documentation) but desire to keep your current window focused."
 
 ;;; General Programming
 
+(use-package editorconfig
+  :ensure t
+  :diminish editorconfig-mode
+  :config
+  (editorconfig-mode +1))
+
+(use-package hl-todo
+  :ensure t
+  :config
+  (global-hl-todo-mode 1))
+
 (use-package envrc
   :ensure t
   :config
@@ -998,7 +986,7 @@ documentation) but desire to keep your current window focused."
   (setq tgt-open-in-new-window nil)
   :config
   (put 'tgt-projects 'safe-local-variable #'lisp)
-  (global-set-key (kbd "s-t") 'tgt-toggle))
+  (global-set-key (kbd "H-s-t") 'tgt-toggle))
 
 (use-package flycheck
   :ensure t
@@ -1052,6 +1040,9 @@ documentation) but desire to keep your current window focused."
   :bind
   (("C-x y" . yas-expand)
    ("C-c t" . yas-describe-tables)))
+
+(use-package yasnippet-snippets
+  :ensure t)
 
 ;;; use normal tabs in makefiles
 (add-hook 'makefile-mode-hook 'indent-tabs-mode)
@@ -1110,6 +1101,48 @@ documentation) but desire to keep your current window focused."
   (setq py-autopep8-options '("--max-line-length=100"))
   :config
   (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
+
+;;; Java
+
+(use-package lsp-mode
+  :ensure t
+  :hook ((java-mode . #'lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration))
+  :init
+  (setq lsp-intelephense-multi-root nil
+        lsp-keymap-prefix "C-c l"
+        lsp-enable-file-watchers nil
+        lsp-completion-provider :capf
+        lsp-idle-delay 0.500))
+
+(use-package dap-mode
+  :ensure t
+  :after (lsp-mode)
+  :bind (:map lsp-mode-map
+              ("<f5>" . dap-debug))
+  :hook ((dap-mode . dap-ui-mode)))
+
+(use-package lsp-ui
+  :ensure t
+  :after (lsp-mode)
+  :bind (:map lsp-ui-mode-map
+              ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
+              ([remap xref-find-references] . lsp-ui-peek-find-references))
+  :init
+  (setq lsp-ui-doc-delay 1.5
+        lsp-ui-doc-position 'bottom
+        lsp-ui-doc-max-width 100))
+
+(use-package lsp-java
+  :ensure t
+  :config
+  (add-hook 'java-mode-hook 'lsp))
+
+(defun bk/setup-java ()
+  "Setup JAVA."
+  (electric-pair-mode +1))
+
+(add-hook 'java-mode-hook 'bk/setup-java)
 
 ;;; Clojure
 
@@ -1463,16 +1496,6 @@ Better naming to improve the chances to find it."
 
 (global-set-key (kbd "C-x k") 'bk/kill-buffer)
 
-(defun bk/kill-buffer-and-file (buffer-name)
-  "Remove file connected to current buffer and kill the BUFFER-NAME."
-  (interactive "bKill buffer and its file: ")
-  (let* ((buffer (get-buffer buffer-name))
-         (filename (buffer-file-name buffer)))
-    (if (not (and filename (file-exists-p filename)))
-        (error "Buffer '%s' is not visiting a file!" buffer-name)
-      (delete-file filename)
-      (kill-buffer buffer))))
-
 (defun bk/indent-buffer ()
   "Fix indentation of buffer."
   (interactive)
@@ -1482,13 +1505,6 @@ Better naming to improve the chances to find it."
   "Remove tabs from buffer."
   (interactive)
   (untabify (point-min) (point-max)))
-
-(defun bk/cleanup-buffer ()
-  "Perform a bunch of operations on the whitespace content of a buffer."
-  (interactive)
-  (bk/untabify-buffer)
-  (delete-trailing-whitespace)
-  (bk/indent-buffer))
 
 (defun bk/sudo-edit (&optional arg)
   "Function to edit file with super-user with optional ARG."
@@ -1503,16 +1519,6 @@ Better naming to improve the chances to find it."
   (insert " ")
   (backward-delete-char 1)
   (save-buffer))
-
-(defun bk/beginning-of-line ()
-  "Go back at the first non-whitespace character."
-  (interactive)
-  (let ((oldpos (point)))
-    (back-to-indentation)
-    (and (= oldpos (point))
-         (beginning-of-line))))
-
-(global-set-key (kbd "C-a") 'bk/beginning-of-line)
 
 (use-package zygospore
   :ensure t
@@ -2177,6 +2183,8 @@ Better naming to improve the chances to find it."
 
 (use-package prodigy
   :ensure t
+  :bind
+  (("C-c s l" . prodigy))
   :config
   (prodigy-define-service
     :name "tempo"
@@ -2251,12 +2259,13 @@ Better naming to improve the chances to find it."
 
 (use-package all-the-icons :ensure t)
 
+(use-package company
+  :ensure t)
+
 (use-package telega
   :ensure t
   :init
   (setq telega-animation-play-inline nil
-        telega-chat-reply-prompt "R>> "
-        telega-chat-use-markdown-version 2
         telega-chat-mode-line-format
         '((:eval
            (telega-chatbuf-mode-line-unread))
@@ -2277,8 +2286,11 @@ Better naming to improve the chances to find it."
                   '(((:message . "@bartuka\\|Wanderson")
                      (:mode . "telega-chat-mode"))
                     libnotify nil)))
+  (add-hook 'telega-chat-mode-hook 'company-mode)
   (require 'telega-alert)
   (telega-alert-mode t)
+
+  (add-hook 'telega-load-hook 'telega-mode-line-mode)
 
   (require 'telega-dired-dwim))
 
@@ -2333,7 +2345,7 @@ Better naming to improve the chances to find it."
                                         erc-keyword-face
                                         erc-direct-msg-face)
         erc-track-priority-faces-only 'all)
-  
+
   ;; prevent the new created buffer to be brought visible
   (setq erc-auto-query 'bury)
   :config
@@ -2370,7 +2382,7 @@ Better naming to improve the chances to find it."
 
 (use-package gif-screencast
   :ensure nil
-  :load-path "~/.emacs.d/lisps/gif-screencast.el" 
+  :load-path "~/.emacs.d/lisps/gif-screencast.el"
   :config
   (setq gif-screencast-program "maim"
         gif-screencast-args '("--quality" "1")
@@ -2383,6 +2395,14 @@ Better naming to improve the chances to find it."
 (use-package nov
   :ensure t
   :mode (("\\.epub\\'" . nov-mode)))
+
+
+;;; Webpaste
+
+(use-package webpaste
+  :ensure t
+  :config
+  (setq webpaste-provider-priority '("ix.io" "dpaste.org")))
 
 ;;; End of file
 
