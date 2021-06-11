@@ -36,6 +36,7 @@
 (require 'setup-keybindings)
 (require 'setup-appearance)
 (require 'setup-completion)
+(require 'setup-dired)
 (require 'setup-git)
 (require 'setup-programming)
 
@@ -337,71 +338,6 @@
           (group
            (auto-projectile))
           (auto-directory))))
-
-;;; Dired
-
-(defun bk/dired-directories-first ()
-  "Sorted dired listings with directories first."
-  (save-excursion
-    (let (buffer-read-only)
-      (forward-line 2)
-      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
-    (set-buffer-modified-p nil)))
-
-(defun bk/dired-xdg-open ()
-  "Open the file at point with xdg-open."
-  (interactive)
-  (let ((file (dired-get-filename nil t)))
-    (message "Openning %s..." file)
-    (call-process "xdg-open" nil 0 nil file)
-    (message "Opening %s done" file)))
-
-(defun bk/dired-back-to-start-of-files ()
-  "Move to start of line."
-  (interactive)
-  (backward-char (- (current-column) 2)))
-
-(defun bk/dired-back-to-top ()
-  "Go back to correct position at the top."
-  (interactive)
-  (goto-char (point-min))
-  (forward-line 2)
-  (bk/dired-back-to-start-of-files))
-
-(defun bk/dired-back-to-bottom ()
-  "Go back to correct position at the bottom."
-  (interactive)
-  (goto-char (point-max))
-  (forward-line -1)
-  (bk/dired-back-to-start-of-files))
-
-(use-package dired
-  :bind
-  (:map dired-mode-map
-        ("O" . bk/dired-xdg-open)
-        ("M-p" . bk/dired-back-to-top)
-        ("M-n" .  bk/dired-back-to-bottom)
-        ("C-a" .  bk/dired-back-to-start-of-files)
-        ("C-x C-k" . dired-do-delete)
-        ("k" . dired-do-delete))
-  :init
-  (setq dired-listing-switches "-alh"
-        dired-recursive-copies 'always
-        dired-recursive-deletes 'always)
-  :config
-  (require 'dired-x)
-  (setq dired-dwim-target t)
-
-  ;; enable 'a'-keybinding in dired - which opens the file and closes dired buffer
-  (put 'dired-find-alternate-file 'disabled nil)
-
-  (advice-add 'dired-readin :after #'bk/dired-directories-first))
-
-(eval-after-load "wdired"
-  '(progn
-     (define-key wdired-mode-map (kbd "C-a") 'dired-back-to-start-of-files)
-     (define-key wdired-mode-map (vector 'remap 'beginning-of-buffer) 'dired-back-to-top)
-     (define-key wdired-mode-map (vector 'remap 'end-of-buffer) 'dired-jump-to-bottom)))
 
 (use-package smex
   :ensure t
