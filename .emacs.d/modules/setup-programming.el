@@ -89,5 +89,10 @@
 
 (use-package quickrun :ensure t)
 
+(use-package webpaste
+  :ensure t
+  :config
+  (setq webpaste-provider-priority '("ix.io" "dpaste.org")))
+
 (provide 'setup-programming)
 ;;; setup-programming.el ends here

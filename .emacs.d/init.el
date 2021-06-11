@@ -37,6 +37,7 @@
 (require 'setup-defaults)
 (require 'setup-keybindings)
 (require 'setup-appearance)
+(require 'setup-presentation)
 (require 'setup-completion)
 (require 'setup-dired)
 (require 'setup-git)
@@ -46,6 +47,8 @@
 ;; workplace
 (require 'setup-work)
 (require 'reifyhealth)
+(require 'captalys)
+(require 'appsauce)
 
 ;; third-party apps
 (require 'setup-finance)
@@ -55,6 +58,8 @@
 (require 'setup-java)
 (require 'setup-python)
 (require 'setup-typescript)
+(require 'setup-sql)
+(require 'setup-racket)
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
@@ -825,41 +830,6 @@
     (kill-new myip)
     (message "IP: %s" myip)))
 
-(defun bk/generate-password ()
-  "Generate a 16-digit password."
-  (interactive)
-  (let* ((sym "!@#$%^&*()_+-=[]{}|")
-         (i (% (abs (random)) (length sym)))
-         (beg (substring sym i (1+ i))))
-    (kill-new
-     (format "%s%s" beg
-             (string-trim
-              (shell-command-to-string
-               " openssl rand -base64 32 | tr -d /=+ | cut -c -16"))))))
-
-(defun bk/create-worktree ()
-  "Help development on multiple branches."
-  (interactive)
-  (let* ((root-proj (projectile-project-root))
-         (proj-name (car (cdr (nreverse (split-string root-proj "/")))))
-         (dest-dir (file-name-directory (directory-file-name root-proj)))
-         (branch (ido-completing-read "Choose the branch: " (magit-list-local-branch-names)))
-         (worktree-path (concat dest-dir proj-name "-wt-" branch)))
-    (magit-worktree-checkout worktree-path branch)
-    (projectile-find-file)))
-
-(defun bk/delete-worktree ()
-  "Delete worktree and all its open buffers."
-  (interactive)
-  (let ((worktree (ido-completing-read "Choose worktree: " (magit-list-worktrees))))
-    (mapc (lambda (buffer)
-            (with-current-buffer buffer
-              (let ((worktree-name (file-name-base worktree)))
-                (when (string-equal (projectile-project-name) worktree-name)
-                  (kill-buffer buffer)))))
-          (buffer-list))
-    (magit-worktree-delete worktree)))
-
 (defun bk/spell-buffer-pt-BR ()
   "Spell check in portuguese."
   (interactive)
@@ -1007,48 +977,6 @@
   (save-some-buffers)
   (kill-emacs))
 
-;;; Docker
-
-(defun bk/dockerfile-add-build-args ()
-  "Add env variables to your docker build."
-  (interactive)
-  (let* ((vars (read-from-minibuffer "sequence of <envName>=<envValue>: "))
-         (split-vars (split-string vars " ")))
-    (setq dockerfile-build-args nil)
-    (dolist (v split-vars)
-      (add-to-list 'dockerfile-build-args v))
-    (setq docker-build-history-args vars)))
-
-
-(defun bk/docker-compose-custom-envs ()
-  "Add usual env variables to Emacs environment."
-  (interactive)
-  (let* ((idu (shell-command-to-string "id -u"))
-         (idg (shell-command-to-string "id -g"))
-         (uid (string-join (vector (string-trim idu) ":" (string-trim idg)))))
-    (setenv "WEBSERVER_PORT" "3000")
-    (setenv "CURRENT_UID" uid)
-    (message "setenv WEBSERVER_PORT=3000 CURRENT_UID=$(id -u):$(id -g) done!")))
-
-(defun bk/docker-cleanup-buffers ()
-  "Delete all the docker buffers created."
-  (interactive)
-  (kill-matching-buffers "docker" nil t))
-
-(use-package dockerfile-mode
-  :ensure t
-  :mode ("Dockerfile" . dockerfile-mode)
-  :config
-  (put 'dockerfile-image-name 'safe-local-variable-p #'stringp))
-
-(use-package docker-compose-mode
-  :ensure t)
-
-(use-package docker
-  :ensure t
-  :bind
-  ("C-c d d" . docker))
-
 ;;; XML
 
 (use-package nxml-mode
@@ -1058,21 +986,6 @@
   (push '("<\\?xml" . nxml-mode) magic-mode-alist)
   (add-to-list 'auto-mode-alist '("\\.pom$" . nxml-mode)))
 
-;;; SQL
-
-;; reformat SQL using external program pgformatter
-(use-package sqlformat
-  :ensure t
-  :init
-  (setq sqlformat-command 'pgformatter)
-  :config
-  (add-hook 'sql-mode-hook 'sqlformat-on-save-mode))
-
-
-(use-package sql-indent
-  :ensure t
-  :config
-  (add-hook 'sql-mode-hook 'sqlind-minor-mode))
 
 ;;; nixOS
 
@@ -1089,17 +1002,6 @@
   (require 'pdf-continuous-scroll-mode)
   (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
   (require 'pdf-occur))
-
-;;; Racket
-
-(use-package racket-mode
-  :ensure t
-  :bind (:map racket-mode-map
-              ("C-c C-k" . racket-run))
-  :config
-  (add-hook 'racket-mode-hook #'racket-unicode-input-method-enable)
-  (add-hook 'racket-repl-mode-hook #'racket-unicode-input-method-enable))
-
 
 ;;; PlantUML
 
@@ -1471,34 +1373,12 @@
     (when (y-or-n-p "Start ERC? ")
       (erc :server "irc.libera.chat" :port 6667 :nick "bartuka"))))
 
-;;; Presentation
-
-(use-package keycast
-  :ensure t)
-
-(use-package gif-screencast
-  :ensure nil
-  :load-path "~/.emacs.d/lisps/gif-screencast.el"
-  :config
-  (setq gif-screencast-program "maim"
-        gif-screencast-args '("--quality" "1")
-        gifgif-screencast-want-optimized t
-        gif-screencast-output-directory "~/Videos/emacs/"
-        gif-screencast-screenshot-directory "~/.emacs.d/screenshots"))
-
 ;;; EPUB
 
 (use-package nov
   :ensure t
   :mode (("\\.epub\\'" . nov-mode)))
 
-
-;;; Webpaste
-
-(use-package webpaste
-  :ensure t
-  :config
-  (setq webpaste-provider-priority '("ix.io" "dpaste.org")))
 
 ;;; End of file
 

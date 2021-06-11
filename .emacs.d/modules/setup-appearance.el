@@ -57,13 +57,6 @@
   (set-face-attribute 'region nil :background "khaki1")
   (set-background-color "honeydew"))
 
-(defun bk/presentation-theme ()
-  "Presentation theme."
-  (interactive)
-  (bk/set-ibm-font 120)
-  (disable-theme 'default-black)
-  (bk/appearance))
-
 (defun bk/light-theme ()
   "Light theme default."
   (interactive)
