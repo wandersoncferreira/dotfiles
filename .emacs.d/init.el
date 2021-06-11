@@ -41,6 +41,7 @@
 (require 'setup-completion)
 (require 'setup-dired)
 (require 'setup-git)
+(require 'setup-org)
 (require 'setup-programming)
 (require 'setup-search)
 
@@ -88,39 +89,6 @@
 
 ;; transparently open compressed files
 (auto-compression-mode t)
-
-;; show active region
-(transient-mark-mode 1)
-(make-variable-buffer-local 'transient-mark-mode)
-(put 'transient-mark-mode 'permanent-local t)
-(setq-default transient-mark-mode t)
-
-;; always display line and column numbers
-(setq line-number-mode t)
-(setq column-number-mode t)
-
-;; lines should be 80 characters wide, not 72
-(setq fill-column 80)
-(setq fci-rule-column 80)
-
-;; save minibuffer history
-(savehist-mode +1)
-(setq history-length 1000
-      history-delete-duplicates nil
-      savehist-additional-variables '(search-ring regexp-search-ring))
-
-;; show me empty lines after buffer end
-(set-default 'indicate-empty-lines t)
-
-;; sentences do not need double spaces to end
-(set-default 'sentence-end-double-space nil)
-
-(setq ring-bell-function
-      (lambda ()
-        (invert-face 'mode-line)
-        (run-with-timer 0.05 nil 'invert-face 'mode-line)))
-
-(defalias 'yes-or-no-p 'y-or-n-p)
 
 (use-package paren
   :config
@@ -871,60 +839,6 @@
         "~/.emacs.d/bin/languagetool-commandline.jar"))
 
 (use-package popup :ensure t)
-
-;;; Org mode
-
-(use-package org
-  :ensure nil
-  :init
-  (setq org-return-follows-link t
-        org-confirm-babel-evaluate nil
-        org-replace-disputed-keys t ;don't ruin S-arrow to switch windows please
-        org-src-fontify-natively t
-        org-src-tab-acts-natively t
-        org-agenda-files (list "~/agenda/todo.org"))
-  :bind
-  (("C-c c" . org-capture)
-   ("C-c a" . org-agenda))
-  :config
-  (require 'ob-clojure)
-  (require 'org-tempo)
-
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right)
-
-  (add-to-list 'org-structure-template-alist '("el" . "src emacs-lisp"))
-  (add-to-list 'org-structure-template-alist '("clj" . "src clojure"))
-
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp . t)
-     (ledger . t)
-     (clojure . t)))
-
-  (setq org-capture-templates
-        '(
-          ("t" "Todo" entry (file+headline "~/agenda/todo.org" "Task")
-           "* TODO %^{Title}\n %i" :clock-in t :clock-resume t))
-        ))
-
-;; edit blocks
-(use-package edit-indirect
-  :ensure t)
-
-(use-package org-download
-  :ensure t
-  :config
-  (setq org-image-actual-width nil))
-
-;; disable flycheck in org buffers
-(defun disable-flycheck-in-org-src-block ()
-  "Disable flycheck inside ORG src blocks."
-  (setq-local flycheck-disabled-checkers '(emacs-lisp-checkdoc)))
-
-(add-hook 'org-src-mode-hook 'disable-flycheck-in-org-src-block)
 
 ;;; Zettelkasten
 

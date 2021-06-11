@@ -2,12 +2,31 @@
 ;;; Commentary:
 ;;; Code:
 
+;; * Aliases
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
 ;; * Attributes
 
 (setq tab-always-indent 'complete)
 
 ;; move files to trash when deleting
 (setq delete-by-moving-to-trash t)
+(setq trash-directory "~/Trash")
+
+;; always display line and column numbers
+(setq line-number-mode t)
+(setq column-number-mode t)
+
+;; lines should be 80 characters wide, not 72
+(setq fill-column 80)
+(setq fci-rule-column 80)
+
+;; show me empty lines after buffer end
+(set-default 'indicate-empty-lines t)
+
+;; sentences do not need double spaces to end
+(set-default 'sentence-end-double-space nil)
 
 ;; show keystrokes in progress
 (setq echo-keystrokes 0.1)
