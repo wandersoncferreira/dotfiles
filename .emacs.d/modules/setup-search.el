@@ -4,6 +4,31 @@
 ;;
 ;;; Code:
 
+(use-package imenu
+  :config
+  (setq imenu-auto-rescan 1
+        imenu-auto-rescan-maxout 600000
+        imenu-max-item-length 600
+        imenu-use-markers t
+        imenu-max-items 200)
+  :bind
+  ("C-c i" . imenu))
+
+;;  * Functions
+
+(defun bk/occur-dwim ()
+  "Call `occur' with a sane default."
+  (interactive)
+  (push (if (region-active-p)
+            (buffer-substring-no-properties
+             (region-beginning)
+             (region-end))
+          (let ((sym (thing-at-point 'symbol)))
+            (when (stringp sym)
+              (regexp-quote sym))))
+        regexp-history)
+  (call-interactively 'occur))
+
 ;; * Keybindings
 
 ;; remap M-s .  because M-s was taken by paredit. Similar to vim * command

@@ -577,29 +577,6 @@
 (global-set-key (kbd "C-c m p") 'bk/point-to-register)
 (global-set-key (kbd "C-c j p") 'bk/jump-to-register)
 
-(use-package imenu
-  :config
-  (setq imenu-auto-rescan 1
-        imenu-auto-rescan-maxout 600000
-        imenu-max-item-length 600
-        imenu-use-markers t
-        imenu-max-items 200)
-  :bind
-  ("C-c i" . imenu))
-
-(defun bk/occur-dwim ()
-  "Call `occur' with a sane default."
-  (interactive)
-  (push (if (region-active-p)
-            (buffer-substring-no-properties
-             (region-beginning)
-             (region-end))
-          (let ((sym (thing-at-point 'symbol)))
-            (when (stringp sym)
-              (regexp-quote sym))))
-        regexp-history)
-  (call-interactively 'occur))
-
 (use-package jump-char
   :ensure t
   :bind (("M-n" . jump-char-forward)
@@ -847,24 +824,6 @@
                  (buffer-substring (+ 1 url-http-end-of-headers) (point-max)))))
     (kill-new myip)
     (message "IP: %s" myip)))
-
-(defun bk/copy-ledger-entry ()
-  "Copy last ledger entry."
-  (interactive)
-  (save-excursion
-    (backward-sentence)
-    (let ((beg (point)))
-      (forward-sentence)
-      (kill-ring-save beg (point))))
-  (yank))
-
-(defun bk/clean-ledger ()
-  "Bring back timeline structure to the whole file."
-  (interactive)
-  (if (eq major-mode 'ledger-mode)
-      (let ((curr-line (line-number-at-pos)))
-        (ledger-mode-clean-buffer)
-        (line-move (- curr-line 1)))))
 
 (defun bk/generate-password ()
   "Generate a 16-digit password."

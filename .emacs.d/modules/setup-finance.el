@@ -50,6 +50,24 @@
   (interactive)
   (bk/ledger-change-date -1))
 
+(defun bk/copy-ledger-entry ()
+  "Copy last ledger entry."
+  (interactive)
+  (save-excursion
+    (backward-sentence)
+    (let ((beg (point)))
+      (forward-sentence)
+      (kill-ring-save beg (point))))
+  (yank))
+
+(defun bk/clean-ledger ()
+  "Bring back timeline structure to the whole file."
+  (interactive)
+  (if (eq major-mode 'ledger-mode)
+      (let ((curr-line (line-number-at-pos)))
+        (ledger-mode-clean-buffer)
+        (line-move (- curr-line 1)))))
+
 ;; * External Dependencies
 
 (use-package ledger-mode
