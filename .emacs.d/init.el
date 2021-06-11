@@ -36,8 +36,14 @@
 (require 'setup-keybindings)
 (require 'setup-appearance)
 (require 'setup-completion)
-(require 'setup-clojure)
 (require 'setup-git)
+(require 'setup-programming)
+
+;; languages
+(require 'setup-clojure)
+(require 'setup-java)
+(require 'setup-python)
+(require 'setup-typescript)
 
 (add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
 
@@ -653,92 +659,8 @@
   :bind (("M-n" . jump-char-forward)
          ("M-p" . jump-char-backward)))
 
-;;; General Programming
-
-(use-package editorconfig
-  :ensure t
-  :diminish editorconfig-mode
-  :config
-  (editorconfig-mode +1))
-
-(use-package hl-todo
-  :ensure t
-  :config
-  (global-hl-todo-mode 1))
-
-(use-package envrc
-  :ensure t
-  :config
-  (envrc-global-mode +1))
-
-(use-package toggle-test
-  :ensure t
-  :init
-  (setq tgt-open-in-new-window nil)
-  :config
-  (put 'tgt-projects 'safe-local-variable #'lisp)
-  (global-set-key (kbd "H-s-t") 'tgt-toggle))
-
-(use-package flycheck
-  :ensure t
-  :hook (prog-mode . flycheck-mode)
-  :config
-  (setq flycheck-check-syntax-automatically '(save mode-enabled)
-        flycheck-checker-error-threshold 4000))
-
-(use-package flycheck-clj-kondo
-  :ensure t)
-
-(use-package flycheck-projectile
-  :ensure t)
-
-(use-package flycheck-pos-tip
-  :ensure t
-  :after flycheck
-  :config
-  (flycheck-pos-tip-mode +1))
-
-(defun yas/goto-end-of-active-field ()
-  "End of the field."
-  (let* ((snippet (car (yas--snippets-at-point)))
-         (position (yas--field-end (yas--snippet-active-field snippet))))
-    (if (= (point) position)
-        (move-end-of-line 1)
-      (goto-char position))))
-
-(defun yas/goto-start-of-active-field ()
-  "Start of the field."
-  (interactive)
-  (let* ((snippet (car (yas--snippets-at-point)))
-         (position (yas--field-start (yas--snippet-active-field snippet))))
-    (if (= (point) position)
-        (move-beginning-of-line 1)
-      (goto-char position))))
-
-(use-package yasnippet
-  :ensure t
-  :diminish yas-minor-mode
-  :hook (prog-mode . yas-minor-mode)
-  :config
-  (setq yas-prompt-functions '(yas-ido-prompt yas-completing-prompt)
-        yas-verbosity 1
-        yas-wrap-around-region t)
-  (define-key yas-keymap (kbd "C-a") 'yas/goto-start-of-active-field)
-  (define-key yas-keymap (kbd "C-e") 'yas/goto-end-of-active-field)
-
-  ;; jump to end of snippet definition
-  (define-key yas-keymap (kbd "<return>") 'yas-exit-all-snippets)
-  :bind
-  (("C-x y" . yas-expand)
-   ("C-c t" . yas-describe-tables)))
-
-(use-package yasnippet-snippets
-  :ensure t)
-
 ;;; use normal tabs in makefiles
 (add-hook 'makefile-mode-hook 'indent-tabs-mode)
-
-(use-package quickrun :ensure t)
 
 ;;; Lisps
 
@@ -771,72 +693,6 @@
   :init
   (setq markdown-command "pandoc"))
 
-;;; Python
-
-(defun bk/elpy-setup ()
-  "Setup python mode."
-  (pyvenv-activate "~/miniconda3")
-  (delete `elpy-module-django elpy-modules)
-  (delete `elpy-module-highlight-indentation elpy-modules))
-
-(use-package elpy
-  :ensure t
-  :config
-  (add-hook 'python-mode-hook #'elpy-enable)
-  (add-hook 'python-mode-hook #'bk/elpy-setup))
-
-(use-package py-autopep8
-  :ensure t
-  :after elpy
-  :init
-  (setq py-autopep8-options '("--max-line-length=100"))
-  :config
-  (add-hook 'elpy-mode-hook 'py-autopep8-enable-on-save))
-
-;;; Java
-
-(use-package lsp-mode
-  :ensure t
-  :hook ((java-mode . #'lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration))
-  :init
-  (setq lsp-intelephense-multi-root nil
-        lsp-keymap-prefix "C-c l"
-        lsp-enable-file-watchers nil
-        lsp-completion-provider :capf
-        lsp-idle-delay 0.500))
-
-(use-package dap-mode
-  :ensure t
-  :after (lsp-mode)
-  :bind (:map lsp-mode-map
-              ("<f5>" . dap-debug))
-  :hook ((dap-mode . dap-ui-mode)))
-
-(use-package lsp-ui
-  :ensure t
-  :after (lsp-mode)
-  :bind (:map lsp-ui-mode-map
-              ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-              ([remap xref-find-references] . lsp-ui-peek-find-references))
-  :init
-  (setq lsp-ui-doc-delay 1.5
-        lsp-ui-doc-position 'bottom
-        lsp-ui-doc-max-width 100))
-
-(use-package lsp-java
-  :ensure t
-  :config
-  (add-hook 'java-mode-hook 'lsp))
-
-(defun bk/setup-java ()
-  "Setup JAVA."
-  (electric-pair-mode +1))
-
-(add-hook 'java-mode-hook 'bk/setup-java)
-
-;;; Clojure
-
 (use-package subword
   :diminish subword-mode
   :config
@@ -846,51 +702,6 @@
   '(progn
      (pushnew! projectile-globally-ignored-directories ".cpcache")))
 
-
-;;; Typescript
-
-(defun bk/setup-tide-mode ()
-  "Setup js development."
-  (interactive)
-  (tide-setup)
-  (eldoc-mode -1)
-  (electric-pair-mode +1)
-  (tide-hl-identifier-mode +1)
-  (prettier-js-mode +1)
-  (add-node-modules-path))
-
-(use-package typescript-mode
-  :ensure t
-  :mode ("\\.tsx\\'" . typescript-mode)
-  :hook (typescript-mode . bk/setup-tide-mode))
-
-(use-package prettier-js :ensure t)
-(use-package add-node-modules-path :ensure t)
-(setq-default js-indent-level 2)
-
-(use-package js2-mode
-  :ensure t
-  :init
-  (setq js2-mode-show-parse-errors nil
-        js2-missing-semi-one-line-override nil)
-  :config
-  (add-hook 'js2-mode-hook (lambda () (flycheck-mode +1))))
-
-(use-package js2-refactor
-  :ensure t
-  :config
-  (js2r-add-keybindings-with-prefix "C-c C-m"))
-
-(use-package tide
-  :ensure t
-  :diminish tide-mode
-  :init
-  (setq tide-completion-detailed t
-        tide-always-show-documentation t
-        tide-server-max-response-length 524288)
-  :hook ((js-mode . bk/setup-tide-mode)
-         (js2-mode . bk/setup-tide-mode)
-         (typescript-mode . bk/setup-tide-mode)))
 
 (eval-after-load 'projectile
   '(progn
