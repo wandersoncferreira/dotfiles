@@ -21,11 +21,13 @@
      (ignore param)
      (list start end)))
 
-
-;;; Emacs basic
-
+;; elisp configuration folder
 (setq modules-dir (expand-file-name "modules" user-emacs-directory))
 (add-to-list 'load-path modules-dir)
+
+;; configurations specific to places I work at
+(setq work-dir (expand-file-name "work" user-emacs-directory))
+(add-to-list 'load-path work-dir)
 
 (set-register ?t '(file . "/home/wanderson/agenda/todo.org"))
 (set-register ?m '(file . "~/.emacs.d/manual.org"))
@@ -39,6 +41,14 @@
 (require 'setup-dired)
 (require 'setup-git)
 (require 'setup-programming)
+(require 'setup-search)
+
+;; workplace
+(require 'setup-work)
+(require 'reifyhealth)
+
+;; third-party apps
+(require 'setup-finance)
 
 ;; languages
 (require 'setup-clojure)
@@ -1038,90 +1048,7 @@
   (save-some-buffers)
   (kill-emacs))
 
-;;; Finance management
-
-(defun bk/clean-leader-on-save ()
-  "Hook to keep the file organized."
-  (interactive)
-  (if (eq major-mode 'ledger-mode)
-      (let ((curr-line (line-number-at-pos)))
-        (ledger-mode-clean-buffer)
-        (line-move (- curr-line 1)))))
-
-(defun bk/encoded-date (date)
-  "Create DATE."
-  (string-match "\\([0-9][0-9][0-9][0-9]\\)/\\([0-9][0-9]\\)/\\([0-9][0-9]\\)" date)
-  (let* ((fixed-date
-          (concat (match-string 1 date) "-"
-                  (match-string 2 date) "-"
-                  (match-string 3 date)))
-         (d (parse-time-string fixed-date)))
-    (encode-time 0 0 0 (nth 3 d) (nth 4 d) (nth 5 d))))
-
-(defun bk/ledger-change-date (num)
-  "Change the date based on NUM of days."
-  (save-excursion
-    (ledger-navigate-beginning-of-xact)
-    (let* ((beg (point))
-           (end (re-search-forward ledger-iso-date-regexp))
-           (xact-date (filter-buffer-substring beg end)))
-      (delete-region beg end)
-      (insert
-       (format-time-string
-        "%Y/%m/%d"
-        (time-add (bk/encoded-date xact-date)
-                  (days-to-time num)))))))
-
-(defun bk/ledger-increment-date ()
-  "Increase the date number."
-  (interactive)
-  (bk/ledger-change-date 1))
-
-
-(defun bk/ledger-decrement-date ()
-  "Decrease the date number."
-  (interactive)
-  (bk/ledger-change-date -1))
-
-
-(use-package ledger-mode
-  :ensure t
-  :mode ("ledger" . ledger-mode)
-  :init
-  :custom
-  (ledger-reports
-   '(("netcash" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -R -X R$ --current bal ^assets:bank ^assets:crypto liabilities:card")
-     ("sports" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:sports")
-     ("doctor" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:doctor")
-     ("apartamento-mae" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ -S date --current -w reg ^liabilities:apartment:mother")
-     ("apartamento-misce" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ -S date --current -w reg ^liabilities:apartment:misce")
-     ("eas-profit" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --invert --current bal ^expenses:eval ^income:eval")
-     ("food" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:food")
-     ("donation" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:donation")
-     ("apartamento-morumbi" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:house")
-     ("creta" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^expenses:car:creta ^equity:car:creta")
-     ("networth" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^assets:bank liabilities equity:apartment")
-     ("spent-vs-earned" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger bal -X BRL --period=\"last 4 weeks\" ^Expenses ^Income --invert -S amount")
-     ("budget" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -X R$ --current bal ^assets:bank:checking:budget liabilities:card")
-     ("taxes" "ledger [[ledger-mode-flags]] -f /home/wanderson/ledger -R -X R$ --current bal ^expenses:taxes")
-     ("bal" "%(binary) -f %(ledger-file) bal")
-     ("reg" "%(binary) -f %(ledger-file) reg")
-     ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
-     ("account" "%(binary) -f %(ledger-file) reg %(account)")))
-  :config
-  (setq ledger-report-auto-width t)
-  (add-hook 'before-save-hook 'bk/clean-leader-on-save)
-  :bind (:map ledger-mode-map
-              ("C-M-." . bk/ledger-increment-date)
-              ("C-M-," . bk/ledger-decrement-date)))
-
-(use-package hledger-mode
-  :ensure t
-  :bind (:map hledger-mode-map
-              ("TAB" . completion-at-point)))
-
 ;;; Docker
-
 
 (defun bk/dockerfile-add-build-args ()
   "Add env variables to your docker build."
@@ -1188,64 +1115,10 @@
   :config
   (add-hook 'sql-mode-hook 'sqlind-minor-mode))
 
-;;; Search
-
-(use-package ag
-  :ensure t
-  :config
-  (setq ag-reuse-buffers t
-        ag-reuse-window t))
-
-(use-package rg
-  :ensure t
-  :commands (bk/search-git-root-or-dir)
-  :config
-  (rg-define-search bk/search-git-root-or-dir
-    :query ask
-    :format regexp
-    :files "everything"
-    :dir (let ((vc (vc-root-dir)))
-           (if vc vc default-directory))
-    :confirm prefix
-    :flags ("--hidden -g !.git")))
-
-(use-package wgrep :ensure t)
-
-;; remap M-s .  because M-s was taken by paredit. Similar to vim * command
-(global-set-key (kbd "C-c .") 'isearch-forward-symbol-at-point)
-
-
 ;;; nixOS
 
 (use-package nix-mode
   :ensure t)
-
-;;; Reify Health
-
-(defun reifyhealth/cider-connect ()
-  "Connect into eSource."
-  (interactive)
-  (cider-connect-clj (list :host "localhost" :port 12344)))
-
-(defun reifyhealth ()
-  "Open file notes from work."
-  (interactive)
-  (find-file "~/repos/reifyhealth/work.org"))
-
-;;; Work in General
-
-(defun work-new-day ()
-  "Create entry into org file for bookkeeping."
-  (interactive)
-  (goto-char (point-max))
-  (org-insert-heading-respect-content)
-  (org-metaright)
-  (insert (shell-command-to-string "echo -n $(date +%Y-%m-%d)"))
-  (org-metaleft)
-  (reindent-then-newline-and-indent)
-  (reindent-then-newline-and-indent)
-  (org-cycle)
-  (insert "- "))
 
 ;;; PDF
 
@@ -1257,7 +1130,6 @@
   (require 'pdf-continuous-scroll-mode)
   (add-hook 'pdf-view-mode-hook 'pdf-continuous-scroll-mode)
   (require 'pdf-occur))
-
 
 ;;; Racket
 
@@ -1290,14 +1162,6 @@
 ;;; Misc. Custom Functions
 
 (use-package windresize
-  :ensure t)
-
-(use-package uuidgen
-  :preface
-  (defun bk/uuid ()
-    "Create uuid and add to clipboard."
-    (interactive)
-    (kill-new (uuidgen-4)))
   :ensure t)
 
 ;;; RSS Feed
