@@ -42,8 +42,12 @@
 (require 'setup-dired)
 (require 'setup-git)
 (require 'setup-org)
+(require 'setup-zettelkasten)
 (require 'setup-programming)
 (require 'setup-search)
+(require 'setup-eshell)
+(require 'setup-auth)
+(require 'setup-projects)
 
 ;; workplace
 (require 'setup-work)
@@ -61,28 +65,6 @@
 (require 'setup-typescript)
 (require 'setup-sql)
 (require 'setup-racket)
-
-(add-hook 'comint-mode-hook 'turn-on-visual-line-mode)
-
-;; this will save the buffer for me...
-(auto-save-visited-mode +1)
-(add-function :after after-focus-change-function
-              (lambda ()
-                (unless (frame-focus-state)
-                  (save-some-buffers t))))
-
-;; save buffer when you move between windows
-(defadvice switch-to-buffer (before save-buffer-now activate)
-  "Save buffer when move between windows."
-  (when buffer-file-name (save-buffer)))
-
-(defadvice other-window (before other-window-now activate)
-  "Save buffer when move between windows."
-  (when buffer-file-name (save-buffer)))
-
-(defadvice other-frame (before other-frame-now activate)
-  "Save buffer when move between windows."
-  (when buffer-file-name (save-buffer)))
 
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
@@ -179,78 +161,6 @@
   (global-set-key (kbd "<f2>") 'bm-toggle)
   (global-set-key (kbd "<S-f2>") 'bm-previous))
 
-;;; Authentication
-
-(use-package pinentry
-  :ensure t
-  :init
-  (setq epg-gpg-program "gpg"
-        epa-file-cache-passphrase-for-symmetric-encryption t
-        epa-pinentry-mode 'loopback)
-  :config
-  (when (not (process-live-p pinentry--server-process))
-    (pinentry-start)))
-
-(use-package epa
-  :ensure nil
-  :init
-  (setq auth-source-debug t
-        auth-sources '((:source "~/.secrets/authinfo.gpg")))
-  :config
-  (pinentry-start))
-
-(defun bk/bitwarden ()
-  "Get bitwarden."
-  (interactive)
-  (kill-new (auth-source-pick-first-password
-             :host "bitwarden.app"
-             :user "bartuka")))
-
-(defun my-gpg ()
-  "My gpg."
-  (interactive)
-  (kill-new
-   (with-temp-buffer
-     (insert-file-contents "~/.secrets/pwd/gpg.txt")
-     (buffer-string))))
-
-;;; Eshell
-
-(defun eshell-clear-buffer ()
-  "Clear the terminal buffer."
-  (interactive)
-  (let ((inhibit-read-only t))
-    (erase-buffer)
-    (eshell-send-input)))
-
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
-
-(add-hook 'eshell-mode-hook
-          (lambda ()
-            (eshell/alias "e" "find-file $1")
-            (eshell/alias "ee" "find-file-other-window $1")))
-
-
-(use-package eshell-toggle
-  :ensure t
-  :bind ("C-x e" . eshell-toggle)
-  :custom
-  (eshell-toggle-size-fraction 3)
-  (eshell-toggle-use-projectile-root t)
-  (eshell-toggle-run-command nil))
-
-(use-package eshell-syntax-highlighting
-  :ensure t
-  :after esh-mode
-  :config
-  (eshell-syntax-highlighting-global-mode +1))
-
-(use-package fish-completion
-  :ensure t
-  :hook (eshell-mode . fish-completion-mode))
-
 ;;; Buffers
 
 (use-package winner
@@ -283,10 +193,6 @@
   :config
   (recentf-mode +1))
 
-(use-package replace
-  :bind
-  (("C-c o" . #'bk/occur-dwim)))
-
 (use-package uniquify
   :config
   (setq uniquify-buffer-name-style 'post-forward-angle-brackets
@@ -294,16 +200,6 @@
         uniquify-after-kill-buffer-p t
         uniquify-strip-common-suffix t
         uniquify-ignore-buffers-re "^\\*"))
-
-(defun bk/ansi-colorize-buffer ()
-  "Eliminate weird escape sequences during compilation of projects."
-  (let ((buffer-read-only nil))
-    (ansi-color-apply-on-region (point-min) (point-max))))
-
-(use-package ansi-color
-  :ensure t
-  :config
-  (add-hook 'compilation-filter-hook 'bk/ansi-colorize-buffer))
 
 ;; automatically group all of your Emacs buffers into workspaces by defining a series of
 ;; grouping rules. I find this a lot better than perspective-mode which I have to manually
@@ -327,63 +223,6 @@
   :bind (("M-x" . smex)
          ("C-x C-m" . smex)
          ("C-c C-m" . smex)))
-
-;; hippie expand
-
-(require 'patch-hippie-expand)
-
-(global-set-key (kbd "C-.") 'hippie-expand-no-case-fold)
-(global-set-key (kbd "C-x l") 'hippie-expand-lines)
-(global-set-key (kbd "C-,") 'completion-at-point)
-
-;;; Projects
-
-(use-package projectile
-  :ensure t
-  :diminish projectile-mode
-  :init
-  (setq projectile-completion-system 'ido
-        projectile-dynamic-mode-line nil
-        projectile-ignored-projects '("~/" "/tmp")
-        projectile-globally-ignored-file-suffixes '(".elc" ".pyc" ".o")
-        projectile-globally-ignored-files '(".DS_Store" "TAGS" "ido.last" "recentf" "smex-items")
-        )
-  :config
-  (require 'subr-x)
-  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode +1))
-
-;; find file in project, with specific patterns
-
-(defun ffip--create-exclude-find-options (names)
-  "Exclude NAMES from find candidates."
-  (mapconcat (lambda (name) (concat "-not -regex \".*" name ".*\"")) names " "))
-
-(use-package find-file-in-project
-  :ensure t
-  :config
-  (setq ffip-find-options
-        (ffip--create-exclude-find-options
-         '("/node_modules/"
-           "/target/"
-           "/out/"
-           "/.shadow-cljs/"
-           "/.cpcache/"))))
-
-(defun ffip-create-pattern-file-finder (&rest patterns)
-  "Create new functions that look for a specific PATTERNS."
-  (let ((patterns patterns))
-    (lambda ()
-      (interactive)
-      (let ((ffip-patterns patterns))
-        (find-file-in-project)))))
-
-(global-unset-key (kbd "C-x C-o"))
-(global-set-key (kbd "C-x C-o jn") (ffip-create-pattern-file-finder "*.json"))
-(global-set-key (kbd "C-x C-o ht") (ffip-create-pattern-file-finder "*.html"))
-(global-set-key (kbd "C-x C-o ed") (ffip-create-pattern-file-finder "*.edn"))
-(global-set-key (kbd "C-x C-o ym") (ffip-create-pattern-file-finder "*.yml"))
-
 
 ;;; Emacs Editor
 
@@ -839,45 +678,6 @@
         "~/.emacs.d/bin/languagetool-commandline.jar"))
 
 (use-package popup :ensure t)
-
-;;; Zettelkasten
-
-(defvar bk-zettelkasten-dir "/home/wanderson/zettelkasten")
-
-(defun bk/roam-add-resource ()
-  "Add resource to Org Roam buffer."
-  (interactive)
-  (let* ((candidates (mapcar (lambda (x)
-                               (replace-regexp-in-string "~/resources/" "" x))
-                             (directory-files-recursively "~/resources" "")))
-         (resource (ido-completing-read "Resource: " candidates))
-         (link-location (concat "file:~/resources/" resource))
-         (description (ido-completing-read "Description: " "")))
-    (org-insert-link t link-location description)))
-
-(use-package org-roam
-  :ensure t
-  :diminish org-roam-mode
-  :init
-  (setq org-roam-directory bk-zettelkasten-dir
-        org-roam-completion-everywhere t
-        org-roam-completion-system 'ido)
-  :bind (("C-c z f" . org-roam-find-file)
-         ("C-c z i" . org-roam-insert)
-         ("C-c z I" . org-roam-insert-immediate))
-  :config
-  (org-roam-mode +1)
-  (add-hook 'org-roam-backlinks-mode-hook 'toggle-truncate-lines))
-
-(use-package org-roam-server
-  :ensure t
-  :commands (org-roam-server-mode)
-  :init
-  (setq org-roam-server-port 17042)
-  :config
-  (require 'org-protocol)
-  (require 'org-roam-protocol))
-
 
 ;;; Emacs Server
 

@@ -34,6 +34,8 @@
 ;; remap M-s .  because M-s was taken by paredit. Similar to vim * command
 (global-set-key (kbd "C-c .") 'isearch-forward-symbol-at-point)
 
+(global-set-key (kbd "C-c o") 'bk/occur-dwim)
+
 
 ;; * External Dependencies
 

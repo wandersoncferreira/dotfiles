@@ -24,7 +24,7 @@
      ("payee" "%(binary) -f %(ledger-file) reg @%(payee)")
      ("account" "%(binary) -f %(ledger-file) reg %(account)")) nil nil "Customized with use-package ledger-mode")
  '(package-selected-packages
-   '(dot-mode yasnippet-snippets lsp-ui lsp-java dap-java dap-mode lsp-mode zenburn-theme webpaste all-the-icons alert telega editorconfig crux bufler git-link fish-completion eshell-syntax-highlighting eshell-toggle helm-spotify-plus shell-pop gif-screencast keycast nov flycheck-plantuml sqlformat edit-indirect py-autopep8 elpy flycheck-clj-kondo doom-modeline doom-themes olivetti olivetti-mode shackle rainbow-blocks js2-refactor js2-mode browse-kill-ring disable-mouse rainbow-mode ido-vertical-mode vertico elfeed org-roam popup typescript-mode clojure-mode paredit yasnippet flycheck magit multiple-cursors expand-region racket-mode flycheck-pos-tip flycheck-projectile modus-operandi-theme rainbow-delimiters zygospore zprint-mode writeroom-mode windresize whitespace-cleanup-mode which-key wakatime-mode vlf uuidgen use-package try toggle-test tide sql-indent smex session rg restclient quickrun projectile prodigy prettier-js plantuml-mode pinentry perspective pdf-tools org-roam-server org-download nix-mode move-text monokai-theme magit-todos ledger-mode langtool kaocha-runner jump-char ido-completing-read+ ido-at-point hledger-mode goto-chg google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flyspell-correct flymd fix-word find-file-in-project envrc elfeed-org dtrt-indent dockerfile-mode docker-compose-mode docker diminish clojure-snippets clj-refactor change-inner buffer-move browse-at-remote bm bicycle ag add-node-modules-path))
+   '(evil dot-mode yasnippet-snippets lsp-ui lsp-java dap-java dap-mode lsp-mode zenburn-theme webpaste all-the-icons alert telega editorconfig crux bufler git-link fish-completion eshell-syntax-highlighting eshell-toggle helm-spotify-plus shell-pop gif-screencast keycast nov flycheck-plantuml sqlformat edit-indirect py-autopep8 elpy flycheck-clj-kondo doom-modeline doom-themes olivetti olivetti-mode shackle rainbow-blocks js2-refactor js2-mode browse-kill-ring disable-mouse rainbow-mode ido-vertical-mode vertico elfeed org-roam popup typescript-mode clojure-mode paredit yasnippet flycheck magit multiple-cursors expand-region racket-mode flycheck-pos-tip flycheck-projectile modus-operandi-theme rainbow-delimiters zygospore zprint-mode writeroom-mode windresize whitespace-cleanup-mode which-key wakatime-mode vlf uuidgen use-package try toggle-test tide sql-indent smex session rg restclient quickrun projectile prodigy prettier-js plantuml-mode pinentry perspective pdf-tools org-roam-server org-download nix-mode move-text monokai-theme magit-todos ledger-mode langtool kaocha-runner jump-char ido-completing-read+ ido-at-point hledger-mode goto-chg google-this gitignore-templates gitignore-mode gitconfig-mode git-timemachine gist forge flyspell-correct flymd fix-word find-file-in-project envrc elfeed-org dtrt-indent dockerfile-mode docker-compose-mode docker diminish clojure-snippets clj-refactor change-inner buffer-move browse-at-remote bm bicycle ag add-node-modules-path))
  '(safe-local-variable-values
    '((writeroom-mode-line . t)
      (writeroom-fullscreen-effect . maximized)
@@ -102,3 +102,9 @@
  '(wakatime-cli-path "/home/wanderson/.nix-profile/bin/wakatime")
  '(wakatime-python-bin nil)
  '(warning-suppress-types '((magit-todos) (comp))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(bm-persistent-face ((t (:background "khaki2")))))

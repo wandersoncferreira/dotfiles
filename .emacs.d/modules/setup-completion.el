@@ -27,6 +27,12 @@
 (add-to-list 'ido-ignore-directories ".cpcache")
 (add-to-list 'ido-ignore-directories "eln-cache")
 
+(require 'patch-hippie-expand)
+
+(global-set-key (kbd "C-.") 'hippie-expand-no-case-fold)
+(global-set-key (kbd "C-x l") 'hippie-expand-lines)
+(global-set-key (kbd "C-,") 'completion-at-point)
+
 ;; * Keybindings
 
 (define-key minibuffer-local-completion-map (kbd "SPC") 'self-insert-command)
