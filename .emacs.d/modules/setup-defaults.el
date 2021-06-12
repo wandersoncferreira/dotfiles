@@ -36,6 +36,7 @@
 
 ;; where emacs customizations via Customize page goes
 (setq custom-file (expand-file-name "custom.el" user-emacs-directory))
+(load custom-file)
 
 ;; stop using tabs
 (setq-default indent-tabs-mode nil)
@@ -81,6 +82,14 @@
         ("Europe/Paris" "Paris")
         ("America/Boston" "Boston")))
 
+(setq max-specpdl-size (* 15 max-specpdl-size))
+(setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
+
+(set-language-environment "UTF-8")
+(set-default-coding-systems 'utf-8)
+
+(delete-selection-mode +1)
+
 ;; truncate lines
 (setq-default truncate-lines t)
 
@@ -97,6 +106,14 @@
 
 ;; enable erase-buffer command
 (put 'erase-buffer 'disabled nil)
+
+(use-package autorevert
+  :diminish auto-revert-mode
+  :init
+  (setq global-auto-revert-non-file-buffers t
+        auto-revert-verbose nil)
+  :config
+  (global-auto-revert-mode +1))
 
 ;; * Functions
 
@@ -116,6 +133,8 @@
   :ensure t
   :config
   (browse-kill-ring-default-keybindings))
+
+(use-package vlf :ensure t)
 
 (provide 'setup-defaults)
 ;;; setup-defaults.el ends here

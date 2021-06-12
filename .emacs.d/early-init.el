@@ -29,13 +29,17 @@
   (when (file-directory-p path)
     (add-to-list 'custom-theme-load-path path)))
 
-
 (defun bk/reinstall-package (pkg)
   "Reinstall PKG that are not properly byte-compiled."
   (interactive (list (intern (completing-read "Reinstall package: " (mapcar #'car package-alist)))))
   (unload-feature pkg)
   (package-reinstall pkg)
   (require pkg))
+
+(defun bk/packages-count ()
+  "How many packages do I have installed."
+  (interactive)
+  (message "Packages installed: %s" (length package-alist)))
 
 (provide 'early-init)
 ;;; early-init.el ends here

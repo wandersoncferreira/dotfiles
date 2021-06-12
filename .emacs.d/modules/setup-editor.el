@@ -4,6 +4,8 @@
 ;;
 ;;; Code:
 
+(require 'align-defun)
+
 ;; * Functions
 
 (defun bk/kill-inner-word ()
@@ -24,6 +26,30 @@
     (goto-char start)
     (dotimes (_ num)
       (insert region))))
+
+(defun bk/jump-to-register ()
+  "Switch between current position and pos stored."
+  (interactive)
+  (let ((tmp (point-marker)))
+    (jump-to-register 8)
+    (set-register 8 tmp)))
+
+(defun bk/point-to-register ()
+  "Store cursor position in a register."
+  (interactive)
+  (point-to-register 8)
+  (message "Point set"))
+
+(defun bk/clear-registers ()
+  "Remove all saved registers."
+  (interactive)
+  (setq register-alist nil))
+
+(defun bk/unfill-paragraph ()
+  "Takes a multi-line paragraph and make it into a single line of text."
+  (interactive)
+  (let ((fill-column (point-max)))
+    (fill-paragraph nil)))
 
 ;; * External Dependencies
 
