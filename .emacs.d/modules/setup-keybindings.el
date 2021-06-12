@@ -24,5 +24,22 @@
 
 (global-set-key (kbd "C-c j p") 'bk/jump-to-register)
 
+;; * External Dependencies
+
+(use-package eldoc
+  :diminish eldoc-mode
+  :init
+  (setq eldoc-idle-delay 0.1
+        eldoc-echo-area-use-multiline-p nil)
+  :config
+  (global-eldoc-mode +1))
+
+
+(use-package which-key
+  :ensure t
+  :diminish which-key-mode
+  :config
+  (which-key-mode))
+
 (provide 'setup-keybindings)
 ;;; setup-keybindings.el ends here

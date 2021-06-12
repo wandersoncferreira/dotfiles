@@ -48,7 +48,13 @@ Better naming to improve the chances to find it."
   :init
   (setq clojure-toplevel-inside-comment-form t)
   :config
-  (require 'flycheck-clj-kondo))
+  (require 'flycheck-clj-kondo)
+  
+  ;; config bc of guardrails library
+  (put-clojure-indent '>defn :defn)
+  (put-clojure-indent '>def :def)
+  
+  )
 
 (use-package kaocha-runner
   :ensure t

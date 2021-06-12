@@ -16,6 +16,15 @@
 
 ;; * Functions
 
+(defun bk/kill-all-comments ()
+  "Function to kill all comments in a buffer."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (comment-kill (save-excursion
+                    (goto-char (point-max))
+                    (line-number-at-pos)))))
+
 ;; automatically indenting yanked text if in programming modes
 (require 'dash)
 

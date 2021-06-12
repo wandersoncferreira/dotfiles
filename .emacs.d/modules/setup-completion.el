@@ -2,6 +2,9 @@
 ;;
 ;;; Commentary:
 ;;
+;; Very useful write up about IDO can be found here: https://www.masteringemacs.org/article/introduction-to-ido-mode
+;;
+;;
 ;;; Code:
 
 ;; * Mode Activation
@@ -15,11 +18,23 @@
 ;; match strings partially
 (setq ido-enable-flex-matching t)
 
-;; always put . as the first item in file name lists
-(setq ido-show-dot-for-dired t)
-
 ;; stop asking if should create new buffers
 (setq ido-create-new-buffer 'always)
+
+;; find file at point
+(setq ido-use-filename-at-point 'guess)
+
+;; order in which IDO displays the files
+(setq ido-file-extensions-order '(".clj" ".sql" ".md" ".org"))
+
+(setq confirm-nonexistent-file-or-buffer nil)
+
+(setq ido-auto-merge-work-directories-length -1)
+
+(setq ido-confirm-unique-completion t)
+
+;; make usage of `completion-ignored-extensions' in ido
+(setq ido-ignore-extensions t)
 
 ;; files and directories to be ignored by IDO
 (add-to-list 'ido-ignore-directories "target")
