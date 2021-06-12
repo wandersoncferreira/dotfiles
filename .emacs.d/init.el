@@ -55,6 +55,7 @@
 (require 'setup-projects)
 (require 'setup-editor)
 (require 'setup-spell)
+(require 'setup-window)
 
 ;; workplace
 (require 'setup-work)
@@ -66,6 +67,10 @@
 (require 'setup-finance)
 (require 'setup-chat)
 (require 'setup-zettelkasten)
+(require 'setup-rss)
+
+;; modes
+(require 'setup-markdown)
 
 ;; languages
 (require 'setup-clojure)
@@ -84,8 +89,6 @@
 
 (load custom-file)
 
-(windmove-default-keybindings)
-
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
 
@@ -100,14 +103,6 @@
   (global-auto-revert-mode +1))
 
 (use-package vlf :ensure t)
-
-(use-package buffer-move
-  :ensure t
-  :config
-  (global-set-key (kbd "M-s-<up>") 'buf-move-up)
-  (global-set-key (kbd "M-s-<down>") 'buf-move-down)
-  (global-set-key (kbd "M-s-<left>") 'buf-move-left)
-  (global-set-key (kbd "M-s-<right>") 'buf-move-right))
 
 ;;; Bookmarks
 
@@ -136,62 +131,9 @@
   (global-set-key (kbd "<f2>") 'bm-toggle)
   (global-set-key (kbd "<S-f2>") 'bm-previous))
 
-;;; Buffers
-
-(use-package winner
-  :init
-  (setq winner-dont-bind-my-keys t
-        winner-boring-buffers
-        '("*Completions*"
-          "*Compile-Log*"
-          "*inferior-lisp*"
-          "*Fuzzy Completions*"
-          "*Apropos*"
-          "*Help*"
-          "*cvs*"
-          "*Buffer List*"
-          "*Ibuffer*"
-          "*esh command on file*"
-          "*kaocha-error*"))
-  :config
-  (winner-mode +1)
-  (global-set-key (kbd "C-x 4 u") 'winner-undo)
-  (global-set-key (kbd "C-x 4 U") 'winner-redo))
-
-(use-package shackle
-  :ensure t
-  :config
-  (setq shackle-rules '(("*kaocha-error*" :ignore t)))
-  (shackle-mode +1))
-
 (use-package recentf
   :config
   (recentf-mode +1))
-
-(use-package uniquify
-  :config
-  (setq uniquify-buffer-name-style 'post-forward-angle-brackets
-        uniquify-separator " * "
-        uniquify-after-kill-buffer-p t
-        uniquify-strip-common-suffix t
-        uniquify-ignore-buffers-re "^\\*"))
-
-;; automatically group all of your Emacs buffers into workspaces by defining a series of
-;; grouping rules. I find this a lot better than perspective-mode which I have to manually
-;; add buffers to each workspace.
-
-(use-package bufler
-  :ensure t
-  :bind
-  (("C-c b" . bufler-switch-buffer)
-   ("C-c s f" . bufler-workspace-frame-set))
-  :config
-  (bufler-mode +1)
-  (setf bufler-groups
-        (bufler-defgroups
-          (group
-           (auto-projectile))
-          (auto-directory))))
 
 (use-package crux
   :ensure t
@@ -236,36 +178,6 @@
   (interactive)
   (yank 1))
 
-
-;;; Window
-
-(defun bk/toggle-window-split ()
-  "Toggle window."
-  (interactive)
-  (if (= (count-windows) 2)
-      (let* ((this-win-buffer (window-buffer))
-             (next-win-buffer (window-buffer (next-window)))
-             (this-win-edges (window-edges (selected-window)))
-             (next-win-edges (window-edges (next-window)))
-             (this-win-2nd (not (and (<= (car this-win-edges)
-                                         (car next-win-edges))
-                                     (<= (cadr this-win-edges)
-                                         (cadr next-win-edges)))))
-             (splitter (if (= (car this-win-edges)
-                              (car (window-edges (next-window))))
-                           'split-window-horizontally
-                         'split-window-vertically)))
-        (delete-other-windows)
-        (let ((first-win (selected-window)))
-          (funcall splitter)
-          (if this-win-2nd (other-window 1))
-          (set-window-buffer (selected-window) this-win-buffer)
-          (set-window-buffer (next-window) next-win-buffer)
-          (select-window first-win)
-          (if this-win-2nd (other-window 1))))))
-
-(global-set-key (kbd "C-c |") 'bk/toggle-window-split)
-
 ;;; Emacs Movement
 
 (defun bk/jump-to-register ()
@@ -286,17 +198,6 @@
 
 ;;; use normal tabs in makefiles
 (add-hook 'makefile-mode-hook 'indent-tabs-mode)
-
-;;; Markdown
-
-(use-package markdown-mode
-  :ensure t
-  :commands (markdown-mode gfm-mode)
-  :mode (("README\\.md\\'" . gfm-mode)
-         ("\\.md\\'" . markdown-mode)
-         ("\\.markdown\\'" . markdown-mode))
-  :init
-  (setq markdown-command "pandoc"))
 
 (use-package subword
   :diminish subword-mode
@@ -413,59 +314,12 @@
   (interactive)
   (setq register-alist nil))
 
-(defun bk/kill-buffer ()
-  "Kill current buffer."
-  (interactive)
-  (kill-buffer (current-buffer)))
-
-(global-set-key (kbd "C-x k") 'bk/kill-buffer)
-
-(defun bk/indent-buffer ()
-  "Fix indentation of buffer."
-  (interactive)
-  (indent-region (point-min) (point-max)))
-
-(defun bk/untabify-buffer ()
-  "Remove tabs from buffer."
-  (interactive)
-  (untabify (point-min) (point-max)))
-
 (defun bk/sudo-edit (&optional arg)
   "Function to edit file with super-user with optional ARG."
   (interactive "P")
   (if (or arg (not buffer-file-name))
       (find-file (concat "/sudo:root@localhost:" (read-file-name "File: ")))
     (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
-
-(defun bk/touch-buffer-file ()
-  "Touch buffer."
-  (interactive)
-  (insert " ")
-  (backward-delete-char 1)
-  (save-buffer))
-
-(use-package zygospore
-  :ensure t
-  :config
-  (global-set-key (kbd "C-x 1") 'zygospore-toggle-delete-other-windows))
-
-(defun bk/vsplit-last-buffer ()
-  "Split the window vertically and display the previous buffer."
-  (interactive)
-  (split-window-vertically)
-  (other-window 1 nil)
-  (switch-to-next-buffer))
-
-(global-set-key (kbd "C-x 2") 'bk/vsplit-last-buffer)
-
-(defun bk/hsplit-last-buffer ()
-  "Split the window horizontally and display the previous buffer."
-  (interactive)
-  (split-window-horizontally)
-  (other-window 1 nil)
-  (switch-to-next-buffer))
-
-(global-set-key (kbd "C-x 3") 'bk/hsplit-last-buffer)
 
 (defun bk/insert-date-today ()
   "Insert today date as YYYY-MM-DD."
@@ -489,9 +343,6 @@
     (kill-new myip)
     (message "IP: %s" myip)))
 
-
-(use-package popup :ensure t)
-
 ;;; Emacs Server
 
 (require 'server)
@@ -512,7 +363,6 @@
   :config
   (push '("<\\?xml" . nxml-mode) magic-mode-alist)
   (add-to-list 'auto-mode-alist '("\\.pom$" . nxml-mode)))
-
 
 ;;; nixOS
 
@@ -545,69 +395,6 @@
   :after flycheck
   :config
   (flycheck-plantuml-setup))
-
-
-;;; Misc. Custom Functions
-
-(use-package windresize
-  :ensure t)
-
-;;; RSS Feed
-
-(defun bk/elfeed-disable-mode-setup ()
-  "Some packages that I want to disable when reading rss feeds."
-  (interactive)
-  (setq-local right-margin-width 15
-              left-margin-width 15)
-  (abbrev-mode -1)
-  (yas-minor-mode -1)
-  (dired-async-mode -1)
-  (global-auto-revert-mode -1))
-
-(use-package elfeed
-  :ensure t
-  :commands (elfeed elfeed-update)
-  :init
-  (setq-default elfeed-search-filter "@3-week-ago +unread")
-  :config
-  (add-hook 'elfeed-show-mode-hook 'bk/elfeed-disable-mode-setup)
-  (add-hook 'elfeed-search-update-hook 'bk/elfeed-disable-mode-setup))
-
-
-(use-package elfeed-org
-  :ensure t
-  :after elfeed
-  :init
-  (setq rmh-elfeed-org-files (list "~/.emacs.d/elfeed.org")
-        rmh-elfeed-org-tree-id "elfeed")
-  :config
-  (elfeed-org))
-
-(defun ambrevar/elfeed-play-with-mpv ()
-  "Play entry link with mpv."
-  (interactive)
-  (let ((entry (if (eq major-mode 'elfeed-show-mode) elfeed-show-entry (elfeed-search-selected :single)))
-        (quality-arg "")
-        (quality-val (completing-read "Max height resolution (0 for unlimited): " '("0" "480" "720") nil nil)))
-    (setq quality-val (string-to-number quality-val))
-    (message "Opening %s with height≤%s with mpv..." (elfeed-entry-link entry) quality-val)
-    (when (< 0 quality-val)
-      (setq quality-arg (format "--ytdl-format=[height<=?%s]" quality-val)))
-    (start-process "elfeed-mpv" nil "mpv" quality-arg (elfeed-entry-link entry))))
-
-(defun elfeed-show-play-enclosure (enclosure-index)
-  "Play podcast with mpv from ENCLOSURE-INDEX."
-  (interactive (list (elfeed--enclosure-maybe-prompt-index elfeed-show-entry)))
-  (let ((url (car
-              (elt
-               (elfeed-entry-enclosures elfeed-show-entry)
-               (- enclosure-index 1)))))
-    (async-shell-command (format "mpv '%s'" url) "*podcast*")))
-
-(eval-after-load "elfeed"
-  '(progn
-     (define-key elfeed-search-mode-map "v" #'ambrevar/elfeed-play-with-mpv)
-     (define-key elfeed-show-mode-map "v" #'ambrevar/elfeed-play-with-mpv)))
 
 ;;; Media
 
@@ -684,7 +471,6 @@
 (add-hook 'diary-list-entries-hook 'diary-sort-entries t)
 (add-hook 'diary-mode-hook #'goto-address-mode)
 
-
 (require 'cal-dst)
 (setq calendar-standard-time-zone-name "-0300")
 (setq calendar-daylight-time-zone-name "-0300")
@@ -702,7 +488,6 @@
   :config
   (run-at-time 10 nil #'appt-activate 1)
   (add-hook 'diary-hook 'appt-make-list))
-
 
 ;;; Manage external services
 
@@ -761,22 +546,6 @@
   (prodigy-define-tag
     :name 'esource-run
     :ready-message "WARNING: .*"))
-
-(use-package browse-kill-ring
-  :ensure t
-  :config
-  (browse-kill-ring-default-keybindings))
-
-;;; Writing
-
-(use-package writeroom-mode
-  :ensure t
-  :config
-  (setq writeroom-extra-line-spacing t
-        writeroom-mode-line t
-        writeroom-restore-window-config t
-        writeroom-fullscreen-effect 'maximized))
-
 
 ;;; EPUB
 

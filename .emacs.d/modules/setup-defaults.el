@@ -110,5 +110,12 @@
 
 (define-key emacs-lisp-mode-map (kbd "C-c C-k") 'bk/eval-buffer)
 
+;; * External Dependencies
+
+(use-package browse-kill-ring
+  :ensure t
+  :config
+  (browse-kill-ring-default-keybindings))
+
 (provide 'setup-defaults)
 ;;; setup-defaults.el ends here
