@@ -18,13 +18,5 @@
   (with-eval-after-load "eldoc"
     (eldoc-add-command #'paredit-backward-delete #'paredit-close-round)))
 
-;; * Functions
-
-(defmacro pushnew! (place &rest values)
-  "Push VALUES sequentially into PLACE, if they aren't already present."
-  (let ((var (make-symbol "result")))
-    `(dolist (,var (list ,@values) (with-no-warnings ,place))
-       (cl-pushnew ,var ,place :test #'equal))))
-
 (provide 'setup-lisp)
 ;;; setup-lisp.el ends here

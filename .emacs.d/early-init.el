@@ -41,5 +41,11 @@
   (interactive)
   (message "Packages installed: %s" (length package-alist)))
 
+(defmacro pushnew! (place &rest values)
+  "Push VALUES sequentially into PLACE, if they aren't already present."
+  (let ((var (make-symbol "result")))
+    `(dolist (,var (list ,@values) (with-no-warnings ,place))
+       (cl-pushnew ,var ,place :test #'equal))))
+
 (provide 'early-init)
 ;;; early-init.el ends here
