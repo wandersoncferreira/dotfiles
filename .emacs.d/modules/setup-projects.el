@@ -20,7 +20,13 @@
   :config
   (require 'subr-x)
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
-  (projectile-mode +1))
+  (projectile-mode +1)
+
+  (pushnew! projectile-globally-ignored-directories ".cpcache")
+  (pushnew! projectile-project-root-files "package.json")
+  (pushnew! projectile-globally-ignored-files "node_modules" "bkp" ".log")
+  (pushnew! projectile-globally-ignored-directories "node_modules" "bkp" ".log")
+  )
 
 ;; find file in project, with specific patterns
 (defun ffip--create-exclude-find-options (names)

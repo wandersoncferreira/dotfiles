@@ -14,6 +14,14 @@
 ;; large fringes to get high-resolution flycheck marks
 (fringe-mode '(16 . 0))
 
+;; remove unnecessary UI
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
+(menu-bar-mode -1)
+
+;; activate parenthesis highlight
+(show-paren-mode +1)
+
 ;; * Functions
 
 (require 'dash)
@@ -35,13 +43,17 @@
         (set-frame-parameter (selected-frame) 'alpha 100)
         (setq bk--toggle-transparency nil))
     (progn
-      (set-frame-parameter (selected-frame) 'alpha 90)
+      (set-frame-parameter (selected-frame) 'alpha 95)
       (setq bk--toggle-transparency t))))
 
 (defun bk/default-theme ()
   "Default theme to be used."
   (interactive)
   (load-theme 'default-black t)
+  (set-frame-parameter (selected-frame) 'alpha 95)
+  (set-face-attribute 'lazy-highlight nil :background "#464740")
+  (set-face-attribute 'isearch nil :background "#464740")
+  (set-face-attribute 'region nil :background "#464740")
   (bk/set-ibm-font 110))
 
 (defun bk/dark-theme ()
@@ -72,11 +84,18 @@
   (setq hour (string-to-number (substring (current-time-string) 11 13)))
   (if (member hour (number-sequence 6 16))
       (setq now '(bk/light-theme))
-    (setq now '(bk/dark-theme)))
+    (setq now '(bk/default-theme)))
   (if (equal now current-theme)
       nil
     (setq current-theme now)
     (eval now)))
+
+(defun what-face (pos)
+  "Find what face at POS."
+  (interactive "d")
+  (let ((face (or (get-char-property pos 'read-face-name)
+                  (get-char-property pos 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
 
 ;; start project with light theme

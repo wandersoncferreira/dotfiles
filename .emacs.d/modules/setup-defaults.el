@@ -84,6 +84,20 @@
 ;; truncate lines
 (setq-default truncate-lines t)
 
+(use-package ediff
+  :config
+  (setq ediff-window-setup-function 'ediff-setup-windows-plain
+        ediff-split-window-function 'split-window-horizontally
+        ediff-diff-options "-w"))
+
+;; enable narrowing commands
+(put 'narrow-to-region 'disabled nil)
+(put 'narrow-to-page 'disabled nil)
+(put 'narrow-to-defun 'disabled nil)
+
+;; enable erase-buffer command
+(put 'erase-buffer 'disabled nil)
+
 ;; * Functions
 
 (defun bk/eval-buffer ()

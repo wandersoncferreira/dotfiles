@@ -34,6 +34,12 @@
 (set-register ?l '(file . "/home/wanderson/ledger"))
 (set-register ?e '(file . "/home/wanderson/.emacs.d/init.el"))
 
+;; * Packages
+
+(use-package smex :ensure t)
+
+;; * Imports
+
 (require 'setup-defaults)
 (require 'setup-keybindings)
 (require 'setup-appearance)
@@ -42,12 +48,13 @@
 (require 'setup-dired)
 (require 'setup-git)
 (require 'setup-org)
-(require 'setup-zettelkasten)
 (require 'setup-programming)
 (require 'setup-search)
 (require 'setup-eshell)
 (require 'setup-auth)
 (require 'setup-projects)
+(require 'setup-editor)
+(require 'setup-spell)
 
 ;; workplace
 (require 'setup-work)
@@ -57,6 +64,8 @@
 
 ;; third-party apps
 (require 'setup-finance)
+(require 'setup-chat)
+(require 'setup-zettelkasten)
 
 ;; languages
 (require 'setup-clojure)
@@ -65,6 +74,7 @@
 (require 'setup-typescript)
 (require 'setup-sql)
 (require 'setup-racket)
+(require 'setup-lisp)
 
 (setq max-specpdl-size (* 15 max-specpdl-size))
 (setq max-lisp-eval-depth (* 15 max-lisp-eval-depth))
@@ -72,17 +82,9 @@
 ;; transparently open compressed files
 (auto-compression-mode t)
 
-(use-package paren
-  :config
-  (show-paren-mode +1))
-
 (load custom-file)
 
 (windmove-default-keybindings)
-
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
-(menu-bar-mode -1)
 
 (set-language-environment "UTF-8")
 (set-default-coding-systems 'utf-8)
@@ -106,33 +108,6 @@
   (global-set-key (kbd "M-s-<down>") 'buf-move-down)
   (global-set-key (kbd "M-s-<left>") 'buf-move-left)
   (global-set-key (kbd "M-s-<right>") 'buf-move-right))
-
-;;; Abbreviations
-
-(defun bk/add-region-local-abbrev (start end)
-  "Go from START to END and add the selected text to a local abbrev."
-  (interactive "r")
-  (if (use-region-p)
-      (let ((num-words (count-words-region start end)))
-        (add-mode-abbrev num-words)
-        (deactivate-mark))
-    (message "No selected region!")))
-
-(defun bk/add-region-global-abbrev (start end)
-  "Go from START to END and add the selected text to global abbrev."
-  (interactive "r")
-  (if (use-region-p)
-      (let ((num-words (count-words-region start end)))
-        (add-abbrev global-abbrev-table "Global" num-words)
-        (deactivate-mark))
-    (message "No selected region!")))
-
-(setq abbrev-file-name "~/.emacs.d/abbrev_defs")
-
-(add-hook 'after-init-hook
-          (lambda ()
-            (abbrev-mode +1)
-            (diminish 'abbrev-mode)))
 
 ;;; Bookmarks
 
@@ -218,22 +193,6 @@
            (auto-projectile))
           (auto-directory))))
 
-(use-package smex
-  :ensure t
-  :bind (("M-x" . smex)
-         ("C-x C-m" . smex)
-         ("C-c C-m" . smex)))
-
-;;; Emacs Editor
-
-;; enable narrowing commands
-(put 'narrow-to-region 'disabled nil)
-(put 'narrow-to-page 'disabled nil)
-(put 'narrow-to-defun 'disabled nil)
-
-;; enable erase-buffer command
-(put 'erase-buffer 'disabled nil)
-
 (use-package crux
   :ensure t
   :config
@@ -241,70 +200,6 @@
   (global-set-key (kbd "C-c d l") #'crux-duplicate-current-line-or-region)
   (global-set-key [remap move-beginning-of-line] #'crux-move-beginning-of-line)
   (global-set-key [remap kill-whole-line] #'crux-kill-whole-line))
-
-(use-package ediff
-  :config
-  (setq ediff-window-setup-function 'ediff-setup-windows-plain
-        ediff-split-window-function 'split-window-horizontally
-        ediff-diff-options "-w"))
-
-(use-package expand-region
-  :ensure t
-  :config
-  (setq expand-region-fast-keys-enabled nil
-        er--show-expansion-message t)
-  :bind ("C-=" . er/expand-region))
-
-(use-package change-inner
-  :ensure t
-  :bind (("M-i" . change-inner)
-         ("M-o" . change-outer)))
-
-(use-package fix-word
-  :ensure t
-  :bind (("M-u" . fix-word-upcase)
-         ("M-l" . fix-word-downcase)
-         ("M-c" . fix-word-capitalize)))
-
-(use-package multiple-cursors
-  :ensure t
-  :bind (("C-c >" . mc/mark-next-like-this)
-         ("C-c <" . mc/mark-previous-like-this)
-         ("<mouse-3>" . mc/add-cursor-on-click)))
-
-(use-package move-text
-  :ensure t
-  :bind
-  (([(meta shift up)] . move-text-up)
-   ([(meta shift down)] . move-text-down)))
-
-(use-package whitespace
-  :diminish whitespace-mode
-  :config
-  (setq whitespace-style '(trailing tabs tab-mark)
-        whitespace-line-column 100)
-  :config
-  (add-hook 'prog-mode-hook 'whitespace-mode))
-
-(defun bk/kill-inner-word ()
-  "Kill the entire word your cursor is in.  Equivalent to ciw in vim."
-  (interactive)
-  (forward-char 1)
-  (backward-word)
-  (kill-word 1))
-
-(global-set-key (kbd "C-c k w") 'bk/kill-inner-word)
-
-(defun duplicate-region (num &optional start end)
-  "Duplicate the region bounded by START and END NUM times."
-  (interactive "p")
-  (let* ((start (or start (region-beginning)))
-         (end (or end (region-end)))
-         (region (buffer-substring start end)))
-    (goto-char start)
-    (dotimes (_ num)
-      (insert region))))
-
 
 ;; automatically indenting yanked text if in programming modes
 (require 'dash)
@@ -389,33 +284,8 @@
 (global-set-key (kbd "C-c m p") 'bk/point-to-register)
 (global-set-key (kbd "C-c j p") 'bk/jump-to-register)
 
-(use-package jump-char
-  :ensure t
-  :bind (("M-n" . jump-char-forward)
-         ("M-p" . jump-char-backward)))
-
 ;;; use normal tabs in makefiles
 (add-hook 'makefile-mode-hook 'indent-tabs-mode)
-
-;;; Lisps
-
-(use-package paredit
-  :ensure t
-  :diminish paredit-mode
-  :config
-  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-  (add-hook 'clojure-mode-hook 'enable-paredit-mode)
-  (add-hook 'git-commit-mode-hook 'enable-paredit-mode)
-  (add-hook 'racket-mode-hook 'enable-paredit-mode)
-  (add-hook 'racket-repl-mode-hook 'enable-paredit-mode)
-  (with-eval-after-load "eldoc"
-    (eldoc-add-command #'paredit-backward-delete #'paredit-close-round)))
-
-(defmacro pushnew! (place &rest values)
-  "Push VALUES sequentially into PLACE, if they aren't already present."
-  (let ((var (make-symbol "result")))
-    `(dolist (,var (list ,@values) (with-no-warnings ,place))
-       (cl-pushnew ,var ,place :test #'equal))))
 
 ;;; Markdown
 
@@ -432,17 +302,6 @@
   :diminish subword-mode
   :config
   (add-hook 'clojure-mode-hook #'subword-mode))
-
-(eval-after-load 'projectile
-  '(progn
-     (pushnew! projectile-globally-ignored-directories ".cpcache")))
-
-
-(eval-after-load 'projectile
-  '(progn
-     (pushnew! projectile-project-root-files "package.json")
-     (pushnew! projectile-globally-ignored-files "node_modules" "bkp" ".log")
-     (pushnew! projectile-globally-ignored-directories "node_modules" "bkp" ".log")))
 
 
 ;;; Self-Discovering Tools
@@ -554,13 +413,6 @@
   (interactive)
   (setq register-alist nil))
 
-(defun what-face (pos)
-  "Find what face at POS."
-  (interactive "d")
-  (let ((face (or (get-char-property pos 'read-face-name)
-                  (get-char-property pos 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
-
 (defun bk/kill-buffer ()
   "Kill current buffer."
   (interactive)
@@ -637,45 +489,6 @@
     (kill-new myip)
     (message "IP: %s" myip)))
 
-(defun bk/spell-buffer-pt-BR ()
-  "Spell check in portuguese."
-  (interactive)
-  (ispell-change-dictionary "pt_BR")
-  (flyspell-buffer))
-
-(defun bk/spell-buffer-en ()
-  "Spell check in English."
-  (interactive)
-  (ispell-change-dictionary "en_US")
-  (flyspell-buffer))
-
-(use-package flyspell
-  :ensure nil
-  :diminish flyspell-mode
-  :config
-  (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-  (add-hook 'text-mode-hook 'flyspell-mode)
-  (define-key flyspell-mode-map (kbd "C-.") nil))
-
-
-(use-package flyspell-correct
-  :ensure t
-  :commands (flyspell-correct-word-generic
-             flyspell-correct-previous-word-generic)
-  :config
-  (require 'flyspell-correct-ido)
-  (setq flyspell-correct-interface #'flyspell-correct-ido)
-  :bind (:map flyspell-mode-map
-              ("C-;" . flyspell-correct-wrapper)))
-
-
-;;; Spell Checking
-
-(use-package langtool
-  :ensure t
-  :config
-  (setq langtool-language-tool-jar
-        "~/.emacs.d/bin/languagetool-commandline.jar"))
 
 (use-package popup :ensure t)
 
@@ -964,128 +777,6 @@
         writeroom-restore-window-config t
         writeroom-fullscreen-effect 'maximized))
 
-;;; Telegram
-
-(use-package alert
-  :ensure t)
-
-(use-package all-the-icons :ensure t)
-
-(use-package company
-  :ensure t)
-
-(use-package telega
-  :ensure t
-  :init
-  (setq telega-animation-play-inline nil
-        telega-chat-mode-line-format
-        '((:eval
-           (telega-chatbuf-mode-line-unread))
-          (:eval
-           (telega-chatbuf-mode-line-marked))
-          (:eval
-           (telega-chatbuf-mode-line-members nil))
-          (:eval
-           (telega-chatbuf-mode-line-pinned-msg 20))))
-  :config
-  (eval-after-load 'alert
-    '(add-to-list 'alert-user-configuration
-                  '(((:mode . "telega-chat-mode"))
-                    log nil)))
-
-  (eval-after-load 'alert
-    '(add-to-list 'alert-user-configuration
-                  '(((:message . "@bartuka\\|Wanderson")
-                     (:mode . "telega-chat-mode"))
-                    libnotify nil)))
-  (add-hook 'telega-chat-mode-hook 'company-mode)
-  (require 'telega-alert)
-  (telega-alert-mode t)
-
-  (add-hook 'telega-load-hook 'telega-mode-line-mode)
-
-  (require 'telega-dired-dwim))
-
-;;; IIRC
-
-(defun erc-sound-if-not-server (match-type nickuserhost msg)
-  "ERC sound alert based on MATCH-TYPE and NICKUSERHOST and MSG."
-  (unless (or
-           (string-match "Serv" nickuserhost)
-           (string-match nickuserhost (erc-current-nick))
-           (string-match "Server" nickuserhost))
-    (when (string= match-type "current-nick")
-      (start-process-shell-command "lolsound" nil "mpv ~/.emacs.d/sounds/icq-message.wav"))
-
-    (message
-     (format "[%s|<%s:%s> %s]"
-             (format-time-string "%Hh%M" (date-to-time (current-time-string)))
-             (subseq nickuserhost 0 (string-match "!" nickuserhost))
-             (or (erc-default-target) "")
-             (subseq msg 0 (- (length msg) 1))
-             ;; (if (eq (string-match (erc-current-nick) msg) 0)
-             ;;           (subseq msg (+ 1 (length (erc-current-nick))) 40)
-             ;;           msg
-             ;;           )
-             )
-     ;; Show msg for 20s
-     (run-with-timer 20 nil
-                     (lambda ()
-                       (message nil)))
-     )))
-
-(use-package erc
-  :commands (erc)
-  :init
-  (setq erc-server "irc.libera.chat"
-        erc-user-full-name "Wanderson Ferreira"
-        erc-prompt-for-nickserv-password nil
-        erc-autojoin-channels-alist '(("libera.chat" "#emacs" "#clojure" "#systemcrafters"))
-        erc-autojoin-timing :ident
-        erc-autojoin-delay 40
-        erc-join-buffer 'bury
-        erc-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE")
-        erc-lurker-hide-list '("JOIN" "PART" "QUIT" "NICK" "MODE")
-        erc-track-exclude-server-buffer t
-        erc-keywords '("programming" "functional" "design"))
-
-  ;; show only when my nickname is mentioned in any channel
-  (setq erc-current-nick-highlight-type 'nick
-        erc-track-exclude-types '("JOIN" "PART" "QUIT" "NICK" "MODE")
-        erc-track-use-faces t
-        erc-track-faces-priority-list '(erc-current-nick-face
-                                        erc-keyword-face
-                                        erc-direct-msg-face)
-        erc-track-priority-faces-only 'all)
-
-  ;; prevent the new created buffer to be brought visible
-  (setq erc-auto-query 'bury)
-  :config
-  (add-to-list 'erc-modules 'spelling)
-  (erc-services-mode 1)
-  (erc-update-modules)
-  (add-hook 'erc-text-matched-hook 'erc-sound-if-not-server)
-  )
-
-(require 'erc-compat)
-(require 'erc-nicklist)
-(setq erc-nicklist-icons-directory "~/.emacs.d/images/")
-
-(defun bk/nicklist-toggle ()
-  "Function to toggle the nicklist in ERC mode."
-  (interactive)
-  (let ((nicklist-buffer-name (format " *%s-nicklist*" (buffer-name))))
-    (if (get-buffer nicklist-buffer-name)
-        (kill-buffer nicklist-buffer-name)
-      (erc-nicklist))))
-
-(defun bk/erc-start ()
-  "Start ERC mode."
-  (interactive)
-  (if (get-buffer "irc.libera.chat:6667")
-      (erc-track-switch-buffer 1)
-    (when (y-or-n-p "Start ERC? ")
-      (erc :server "irc.libera.chat" :port 6667 :nick "bartuka"))))
 
 ;;; EPUB
 
