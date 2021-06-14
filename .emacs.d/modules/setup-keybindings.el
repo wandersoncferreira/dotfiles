@@ -24,6 +24,13 @@
 
 (global-set-key (kbd "C-c j p") 'bk/jump-to-register)
 
+;; registers
+
+(set-register ?t '(file . "/home/wanderson/agenda/todo.org"))
+(set-register ?m '(file . "~/.emacs.d/manual.org"))
+(set-register ?l '(file . "/home/wanderson/ledger"))
+(set-register ?e '(file . "/home/wanderson/.emacs.d/init.el"))
+
 ;; * External Dependencies
 
 (use-package eldoc

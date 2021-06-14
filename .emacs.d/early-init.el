@@ -47,5 +47,20 @@
     `(dolist (,var (list ,@values) (with-no-warnings ,place))
        (cl-pushnew ,var ,place :test #'equal))))
 
+;;; Security
+
+(eval-after-load "enriched"
+  '(defun enriched-decode-display-prop (start end &optional param)
+     (ignore param)
+     (list start end)))
+
+;; elisp configuration folder
+(setq modules-dir (expand-file-name "modules" user-emacs-directory))
+(add-to-list 'load-path modules-dir)
+
+;; configurations specific to places I work at
+(setq work-dir (expand-file-name "work" user-emacs-directory))
+(add-to-list 'load-path work-dir)
+
 (provide 'early-init)
 ;;; early-init.el ends here

@@ -21,9 +21,6 @@
 ;; stop asking if should create new buffers
 (setq ido-create-new-buffer 'always)
 
-;; find file at point
-(setq ido-use-filename-at-point 'guess)
-
 ;; order in which IDO displays the files
 (setq ido-file-extensions-order '(".clj" ".sql" ".md" ".org"))
 
@@ -86,6 +83,8 @@
   :after ido
   :config
   (ido-ubiquitous-mode +1))
+
+(use-package smex :ensure t)
 
 (provide 'setup-completion)
 ;;; setup-completion.el ends here

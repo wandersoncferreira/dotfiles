@@ -14,30 +14,6 @@
 ;;
 ;;; Code:
 
-;;; Security
-
-(eval-after-load "enriched"
-  '(defun enriched-decode-display-prop (start end &optional param)
-     (ignore param)
-     (list start end)))
-
-;; elisp configuration folder
-(setq modules-dir (expand-file-name "modules" user-emacs-directory))
-(add-to-list 'load-path modules-dir)
-
-;; configurations specific to places I work at
-(setq work-dir (expand-file-name "work" user-emacs-directory))
-(add-to-list 'load-path work-dir)
-
-(set-register ?t '(file . "/home/wanderson/agenda/todo.org"))
-(set-register ?m '(file . "~/.emacs.d/manual.org"))
-(set-register ?l '(file . "/home/wanderson/ledger"))
-(set-register ?e '(file . "/home/wanderson/.emacs.d/init.el"))
-
-;; * Packages
-
-(use-package smex :ensure t)
-
 ;; * Imports
 
 (require 'setup-defaults)

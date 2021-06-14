@@ -77,19 +77,6 @@
   (bk/appearance)
   (bk/set-ibm-font 110))
 
-(setq current-theme '(bk/light-theme))
-
-(defun synchronize-theme ()
-  "Choose appropriate theme based on what time is it."
-  (setq hour (string-to-number (substring (current-time-string) 11 13)))
-  (if (member hour (number-sequence 6 16))
-      (setq now '(bk/light-theme))
-    (setq now '(bk/default-theme)))
-  (if (equal now current-theme)
-      nil
-    (setq current-theme now)
-    (eval now)))
-
 (defun what-face (pos)
   "Find what face at POS."
   (interactive "d")
@@ -97,12 +84,8 @@
                   (get-char-property pos 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-
 ;; start project with light theme
 (bk/light-theme)
-
-;; scheduler to verify if we need to swap between themes
-(run-with-timer 0 3600 (lambda () (synchronize-theme)))
 
 
 ;; * External Dependencies
