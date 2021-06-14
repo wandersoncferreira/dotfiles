@@ -93,8 +93,8 @@
 
 (use-package envrc
   :ensure t
-  :config
-  (envrc-global-mode +1))
+  :hook ((clojure-mode . envrc-mode)
+         (js-mode . envrc-mode)))
 
 (use-package toggle-test
   :ensure t

@@ -20,14 +20,14 @@
 
 (use-package dap-mode
   :ensure t
-  :after (lsp-mode)
+  :after lsp-mode
   :bind (:map lsp-mode-map
               ("<f5>" . dap-debug))
   :hook ((dap-mode . dap-ui-mode)))
 
 (use-package lsp-ui
   :ensure t
-  :after (lsp-mode)
+  :after lsp-mode
   :bind (:map lsp-ui-mode-map
               ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
               ([remap xref-find-references] . lsp-ui-peek-find-references))
@@ -36,8 +36,13 @@
         lsp-ui-doc-position 'bottom
         lsp-ui-doc-max-width 100))
 
+(use-package treemacs
+  :ensure t
+  :commands treemacs)
+
 (use-package lsp-java
   :ensure t
+  :hook (java-mode . lsp)
   :config
   (add-hook 'java-mode-hook 'lsp))
 

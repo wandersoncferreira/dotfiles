@@ -106,8 +106,7 @@ documentation) but desire to keep your current window focused."
   ("C-c f p" . forge-list-authored-pullreqs)
   ("C-c f c" . forge-create-pullreq))
 
-(use-package git-timemachine
-  :ensure t)
+(use-package git-timemachine :ensure t)
 
 (use-package gitconfig-mode
   :ensure t
@@ -119,11 +118,7 @@ documentation) but desire to keep your current window focused."
   :config
   (require 'gitignore-mode))
 
-(use-package gitignore-templates
-  :ensure t)
-
-(use-package browse-at-remote
-  :ensure t)
+(use-package gitignore-templates :ensure t)
 
 (use-package gist
   :ensure t

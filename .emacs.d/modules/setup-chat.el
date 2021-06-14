@@ -51,16 +51,15 @@
 
 ;; * Telegram
 
-(use-package alert
-  :ensure t)
+(use-package alert :ensure t)
 
 (use-package all-the-icons :ensure t)
 
-(use-package company
-  :ensure t)
+(use-package company :ensure t)
 
 (use-package telega
   :ensure t
+  :commands telega
   :init
   (setq telega-animation-play-inline nil
         telega-chat-mode-line-format
@@ -94,7 +93,7 @@
 ;; * Attributes
 
 (use-package erc
-  :commands (erc)
+  :commands erc
   :init
   (setq erc-server "irc.libera.chat"
         erc-user-full-name "Wanderson Ferreira"
@@ -120,15 +119,15 @@
   ;; prevent the new created buffer to be brought visible
   (setq erc-auto-query 'bury)
   :config
+
   (add-to-list 'erc-modules 'spelling)
   (erc-services-mode 1)
   (erc-update-modules)
   (add-hook 'erc-text-matched-hook 'erc-sound-if-not-server)
-  )
 
-(require 'erc-compat)
-(require 'erc-nicklist)
-(setq erc-nicklist-icons-directory "~/.emacs.d/images/")
+  (require 'erc-compat)
+  (require 'erc-nicklist)
+  (setq erc-nicklist-icons-directory "~/.emacs.d/images/"))
 
 (provide 'setup-chat)
 ;;; setup-chat.el ends here

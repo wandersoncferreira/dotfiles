@@ -19,8 +19,14 @@
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 
+;; remove blinking cursor
+(blink-cursor-mode -1)
+
 ;; activate parenthesis highlight
 (show-paren-mode +1)
+
+;; font lock control
+(setq font-lock-maximum-decoration nil)
 
 ;; * Functions
 
