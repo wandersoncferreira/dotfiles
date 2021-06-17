@@ -1,6 +1,0 @@
-((org-mode . ((eval . (progn (turn-off-auto-fill)
-                             (text-scale-set 1)))
-              (fill-column . 80)
-              (visual-fill-column-width . 80)
-              (mode . visual-line)
-              (mode . visual-fill-column))))

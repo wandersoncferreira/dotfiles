@@ -37,3 +37,4 @@ clojure/lsp/sqlite.db
 .emacs.d/workspace
 .emacs.d/nov-places
 .emacs.d/request
+.doom.d/custom.el

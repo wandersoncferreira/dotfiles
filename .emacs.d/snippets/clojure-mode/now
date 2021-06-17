@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: now
-# key: now
-# --
-(java.time.Instant/now)
