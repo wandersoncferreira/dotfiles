@@ -55,11 +55,11 @@
      (list start end)))
 
 ;; elisp configuration folder
-(setq modules-dir (expand-file-name "modules" user-emacs-directory))
+(defvar modules-dir (expand-file-name "modules" user-emacs-directory))
 (add-to-list 'load-path modules-dir)
 
 ;; configurations specific to places I work at
-(setq work-dir (expand-file-name "work" user-emacs-directory))
+(defvar work-dir (expand-file-name "work" user-emacs-directory))
 (add-to-list 'load-path work-dir)
 
 (provide 'early-init)

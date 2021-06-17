@@ -26,7 +26,7 @@
 (show-paren-mode +1)
 
 ;; font lock control
-(setq font-lock-maximum-decoration nil)
+(setq font-lock-maximum-decoration t)
 
 ;; * Functions
 
@@ -56,17 +56,16 @@
   "Default theme to be used."
   (interactive)
   (load-theme 'default-black t)
+  (set-face-attribute 'mode-line nil :background "grey75" :foreground "black")
   (set-frame-parameter (selected-frame) 'alpha 95)
   (set-face-attribute 'lazy-highlight nil :background "#464740")
   (set-face-attribute 'isearch nil :background "#464740")
-  (set-face-attribute 'region nil :background "#464740")
-  (bk/set-ibm-font 110))
+  (set-face-attribute 'region nil :background "#464740"))
 
 (defun bk/dark-theme ()
   "Dark theme option."
   (interactive)
-  (load-theme 'zenburn t)
-  (bk/set-ibm-font 110))
+  (load-theme 'zenburn t))
 
 (defun bk/appearance ()
   "Set of parameters to be used in several places."
@@ -78,10 +77,7 @@
 (defun bk/light-theme ()
   "Light theme default."
   (interactive)
-  (disable-theme 'zenburn)
-  (set-face-attribute 'mode-line nil :background "grey75" :foreground "black")
-  (bk/appearance)
-  (bk/set-ibm-font 110))
+  (bk/appearance))
 
 (defun what-face (pos)
   "Find what face at POS."
@@ -90,8 +86,8 @@
                   (get-char-property pos 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-;; start project with light theme
-(bk/light-theme)
+
+(bk/dark-theme)
 
 
 ;; * External Dependencies

@@ -106,10 +106,7 @@
 
 (use-package flycheck
   :ensure t
-  :hook (prog-mode . flycheck-mode)
-  :config
-  (setq flycheck-check-syntax-automatically '(save mode-enabled)
-        flycheck-checker-error-threshold 4000))
+  :hook (prog-mode . flycheck-mode))
 
 (use-package flycheck-clj-kondo :ensure t)
 
@@ -117,7 +114,6 @@
 
 (use-package flycheck-pos-tip
   :ensure t
-  :after flycheck
   :config
   (flycheck-pos-tip-mode +1))
 
