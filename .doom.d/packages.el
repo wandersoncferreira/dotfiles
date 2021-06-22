@@ -6,6 +6,7 @@
 (package! jump-char)
 (package! pinentry)
 (package! fix-word)
+(package! move-text)
 (package! nov)
 (package! toggle-test)
 (package! uuidgen)

@@ -11,6 +11,8 @@
       "M-u" #'fix-word-upcase
       "M-l" #'fix-word-downcase
       "M-c" #'fix-word-capitalize
+      "C-<up>" #'move-text-up
+      "C-<down>" #'move-text-down
 
       ;; window
       "C-x 3" #'bk/hsplit-last-buffer
