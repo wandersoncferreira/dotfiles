@@ -15,19 +15,20 @@
       ;; window
       "C-x 3" #'bk/hsplit-last-buffer
       "C-x 2" #'bk/vsplit-last-buffer
+      "C-x k" #'kill-this-buffer
 
       ;; movement
       "C-x p" #'pop-to-mark-command
 
       ;; completion
       "C-." #'completion-at-point
+
       )
 
 ;; clojure
-
 (map! :map clojure-mode-map
 
-      ;; kaocha
+      ;; tests
       "C-c k t" #'kaocha-runner-run-test-at-point
       "C-c k r" #'kaocha-runner-run-tests
       "C-c k a" #'kaocha-runner-run-all-tests
@@ -35,7 +36,7 @@
       "C-c k h" #'kaocha-runner-hide-windows
       "H-s-t" #'tgt-toggle
 
-      ;; def
+      ;; definition
       "M-." #'find-definition
 
       :map cider-mode-map

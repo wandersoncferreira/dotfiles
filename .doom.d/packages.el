@@ -10,6 +10,11 @@
 (package! toggle-test)
 (package! uuidgen)
 (package! windresize)
+(package! webpaste)
+(package! org-roam-server)
 
+;; disable packages
 (package! ivy-rich :disable t)
 (package! diredfl :disable t)
+(package! dired-rsync :disable t)
+(package! magit-gitflow :disable t)

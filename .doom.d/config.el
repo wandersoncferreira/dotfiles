@@ -1,57 +1,79 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
-(setq
- user-full-name "Wanderson Ferreira"
- user-mail-address "wand@hey.com"
- tab-always-indent 'complete
- confirm-kill-emacs nil
- indent-tabs-mode nil
- byte-compile-warnings '(cl-functions)
- enable-local-variables t
+(setq user-full-name "Wanderson Ferreira"
+      user-mail-address "wand@hey.com"
+      tab-always-indent 'complete
+      confirm-kill-emacs nil
+      byte-compile-warnings '(cl-functions)
+      enable-local-variables t
 
- ;; auth
- auth-source-debug t
- auth-sources '((:source "~/.secrets/authinfo.gpg"))
+      ;; spell
+      ispell-dictionary "en"
 
- ;; appearance
- doom-theme 'doom-dracula
- doom-font "IBM Plex Mono 11"
- doom-scratch-initial-major-mode 'lisp-interaction-mode
- display-line-numbers-type nil
+      ;; editor
+      fill-column 180
+      indent-tabs-mode nil
 
- ;; org
- org-directory "~/org/")
+      ;; auth
+      auth-source-debug t
+      auth-sources '((:source "~/.secrets/authinfo.gpg"))
+
+      ;; appearance
+      doom-theme 'nil
+      display-line-numbers-type nil
+
+      ;; org
+      org-directory "~/org/")
+
+;; delete selection
+(delete-selection-mode +1)
 
 ;; fullscreen from beginning
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; remove hooks
-(remove-hook 'doom-first-buffer-hook #'global-hl-line-mode)
-(remove-hook 'doom-first-buffer-hook #'smartparens-global-mode)
+(remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
+(remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
+
+(after! clojure-mode
+  (cljr-add-keybindings-with-prefix "C-c C-m")
+  (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
+
+(after! elisp-mode
+  (remove-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+
+;; appearance
+(set-face-attribute 'lazy-highlight nil :background "khaki1")
+(set-face-attribute 'isearch nil :background "khaki1")
+(set-face-attribute 'region nil :background "khaki1")
 
 ;; completion
 ;; no one needs completion *all* the time :(
-(setq company-idle-delay nil)
+(after! company
+  (setq company-idle-delay 0.3
+        company-tooltip-align-annotations t))
 
 ;; take care of parenthesis
-(use-package! paredit
-  :hook ((clojure-mode . enable-paredit-mode)
-         (git-commit-mode . enable-paredit-mode)
-         (emacs-lisp-mode . enable-paredit-mode)))
-
+(after! paredit
+  (add-hook! 'clojure-mode-hook (enable-paredit-mode))
+  (add-hook! 'git-commit-mode-hook (enable-paredit-mode))
+  (add-hook! 'emacs-lisp-mode-hook (enable-paredit-mode)))
 
 ;; shift arrow to move between buffers
 (windmove-default-keybindings)
 
 ;; lsp mode
-(setq
- lsp-enable-file-watchers t
- lsp-semantic-tokens-enable t
- lsp-ui-sideline-enable nil
- lsp-ui-doc-enable nil
- lsp-enable-symbol-highlighting nil
- lsp-headerline-breadcrumb-enable t
- lsp-idle-delay 0.3)
+(after! lsp-mode
+  (setq lsp-enable-file-watchers t
+        lsp-ui-sideline-enable nil
+        lsp-ui-doc-enable nil
+        lsp-enable-symbol-highlighting nil
+        lsp-headerline-breadcrumb-enable t
+        lsp-idle-delay 0.3)
+
+  (add-to-list 'lsp-file-watch-ignored-directories "classes")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\minio\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'"))
 
 (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers)))
 
@@ -86,15 +108,15 @@
      (buffer-string))))
 
 ;; test
-(setq tgt-open-in-new-window nil)
-(put 'tgt-projects 'safe-local-variable #'lisp)
+(after! toggle-test
+  (setq tgt-open-in-new-window nil)
+  (put 'tgt-projects 'safe-local-variable #'lisp))
 
 ;; magit
-(setq magit-log-show-gpg-status t
-      magit-commit-show-diff nil
-      magit-refresh-status-buffer nil
-      magit-display-buffer-function (lambda (buf)
-                                      (display-buffer buf '(display-buffer-same-window))))
+(after! magit-mode
+  (setq magit-log-show-gpg-status t
+        magit-commit-show-diff nil
+        magit-display-buffer-function (lambda (buf) (display-buffer buf '(display-buffer-same-window)))))
 
 ;; clojure
 (defun find-refs ()
@@ -111,52 +133,54 @@
                (eq cursor (point)))
       (cider-find-var))))
 
-;; remove rainbow delimiters
-(remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
-(remove-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode)
+(after! cider-mode
+  (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources"
+                              "~/Downloads/jvm11/source")
+        cider-save-file-on-load t)
 
-(setq
- cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources"
-                       "~/Downloads/jvm11/source")
- cider-font-lock-dynamically '(macro core function var)
- cider-ns-refresh-show-log-buffer t
- cider-show-error-buffer t
- cider-save-file-on-load t)
+  (set-popup-rule! "*cider-test-report*" :side 'right :width 0.4)
+  (set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
 
-(set-popup-rule! "*cider-test-report*" :side 'right :width 0.5)
-(set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
+  (add-hook! 'cider-test-report-mode-hook (toggle-truncate-lines +1))
 
-(load! "+extra-cider")
+  (load! "+extra-cider"))
 
-(set-lookup-handlers! 'cider-mode nil)
-(set-lookup-handlers! 'clj-refactor-mode nil)
-
-(setq
- cljr-warn-on-eval nil
- cljr-eagerly-build-asts-on-startup nil
- cljr-add-ns-to-blank-clj-files nil)
+(after! clj-refactor
+  (setq cljr-warn-on-eval nil
+        cljr-eagerly-build-asts-on-startup nil))
 
 ;; java
-(setq
- lsp-java-format-settings-profile "GoogleStyle"
- lsp-java-format-settings-url "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml"
- lsp-java-save-actions-organize-imports t)
+(after! lsp-java
+  (setq lsp-java-format-settings-profile "GoogleStyle"
+        lsp-java-format-settings-url "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml"
+        lsp-java-save-actions-organize-imports t)
 
+  (add-hook! 'java-mode-hook (electric-pair-mode +1))
+  (add-hook! 'java-mode-hook (subword-mode +1)))
 
-(add-hook 'java-mode-hook #'electric-pair-mode)
+(after! cc-mode
+  (remove-hook 'java-mode-hook #'rainbow-delimiters-mode))
 
 ;; org
-(setq org-return-follows-link t
-      org-confirm-babel-evaluate nil
-      org-agenda-files (list "~/agenda/todo.org"))
+(after! org
+  (setq org-return-follows-link t
+        org-confirm-babel-evaluate nil
+        org-agenda-files (list "~/agenda/todo.org")))
+
+(after! org-roam-server
+  (setq org-roam-server-host "127.0.0.1"
+        org-roam-server-port 17042
+        org-roam-server-export-inline-images t)
+  (require 'org-roam-protocol))
 
 ;; zettelkasten
-(setq org-roam-directory "/home/wanderson/zettelkasten")
+(after! org-roam
+  (setq org-roam-directory "/home/wanderson/zettelkasten"))
 
 ;; finance
-(use-package! ledger
-  :mode ("\\ledger\\'" . ledger-mode)
-  :config
+(add-to-list 'auto-mode-alist '("\\ledger\\'" . ledger-mode))
+
+(after! ledger-mode
   (load! "+extra-ledger"))
 
 ;; keybindigns
