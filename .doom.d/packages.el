@@ -14,8 +14,14 @@
 (package! webpaste)
 (package! org-roam-server)
 
-;; disable packages
+;;; disable packages
 (package! ivy-rich :disable t)
 (package! diredfl :disable t)
 (package! dired-rsync :disable t)
 (package! magit-gitflow :disable t)
+
+
+;;; unpin
+(unpin! lsp-mode)
+(unpin! cider)
+(unpin! clojure-mode)

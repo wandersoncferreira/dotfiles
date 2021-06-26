@@ -19,11 +19,14 @@
       auth-sources '((:source "~/.secrets/authinfo.gpg"))
 
       ;; appearance
-      doom-theme 'nil
+      doom-theme 'doom-nord-light
+      doom-font (font-spec :family "IBM Plex Mono" :size 15)
+      doom-big-font-increment 2
       display-line-numbers-type nil
 
       ;; org
       org-directory "~/org/")
+
 
 ;; delete selection
 (delete-selection-mode +1)
@@ -32,32 +35,32 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; remove hooks
-(remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
+;; (remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
 
 (after! clojure-mode
   (cljr-add-keybindings-with-prefix "C-c C-m")
+  (add-hook! 'clojure-mode-hook (enable-paredit-mode))
   (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
 
 (after! elisp-mode
+  (add-hook! 'emacs-lisp-mode-hook (enable-paredit-mode))
   (remove-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
 
 ;; appearance
-(set-face-attribute 'lazy-highlight nil :background "khaki1")
-(set-face-attribute 'isearch nil :background "khaki1")
-(set-face-attribute 'region nil :background "khaki1")
+
+(defun bk/customizations-default-theme ()
+  "When I am in the mood to not use anything at all"
+  (set-face-attribute 'lazy-highlight nil :background "khaki1")
+  (set-face-attribute 'isearch nil :background "khaki1")
+  (set-face-attribute 'region nil :background "khaki1"))
+
 
 ;; completion
 ;; no one needs completion *all* the time :(
 (after! company
-  (setq company-idle-delay 0.3
+  (setq company-idle-delay 0.2
         company-tooltip-align-annotations t))
-
-;; take care of parenthesis
-(after! paredit
-  (add-hook! 'clojure-mode-hook (enable-paredit-mode))
-  (add-hook! 'git-commit-mode-hook (enable-paredit-mode))
-  (add-hook! 'emacs-lisp-mode-hook (enable-paredit-mode)))
 
 ;; shift arrow to move between buffers
 (windmove-default-keybindings)
@@ -65,17 +68,24 @@
 ;; lsp mode
 (after! lsp-mode
   (setq lsp-enable-file-watchers t
-        lsp-ui-sideline-enable nil
-        lsp-ui-doc-enable nil
+        lsp-ui-sideline-show-code-actions nil
         lsp-enable-symbol-highlighting nil
-        lsp-headerline-breadcrumb-enable t
-        lsp-idle-delay 0.3)
-
+        lsp-lens-enable t
+        lsp-eldoc-enable-hover t
+        lsp-ui-sideline-show-diagnostics t
+        lsp-headerline-breadcrumb-enable nil
+        lsp-signature-render-documentation nil
+        lsp-signature-function 'lsp-signature-posframe
+        lsp-idle-delay 0.2)
   (add-to-list 'lsp-file-watch-ignored-directories "classes")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\minio\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'"))
 
 (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers)))
+
+;; typescript
+(add-hook 'typescript-mode-hook #'format-all-mode)
+(setq-hook! 'typescript-mode-hook +format-with-lsp nil)
 
 ;; window
 (load! "+extra-window")
@@ -116,9 +126,11 @@
 (after! magit-mode
   (setq magit-log-show-gpg-status t
         magit-commit-show-diff nil
-        magit-display-buffer-function (lambda (buf) (display-buffer buf '(display-buffer-same-window)))))
+        magit-display-buffer-function (lambda (buf) (display-buffer buf '(display-buffer-same-window))))
+  (add-hook! 'git-commit-mode-hook (enable-paredit-mode)))
 
 ;; clojure
+
 (defun find-refs ()
   (interactive)
   (lsp-find-references t))
@@ -136,12 +148,14 @@
 (after! cider-mode
   (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources"
                               "~/Downloads/jvm11/source")
-        cider-save-file-on-load t)
+        cider-save-file-on-load t
+        cider-eldoc-display-for-symbol-at-point nil
+        )
 
   (set-popup-rule! "*cider-test-report*" :side 'right :width 0.4)
   (set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
 
-  (add-hook! 'cider-test-report-mode-hook (toggle-truncate-lines +1))
+  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
 
   (load! "+extra-cider"))
 
