@@ -13,6 +13,7 @@
 (package! windresize)
 (package! webpaste)
 (package! org-roam-server)
+(package! kaocha-runner)
 
 ;;; disable packages
 (package! ivy-rich :disable t)
