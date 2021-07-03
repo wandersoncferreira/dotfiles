@@ -9,16 +9,19 @@
        doom              ; what makes DOOM look the way it does
        doom-dashboard
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       (modeline +light) ; snazzy, Atom-inspired modeline, plus API
+       (ligatures
+        +extra
+        +hasklig)        ; ligatures and symbols to make your code pretty again
+       modeline          ; snazzy, Atom-inspired modeline, plus API
        (popup +defaults) ; tame sudden yet inevitable temporary windows
 
        :editor
        file-templates    ; auto-snippets for empty files
        (format)          ; automated prettiness
        multiple-cursors  ; editing in many places at once
-       rotate-text       ; cycle region at point between text candidates
+       ;;rotate-text     ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
-       word-wrap         ; soft wrapping with language-aware indent
+       ;;word-wrap       ; soft wrapping with language-aware indent
 
        :emacs
        dired             ; making dired pretty [functional]

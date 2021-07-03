@@ -20,6 +20,8 @@
 
       ;; appearance
       doom-theme 'nil
+      doom-font (font-spec :family "Hasklig" :size 14)
+      doom-variable-pitch-font (font-spec :family "Hasklig" :size 14)
       display-line-numbers-type nil
 
       ;; org
