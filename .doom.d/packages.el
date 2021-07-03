@@ -14,7 +14,6 @@
 (package! webpaste)
 (package! org-roam-server)
 (package! kaocha-runner)
-(package! unison-mode)
 
 ;;; disable packages
 (package! ivy-rich :disable t)

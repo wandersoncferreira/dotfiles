@@ -9,19 +9,14 @@
        doom              ; what makes DOOM look the way it does
        doom-dashboard
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       (ligatures
-        +extra
-        +hasklig)        ; ligatures and symbols to make your code pretty again
-       modeline          ; snazzy, Atom-inspired modeline, plus API
+       (modeline +light) ; snazzy, Atom-inspired modeline, plus API
        (popup +defaults) ; tame sudden yet inevitable temporary windows
 
        :editor
        file-templates    ; auto-snippets for empty files
        (format)          ; automated prettiness
        multiple-cursors  ; editing in many places at once
-       ;;rotate-text     ; cycle region at point between text candidates
        snippets          ; my elves. They type so I don't have to
-       ;;word-wrap       ; soft wrapping with language-aware indent
 
        :emacs
        dired             ; making dired pretty [functional]
@@ -39,10 +34,10 @@
        ;;ansible
        ;;debugger          ; FIXME stepping through code, to help you add bugs
        ;;direnv
-       docker
-       editorconfig        ; let someone else argue about tabs vs spaces
+       ;;docker
+       ;;editorconfig        ; let someone else argue about tabs vs spaces
        ;;ein               ; tame Jupyter notebooks with emacs
-       (eval +overlay)     ; run code, run (also, repls)
+       ;;(eval +overlay)     ; run code, run (also, repls)
        gist                ; interacting with github gists
        lookup              ; navigate your code and its documentation
        lsp
@@ -103,7 +98,7 @@
        ;;php               ; perl's insecure younger brother
        plantuml            ; diagrams for confusing people more
        ;;purescript        ; javascript, but functional
-       python              ; beautiful is better than ugly
+       ;;python              ; beautiful is better than ugly
        ;;qt                ; the 'cutest' gui framework ever
        ;;racket            ; a DSL for DSLs
        ;;raku              ; the artist formerly known as perl6
