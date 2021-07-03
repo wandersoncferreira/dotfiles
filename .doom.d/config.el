@@ -22,10 +22,7 @@
       doom-theme 'nil
       doom-font (font-spec :family "Hasklig" :size 14)
       doom-variable-pitch-font (font-spec :family "Hasklig" :size 14)
-      display-line-numbers-type nil
-
-      ;; org
-      org-directory "~/org/")
+      display-line-numbers-type nil)
 
 
 ;; delete selection
@@ -37,6 +34,7 @@
 ;; remove hooks
 (remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
+(remove-hook 'org-mode-hook #'org-superstar-mode)
 
 (after! clojure-mode
   (cljr-add-keybindings-with-prefix "C-c C-m")
@@ -166,6 +164,11 @@
 ;; org
 (after! org
   (setq org-return-follows-link t
+        org-directory "~/org/"
+        org-fontify-quote-and-verse-blocks nil
+        org-fontify-whole-heading-line nil
+        org-hide-leading-stars nil
+        org-startup-indented nil
         org-agenda-files (list "~/agenda/todo.org")))
 
 (after! org-roam-server
