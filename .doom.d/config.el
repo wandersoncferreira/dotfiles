@@ -19,9 +19,7 @@
       auth-sources '((:source "~/.secrets/authinfo.gpg"))
 
       ;; appearance
-      doom-theme 'doom-nord-light
-      doom-font (font-spec :family "IBM Plex Mono" :size 15)
-      doom-big-font-increment 2
+      doom-theme 'nil
       display-line-numbers-type nil
 
       ;; org
@@ -35,7 +33,7 @@
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
 
 ;; remove hooks
-;; (remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
+(remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
 
 (after! clojure-mode
@@ -49,18 +47,13 @@
 
 ;; appearance
 
-(defun bk/customizations-default-theme ()
-  "When I am in the mood to not use anything at all"
-  (set-face-attribute 'lazy-highlight nil :background "khaki1")
-  (set-face-attribute 'isearch nil :background "khaki1")
-  (set-face-attribute 'region nil :background "khaki1"))
+(set-face-attribute 'lazy-highlight nil :background "khaki1")
+(set-face-attribute 'isearch nil :background "khaki1")
+(set-face-attribute 'region nil :background "khaki1")
 
-
-;; completion
-;; no one needs completion *all* the time :(
+;; company
 (after! company
-  (setq company-idle-delay 0.2
-        company-tooltip-align-annotations t))
+  (setq company-idle-delay 0.2))
 
 ;; shift arrow to move between buffers
 (windmove-default-keybindings)
@@ -69,13 +62,11 @@
 (after! lsp-mode
   (setq lsp-enable-file-watchers t
         lsp-ui-sideline-show-code-actions nil
-        lsp-enable-symbol-highlighting nil
-        lsp-lens-enable t
+        lsp-enable-symbol-highlighting t
+        lsp-lens-enable nil
         lsp-eldoc-enable-hover t
         lsp-ui-sideline-show-diagnostics t
         lsp-headerline-breadcrumb-enable nil
-        lsp-signature-render-documentation nil
-        lsp-signature-function 'lsp-signature-posframe
         lsp-idle-delay 0.2)
   (add-to-list 'lsp-file-watch-ignored-directories "classes")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\minio\\'")
@@ -126,11 +117,9 @@
 (after! magit-mode
   (setq magit-log-show-gpg-status t
         magit-commit-show-diff nil
-        magit-display-buffer-function (lambda (buf) (display-buffer buf '(display-buffer-same-window))))
-  (add-hook! 'git-commit-mode-hook (enable-paredit-mode)))
+        magit-display-buffer-function (lambda (buf) (display-buffer buf '(display-buffer-same-window)))))
 
 ;; clojure
-
 (defun find-refs ()
   (interactive)
   (lsp-find-references t))
@@ -146,22 +135,19 @@
       (cider-find-var))))
 
 (after! cider-mode
-  (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources"
-                              "~/Downloads/jvm11/source")
+  (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
+        cider-show-error-buffer t
         cider-save-file-on-load t
-        cider-eldoc-display-for-symbol-at-point nil
-        )
+        cider-eldoc-display-for-symbol-at-point nil)
 
   (set-popup-rule! "*cider-test-report*" :side 'right :width 0.4)
   (set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
 
   (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
-
   (load! "+extra-cider"))
 
 (after! clj-refactor
-  (setq cljr-warn-on-eval nil
-        cljr-eagerly-build-asts-on-startup nil))
+  (setq cljr-add-ns-to-blank-clj-files nil))
 
 ;; java
 (after! lsp-java
@@ -178,7 +164,6 @@
 ;; org
 (after! org
   (setq org-return-follows-link t
-        org-confirm-babel-evaluate nil
         org-agenda-files (list "~/agenda/todo.org")))
 
 (after! org-roam-server
