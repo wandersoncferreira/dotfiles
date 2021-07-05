@@ -20,36 +20,26 @@
 
       ;; appearance
       doom-theme 'nil
-      doom-font (font-spec :family "Hasklig" :size 14)
-      doom-variable-pitch-font (font-spec :family "Hasklig" :size 14)
+      ;; doom-font (font-spec :family "JetBrains Mono" :size 14)
       display-line-numbers-type nil)
-
 
 ;; delete selection
 (delete-selection-mode +1)
 
 ;; fullscreen from beginning
 (add-to-list 'default-frame-alist '(fullscreen . maximized))
+(add-to-list 'default-frame-alist '(undecorated . t))
 
 ;; remove hooks
 (remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
 (remove-hook 'org-mode-hook #'org-superstar-mode)
 
-(after! clojure-mode
-  (cljr-add-keybindings-with-prefix "C-c C-m")
-  (add-hook! 'clojure-mode-hook (enable-paredit-mode))
-  (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
-
-(after! elisp-mode
-  (add-hook! 'emacs-lisp-mode-hook (enable-paredit-mode))
-  (remove-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
-
 ;; appearance
-
 (set-face-attribute 'lazy-highlight nil :background "khaki1")
 (set-face-attribute 'isearch nil :background "khaki1")
 (set-face-attribute 'region nil :background "khaki1")
+(set-face-attribute 'default nil :height 110)
 
 ;; company
 (after! company
@@ -63,16 +53,21 @@
   (setq lsp-enable-file-watchers t
         lsp-ui-sideline-show-code-actions nil
         lsp-enable-symbol-highlighting t
-        lsp-lens-enable nil
         lsp-eldoc-enable-hover t
         lsp-ui-sideline-show-diagnostics t
-        lsp-headerline-breadcrumb-enable nil
-        lsp-idle-delay 0.2)
+        lsp-idle-delay 0.2
+        lsp-headerline-breadcrumb-enable nil)
+
   (add-to-list 'lsp-file-watch-ignored-directories "classes")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\minio\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'"))
 
 (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers)))
+
+;; elisp
+(after! elisp-mode
+  (add-hook! 'emacs-lisp-mode-hook (enable-paredit-mode))
+  (remove-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
 
 ;; typescript
 (add-hook 'typescript-mode-hook #'format-all-mode)
@@ -134,6 +129,11 @@
                (eq cursor (point)))
       (cider-find-var))))
 
+(after! clojure-mode
+  (cljr-add-keybindings-with-prefix "C-c C-m")
+  (add-hook! 'clojure-mode-hook (enable-paredit-mode))
+  (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
+
 (after! cider-mode
   (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
         cider-show-error-buffer t
@@ -145,9 +145,6 @@
 
   (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
   (load! "+extra-cider"))
-
-(after! clj-refactor
-  (setq cljr-add-ns-to-blank-clj-files nil))
 
 ;; java
 (after! lsp-java

@@ -9,7 +9,7 @@
        doom              ; what makes DOOM look the way it does
        doom-dashboard
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       (modeline +light) ; snazzy, Atom-inspired modeline, plus API
+       modeline          ; snazzy, Atom-inspired modeline, plus API
        (popup +defaults) ; tame sudden yet inevitable temporary windows
 
        :editor
@@ -24,11 +24,11 @@
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
-       eshell            ; the elisp shell that works everywhere
+       ;;eshell            ; the elisp shell that works everywhere
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       (spell +aspell)     ; tasing you for misspelling mispelling
+       ;;(spell +aspell)     ; tasing you for misspelling mispelling
 
        :tools
        ;;ansible
@@ -59,7 +59,7 @@
        :lang
        ;;agda              ; types of types of types of types...
        ;;beancount         ; mind the GAAP
-       ;;cc                ; C > C++ == 1
+       cc                  ; C > C++ == 1
        (clojure +lsp)      ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs

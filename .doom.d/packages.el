@@ -4,7 +4,7 @@
 (package! paredit)
 (package! change-inner)
 (package! jump-char)
-(package! pinentry)
+;; (package! pinentry)
 (package! fix-word)
 (package! move-text)
 (package! nov)
