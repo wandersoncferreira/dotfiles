@@ -4,7 +4,6 @@
 (package! paredit)
 (package! change-inner)
 (package! jump-char)
-;; (package! pinentry)
 (package! fix-word)
 (package! move-text)
 (package! nov)
@@ -16,11 +15,29 @@
 (package! kaocha-runner)
 
 ;;; disable packages
+
+;; ivy
 (package! ivy-rich :disable t)
+(package! ivy-hydra :disable t)
+
+;; company
+(package! company-dict :disable t)
+
+;; dired
 (package! diredfl :disable t)
 (package! dired-rsync :disable t)
+
+;; vc
+(package! diff-hl :disable t)
 (package! magit-gitflow :disable t)
 
+;; lookup
+(package! request :disable t)
+
+;; elisp
+(package! buttercup :disable t)
+(package! macrostep :disable t)
+(package! overseer :disable t)
 
 ;;; unpin
 (unpin! lsp-mode)

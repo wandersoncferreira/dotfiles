@@ -1,4 +1,4 @@
-;;; +extra-cider.el -*- lexical-binding: t; -*-
+;;; ../dotfiles/.doom.d/+patch-cider.el -*- lexical-binding: t; -*-
 
 ;; Experimental configuration to hotload refactor
 ;; using Pomegranate from Cemerick

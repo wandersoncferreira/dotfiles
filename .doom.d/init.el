@@ -9,7 +9,7 @@
        doom              ; what makes DOOM look the way it does
        doom-dashboard
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       modeline          ; snazzy, Atom-inspired modeline, plus API
+       (modeline +light) ; snazzy, Atom-inspired modeline, plus API
        (popup +defaults) ; tame sudden yet inevitable temporary windows
 
        :editor
@@ -28,7 +28,7 @@
 
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       ;;(spell +aspell)     ; tasing you for misspelling mispelling
+       ;;(spell +aspell)   ; tasing you for misspelling mispelling
 
        :tools
        ;;ansible
