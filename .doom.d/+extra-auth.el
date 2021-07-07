@@ -1,5 +1,8 @@
 ;;; ../dotfiles/.doom.d/+extra-auth.el -*- lexical-binding: t; -*-
 
+(setq auth-source-debug t
+      auth-sources '((:source "~/.secrets/authinfo.gpg")))
+
 (defun bk/bitwarden ()
   "Get bitwarden."
   (interactive)

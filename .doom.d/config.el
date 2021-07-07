@@ -1,5 +1,10 @@
 ;;; $DOOMDIR/config.el -*- lexical-binding: t; -*-
 
+(setq user-full-name "Wanderson Ferreira"
+      user-mail-address "wand@hey.com"
+      byte-compile-warnings '(cl-functions)
+      enable-local-variables t)
+
 ;; mode alist
 (add-to-list 'auto-mode-alist '("\\ledger\\'" . ledger-mode))
 

@@ -1,5 +1,7 @@
 ;;; +extra-window.el -*- lexical-binding: t; -*-
 
+;; shift arrow to move between buffers
+(windmove-default-keybindings)
 
 (defun bk/vsplit-last-buffer ()
   "Split the window vertically and display the previous buffer."

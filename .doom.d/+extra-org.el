@@ -1,5 +1,7 @@
 ;;; ../dotfiles/.doom.d/+extra-org.el -*- lexical-binding: t; -*-
 
+(remove-hook 'org-mode-hook #'org-superstar-mode)
+
 (after! org
   (setq org-return-follows-link t
         org-directory "~/org/"

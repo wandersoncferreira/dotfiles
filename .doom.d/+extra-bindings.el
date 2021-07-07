@@ -1,5 +1,8 @@
 ;;; +extra-bindings.el -*- lexical-binding: t; -*-
 
+(setq which-key-idle-delay 0.4
+      tab-always-indent 'complete)
+
 (set-register ?l '(file . "/home/wanderson/ledger"))
 
 (map! "C-x C-m" #'counsel-M-x
@@ -26,6 +29,13 @@
       "C-." #'completion-at-point
 
       )
+
+(defun bk/feedback (&rest _args)
+  (message "Evaluated")
+  (save-buffer))
+
+(advice-add 'eval-defun :after #'bk/feedback)
+(advice-add 'eval-buffer :after #'bk/feedback)
 
 ;; clojure
 (map! :map clojure-mode-map
