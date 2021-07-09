@@ -46,7 +46,7 @@
       "C-c k a" #'kaocha-runner-run-all-tests
       "C-c k w" #'kaocha-runner-show-warnings
       "C-c k h" #'kaocha-runner-hide-windows
-      "H-s-t" #'tgt-toggle
+      "H-s-t" #'projectile-toggle-between-implementation-and-test
 
       ;; definition
       "M-." #'find-definition

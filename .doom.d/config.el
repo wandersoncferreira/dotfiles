@@ -9,7 +9,6 @@
 (add-to-list 'auto-mode-alist '("\\ledger\\'" . ledger-mode))
 
 ;; defaults
-(load! "+extra-defaults")
 (load! "+extra-appearance")
 (load! "+extra-auth")
 (load! "+extra-org")

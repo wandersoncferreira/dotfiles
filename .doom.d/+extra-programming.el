@@ -17,7 +17,3 @@
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'"))
 
 (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers)))
-
-(after! toggle-test
-  (setq tgt-open-in-new-window nil)
-  (put 'tgt-projects 'safe-local-variable #'lisp))

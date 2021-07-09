@@ -7,7 +7,6 @@
 (package! fix-word)
 (package! move-text)
 (package! nov)
-(package! toggle-test)
 (package! uuidgen)
 (package! windresize)
 (package! webpaste)

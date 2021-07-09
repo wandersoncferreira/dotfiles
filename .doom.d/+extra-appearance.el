@@ -1,6 +1,6 @@
 ;;; ../dotfiles/.doom.d/+extra-appearance.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'doom-nord-light
+(setq doom-theme 'modus-operandi
       doom-font (font-spec :family "Source Code Pro" :size 15)
       display-line-numbers-type nil
       confirm-kill-emacs nil

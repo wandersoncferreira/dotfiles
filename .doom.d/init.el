@@ -11,12 +11,15 @@
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        (modeline +light) ; snazzy, Atom-inspired modeline, plus API
        (popup +defaults) ; tame sudden yet inevitable temporary windows
+       vi-tilde-fringe   ; fringe tildes to mark beyond EOB
 
        :editor
        file-templates    ; auto-snippets for empty files
        (format)          ; automated prettiness
        multiple-cursors  ; editing in many places at once
        snippets          ; my elves. They type so I don't have to
+       ;;fold              ; (nigh) universal code folding
+       ;;rotate-text       ; cycle region at point between text candidates
 
        :emacs
        dired             ; making dired pretty [functional]
