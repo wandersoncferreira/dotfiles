@@ -16,6 +16,7 @@
       "M-c" #'fix-word-capitalize
       "C-<up>" #'move-text-up
       "C-<down>" #'move-text-down
+      "C-c d" #'crux-duplicate-current-line-or-region
 
       ;; window
       "C-x 3" #'bk/hsplit-last-buffer
@@ -29,13 +30,6 @@
       "C-." #'completion-at-point
 
       )
-
-(defun bk/feedback (&rest _args)
-  (message "Evaluated")
-  (save-buffer))
-
-(advice-add 'eval-defun :after #'bk/feedback)
-(advice-add 'eval-buffer :after #'bk/feedback)
 
 ;; clojure
 (map! :map clojure-mode-map

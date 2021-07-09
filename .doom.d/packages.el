@@ -12,6 +12,7 @@
 (package! webpaste)
 (package! org-roam-server)
 (package! kaocha-runner)
+(package! crux)
 
 ;;; disable packages
 
