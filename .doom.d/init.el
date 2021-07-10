@@ -18,8 +18,6 @@
        (format)          ; automated prettiness
        multiple-cursors  ; editing in many places at once
        snippets          ; my elves. They type so I don't have to
-       ;;fold              ; (nigh) universal code folding
-       ;;rotate-text       ; cycle region at point between text candidates
 
        :emacs
        dired             ; making dired pretty [functional]
@@ -27,11 +25,8 @@
        vc                ; version-control and Emacs, sitting in a tree
 
        :term
-       ;;eshell            ; the elisp shell that works everywhere
-
        :checkers
        syntax              ; tasing you for every semicolon you forget
-       ;;(spell +aspell)   ; tasing you for misspelling mispelling
 
        :tools
        ;;ansible
@@ -42,7 +37,7 @@
        ;;ein               ; tame Jupyter notebooks with emacs
        ;;(eval +overlay)     ; run code, run (also, repls)
        gist                ; interacting with github gists
-       lookup              ; navigate your code and its documentation
+       (lookup +docsets)   ; navigate your code and its documentation
        lsp
        (magit +forge)      ; a git porcelain for Emacs
        ;;make              ; run make tasks from Emacs
@@ -123,12 +118,10 @@
        :email
        ;;(mu4e +gmail)
        ;;notmuch
-       ;;(wanderlust +gmail)
 
        :app
        ;;calendar
        ;;emms
-       ;;everywhere        ; *leave* Emacs!? You must be joking
        ;;irc               ; how neckbeards socialize
        ;;(rss +org)        ; emacs as an RSS reader
        ;;twitter           ; twitter client https://twitter.com/vnought
