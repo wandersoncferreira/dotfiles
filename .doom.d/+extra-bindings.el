@@ -5,6 +5,10 @@
 
 (set-register ?l '(file . "/home/wanderson/ledger"))
 
+(when IS-MAC
+  (setq mac-command-modifier 'meta
+        mac-option-modifier nil))
+
 (map! "C-x C-m" #'counsel-M-x
 
       ;; editor

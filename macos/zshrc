@@ -105,3 +105,4 @@ alias study-sheet="cd $HOME/repos/reifyhealth/study-sheet/"
 alias idrsa="ssh-add $HOME/.secrets/keys/id_rsa"
 
 eval "$(direnv hook zsh)"
+export GPG_TTY=$(tty)
