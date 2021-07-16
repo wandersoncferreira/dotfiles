@@ -1,0 +1,24 @@
+cask_args appdir: "/Applications"
+
+# install packages
+tap "homebrew/cask" || true
+tap "homebrew/cask-versions" || true
+
+brew "git"
+brew "htop"
+brew "gnupg"
+brew "direnv"
+
+# casks
+cask "telegram-desktop"
+
+# emacs
+tap "railwaycat/emacsmacport"
+# brew install emacs-mac --with-mac-metal
+
+# clojure & java
+brew "leiningen"
+tap "clojure/tools"
+brew "clojure/tools/clojure"
+tap "mdogan/zulu"
+cask "zulu-jdk11"
