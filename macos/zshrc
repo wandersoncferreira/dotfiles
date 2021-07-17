@@ -79,6 +79,7 @@ source $ZSH/oh-my-zsh.sh
 export MANPATH="/usr/local/man:$MANPATH"
 export PATH="/Users/wferreir/dotfiles/scripts:/opt/homebrew/bin:$PATH"
 export LEIN_USE_BOOTCLASSPATH=no
+export GPG_TTY=$(tty)
 
 # You may need to manually set your language environment
 # export LANG=en_US.UTF-8
@@ -106,4 +107,3 @@ alias idrsa="ssh-add $HOME/.secrets/keys/id_rsa"
 alias sync-brew="brew bundle --verbose --cleanup --file ~/dotfiles/macos/Brewfile"
 
 eval "$(direnv hook zsh)"
-export GPG_TTY=$(tty)
