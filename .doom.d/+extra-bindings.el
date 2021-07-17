@@ -4,6 +4,7 @@
       tab-always-indent 'complete)
 
 (set-register ?l '(file . "/home/wanderson/ledger"))
+(set-register ?b '(file . "/Users/wferreir/dotfiles/macos/Brewfile"))
 
 (when IS-MAC
   (setq mac-command-modifier 'meta
