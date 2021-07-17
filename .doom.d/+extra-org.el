@@ -19,4 +19,4 @@
 
 ;; zettelkasten
 (after! org-roam
-  (setq org-roam-directory "/home/wanderson/zettelkasten"))
+  (setq org-roam-directory "/Users/wferreir/zettelkasten"))
