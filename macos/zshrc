@@ -103,6 +103,7 @@ alias zshconfig="mate ~/.zshrc"
 alias esource="cd $HOME/repos/reifyhealth/esource-service/"
 alias study-sheet="cd $HOME/repos/reifyhealth/study-sheet/"
 alias idrsa="ssh-add $HOME/.secrets/keys/id_rsa"
+alias sync-brew="brew bundle --verbose --cleanup --file ~/dotfiles/macos/Brewfile"
 
 eval "$(direnv hook zsh)"
 export GPG_TTY=$(tty)
