@@ -19,4 +19,6 @@
 
 ;; zettelkasten
 (after! org-roam
-  (setq org-roam-directory "/Users/wferreir/zettelkasten"))
+  (if IS-MAC
+      (setq org-roam-directory "/Users/wferreir/zettelkasten")
+    (setq org-roam-directory "/home/wanderson/zettelkasten")))
