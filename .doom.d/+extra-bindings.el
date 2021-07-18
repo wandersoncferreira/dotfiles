@@ -12,6 +12,8 @@
 
 (map! "C-x C-m" #'counsel-M-x
 
+      "C-x C-j" #'dired-jump
+
       ;; editor
       "M-p" #'jump-char-backward
       "M-n" #'jump-char-forward
