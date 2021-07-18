@@ -6,8 +6,10 @@ cask_args appdir: "/Applications"
 # * initial setup
 tap "homebrew/cask"
 tap "homebrew/cask-versions"
-tap "buo/cask-upgrade"
 tap "homebrew/cask-fonts"
+tap "homebrew/services"
+tap "buo/cask-upgrade"
+
 
 # * brews
 
@@ -28,10 +30,16 @@ brew "gnupg"
 brew "github-keygen"
 brew "pinentry-mac"
 
+# * zsh
+brew "zsh-syntax-highlighting"
+brew "zsh-autosuggestions"
+
 # * mas
 mas "Bitwarden", id: 1352778147
 mas "WhatsApp Desktop", id: 1147396723
-
+mas "keynote", id: 409183694
+mas "numbers", id: 409203825
+mas "pages", id: 409201541
 
 # * casks
 cask "telegram-desktop"
@@ -45,7 +53,7 @@ cask "datagrip"
 cask "mactex-no-gui"
 cask "kindle"
 cask "steam"
-
+cask "gpg-suite-pinentry"
 
 # * emacs
 tap "railwaycat/emacsmacport"
