@@ -5,6 +5,7 @@
 (package! change-inner)
 (package! jump-char)
 (package! fix-word)
+(package! pinentry)
 (package! move-text)
 (package! nov)
 (package! uuidgen)

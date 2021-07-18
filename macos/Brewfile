@@ -16,7 +16,6 @@ tap "buo/cask-upgrade"
 brew "mas"
 brew "git"
 brew "htop"
-brew "gnupg"
 brew "direnv"
 brew "ripgrep"
 brew "watch"
@@ -28,6 +27,9 @@ brew "graphviz"
 brew "pandoc"
 brew "gnupg"
 brew "github-keygen"
+
+# gpg setup
+brew "gnupg"
 brew "pinentry-mac"
 
 # * zsh
