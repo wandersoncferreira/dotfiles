@@ -1,0 +1,4 @@
+Host github.com
+  UseKeychain yes
+  AddKeysToAgent yes
+  IdentityFile ~/.secrets/keys/id_rsa
