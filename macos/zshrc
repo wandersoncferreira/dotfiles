@@ -5,27 +5,24 @@ export PATH="/Users/wferreir/dotfiles/scripts:/opt/homebrew/bin:$PATH"
 export LEIN_USE_BOOTCLASSPATH=no
 export GPG_TTY=$(tty)
 export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
-
 export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
-alias ls='ls -GFh'
 
-alias zshconfig="mate ~/.zshrc"
-alias esource="cd $HOME/repos/reifyhealth/esource-service/"
-alias study-sheet="cd $HOME/repos/reifyhealth/study-sheet/"
-alias idrsa="ssh-add $HOME/.secrets/keys/id_rsa"
+alias ls="ls -GFh"
+alias iroh="cd ~/code/iroh"
 alias sync-brew="brew bundle --verbose --cleanup --file ~/dotfiles/macos/Brewfile"
+alias sync-zsh="source ~/.zshrc"
 
 eval "$(direnv hook zsh)"
 
 # GPG
 # Add the following to your shell init to set up gpg-agent automatically for every shell
-if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
-    source ~/.gnupg/.gpg-agent-info
-    export GPG_AGENT_INFO
-else
-    eval $(gpg-agent --daemon)
-fi
+# if [ -f ~/.gnupg/.gpg-agent-info ] && [ -n "$(pgrep gpg-agent)" ]; then
+#     source ~/.gnupg/.gpg-agent-info
+#     export GPG_AGENT_INFO
+# else
+#     eval $(gpg-agent --daemon)
+# fi
 
 # zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
