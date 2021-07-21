@@ -48,15 +48,4 @@
       "C-c k w" #'kaocha-runner-show-warnings
       "C-c k h" #'kaocha-runner-hide-windows
       "H-s-t" #'projectile-toggle-between-implementation-and-test
-
-      ;; definition
-      "M-." #'find-definition
-
-      :map cider-mode-map
-      "M-." #'find-definition
-
-      :map clojurec-mode-map
-      "M-." #'find-definition
-
-      :map clojurescript-mode-map
-      "M-." #'find-definition)
+      )
