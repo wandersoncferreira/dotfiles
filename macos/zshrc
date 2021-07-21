@@ -2,6 +2,7 @@
 
 export MANPATH="/usr/local/man:$MANPATH"
 export PATH="/Users/wferreir/dotfiles/scripts:/opt/homebrew/bin:$PATH"
+export PATH="/opt/homebrew/sbin:$PATH"
 export LEIN_USE_BOOTCLASSPATH=no
 export GPG_TTY=$(tty)
 export ZSH_HIGHLIGHT_HIGHLIGHTERS_DIR=/opt/homebrew/share/zsh-syntax-highlighting/highlighters
@@ -13,6 +14,9 @@ alias iroh="cd ~/code/iroh"
 alias sync-brew="brew bundle --verbose --cleanup --file ~/dotfiles/macos/Brewfile"
 alias sync-syms="~/dotfiles/macos/symlinks.sh"
 alias sync-zsh="source ~/.zshrc"
+
+export PATH="$HOME/.jenv/bin:$PATH"
+eval "$(jenv init -)"
 
 eval "$(direnv hook zsh)"
 

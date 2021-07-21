@@ -15,6 +15,7 @@ tap "buo/cask-upgrade"
 
 brew "mas"
 brew "git"
+brew "wget"
 brew "htop"
 brew "direnv"
 brew "ripgrep"
@@ -61,12 +62,20 @@ cask "gpg-suite-pinentry"
 tap "railwaycat/emacsmacport"
 brew "railwaycat/emacsmacport/emacs-mac", args: ["with-mac-metal", "with-starter"]
 
-
 # * clojure & java
-brew "leiningen"
 tap "clojure/tools"
-brew "clojure/tools/clojure"
 tap "mdogan/zulu"
-cask "zulu-jdk11"
 tap "AdoptOpenJDK/openjdk"
+
+brew "leiningen"
+brew "clojure/tools/clojure"
+brew "jenv"
+brew "clojure-lsp", args: ["HEAD"]
+brew "borkdude/brew/babashka"
+
+cask "zulu-jdk11"
 cask "adoptopenjdk11"
+
+
+# * virtualization
+cask "utm"
