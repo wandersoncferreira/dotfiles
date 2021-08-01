@@ -1,7 +1,7 @@
 # A key practice is to install EVERYTHING possible using brew, brew cask, or mas.
 # This is my attempt to do so!
 
-cask_args appdir: "/Applications"
+cask_args appdir: "/Applications", require_sha: true
 
 # * initial setup
 tap "homebrew/cask"
@@ -9,7 +9,6 @@ tap "homebrew/cask-versions"
 tap "homebrew/cask-fonts"
 tap "homebrew/services"
 tap "buo/cask-upgrade"
-
 
 # * brews
 
@@ -22,16 +21,19 @@ brew "ripgrep"
 brew "watch"
 brew "geoip"
 brew "ispell"
+brew "aspell"
 brew "tree"
 brew "jq"  # lightweight json processor
 brew "graphviz"
 brew "pandoc"
-brew "gnupg"
-brew "github-keygen"
+brew "plantuml"
+brew "ledger"
+brew "pngpaste"
+brew "youtube-dl"
 
 # gpg setup
 brew "gnupg"
-brew "pinentry-mac"
+cask "gpg-suite-pinentry"
 
 # * zsh
 brew "zsh-syntax-highlighting"
@@ -48,15 +50,12 @@ mas "pages", id: 409201541
 cask "telegram-desktop"
 cask "phantomjs"
 cask "hey"
-cask "spectacle"
 cask "iterm2"
 cask "postman"
 cask "slack"
 cask "datagrip"
 cask "mactex-no-gui"
 cask "kindle"
-cask "steam"
-cask "gpg-suite-pinentry"
 
 # * emacs
 tap "railwaycat/emacsmacport"
@@ -66,16 +65,22 @@ brew "railwaycat/emacsmacport/emacs-mac", args: ["with-mac-metal", "with-starter
 tap "clojure/tools"
 tap "mdogan/zulu"
 tap "AdoptOpenJDK/openjdk"
+tap "borkdude/brew"
 
+# * haskell
+brew "stack"
+brew "haskell-language-server"
+brew "ghc"
+
+brew "mvn"
 brew "leiningen"
-brew "clojure/tools/clojure"
+brew "clojure/tools/clojure@1.10.3.929"
 brew "jenv"
 brew "clojure-lsp", args: ["HEAD"]
 brew "borkdude/brew/babashka"
 
 cask "zulu-jdk11"
 cask "adoptopenjdk11"
-
 
 # * virtualization
 cask "utm"
