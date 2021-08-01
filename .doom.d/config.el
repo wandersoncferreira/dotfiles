@@ -8,6 +8,13 @@
 ;; mode alist
 (add-to-list 'auto-mode-alist '("\\ledger\\'" . ledger-mode))
 
+(defun bk/load-gpg-file (fname)
+  (let* ((fname-gpg (concat fname ".el.gpg"))
+         (fpath (concat "~/.doom.d/" fname-gpg)))
+    (add-hook 'after-init-hook
+              (lambda ()
+                (load-file fpath)))))
+
 ;; defaults
 (load! "+extra-appearance")
 (load! "+extra-auth")
@@ -31,3 +38,4 @@
 ;; work
 (load! "+work-reifyhealth")
 (load! "+work-appsauce")
+(bk/load-gpg-file "+work-cisco")
