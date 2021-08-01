@@ -9,6 +9,5 @@
 	
 [github]
 	user = wandersoncferreira
-	oauth-token = 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
 [commit]
 	gpgsign = true
