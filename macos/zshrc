@@ -14,7 +14,9 @@ alias iroh="cd ~/code/iroh"
 alias sync-brew="brew bundle --verbose --cleanup --file ~/dotfiles/macos/Brewfile"
 alias sync-syms="~/dotfiles/macos/symlinks.sh"
 alias sync-zsh="source ~/.zshrc"
+alias java-create-project="mvn archetype:generate"
 
+export PATH="/Users/wferreir/.gem/ruby/2.6.0/bin:$PATH"
 export PATH="$HOME/.jenv/bin:$PATH"
 eval "$(jenv init -)"
 

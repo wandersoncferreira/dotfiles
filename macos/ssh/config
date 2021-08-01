@@ -1,4 +1,10 @@
-Host github.com
-  UseKeychain yes
-  AddKeysToAgent yes
+AddKeysToAgent yes
+UseKeychain yes
+
+Host github.com-advthreat
+  HostName github.com
+  IdentityFile ~/.ssh/cisco
+
+Host github.com-personal
+  HostName github.com
   IdentityFile ~/.secrets/keys/id_rsa
