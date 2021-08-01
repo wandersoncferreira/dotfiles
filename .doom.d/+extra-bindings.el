@@ -3,12 +3,12 @@
 (setq which-key-idle-delay 0.4
       tab-always-indent 'complete)
 
-(set-register ?l '(file . "/home/wanderson/ledger"))
+(set-register ?l '(file . "/Users/wferreir/ledger"))
 (set-register ?b '(file . "/Users/wferreir/dotfiles/macos/Brewfile"))
 
 (when IS-MAC
   (setq mac-command-modifier 'meta
-        mac-option-modifier nil))
+        mac-option-modifier 'hyper))
 
 (map! "C-x C-m" #'counsel-M-x
 
@@ -47,5 +47,16 @@
       "C-c k a" #'kaocha-runner-run-all-tests
       "C-c k w" #'kaocha-runner-show-warnings
       "C-c k h" #'kaocha-runner-hide-windows
-      "H-s-t" #'projectile-toggle-between-implementation-and-test
-      )
+      "H-t" #'projectile-toggle-between-implementation-and-test
+
+      ;; definition
+      "M-." #'find-definition
+
+      :map cider-mode-map
+      "M-." #'find-definition
+
+      :map clojurec-mode-map
+      "M-." #'find-definition
+
+      :map clojurescript-mode-map
+      "M-." #'find-definition)

@@ -20,7 +20,10 @@
 (after! clojure-mode
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (add-hook! 'clojure-mode-hook (enable-paredit-mode))
-  (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
+  (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+
+  (when IS-MAC
+    (setq lsp-clojure-server-command "/opt/homebrew/bin/clojure-lsp")))
 
 
 (after! cider-mode

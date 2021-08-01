@@ -5,6 +5,9 @@
         magit-commit-show-diff nil
         magit-display-buffer-function (lambda (buf) (display-buffer buf '(display-buffer-same-window)))))
 
+(after! browse-at-remote
+  (push (cons "github.com-advthreat" "github") browse-at-remote-remote-type-domains))
+
 (defun bk/forge--add-draft (alist)
   "Add draft to ALIST."
   (append alist '((draft . "t"))))

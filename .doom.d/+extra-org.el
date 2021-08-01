@@ -11,6 +11,9 @@
         org-startup-indented nil
         org-agenda-files (list "~/agenda/todo.org")))
 
+(after! org-download
+  (setq org-download-method 'directory))
+
 (after! org-roam-server
   (setq org-roam-server-host "127.0.0.1"
         org-roam-server-port 17042
