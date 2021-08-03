@@ -11,7 +11,6 @@ tap "homebrew/services"
 tap "buo/cask-upgrade"
 
 # * brews
-
 brew "mas"
 brew "git"
 brew "wget"
@@ -67,11 +66,6 @@ tap "mdogan/zulu"
 tap "AdoptOpenJDK/openjdk"
 tap "borkdude/brew"
 
-# * haskell
-brew "stack"
-brew "haskell-language-server"
-brew "ghc"
-
 brew "mvn"
 brew "leiningen"
 brew "clojure/tools/clojure@1.10.3.929"
@@ -82,5 +76,17 @@ brew "borkdude/brew/babashka"
 cask "zulu-jdk11"
 cask "adoptopenjdk11"
 
+# * haskell
+brew "stack"
+brew "haskell-language-server"
+brew "ghc"
+
 # * virtualization
 cask "utm"
+
+# * ruby
+brew "rbenv"
+brew "ruby-build"
+
+# * blog
+brew "hugo"

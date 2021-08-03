@@ -1,5 +1,4 @@
 # User configuration
-
 export MANPATH="/usr/local/man:$MANPATH"
 export PATH="/Users/wferreir/dotfiles/scripts:/opt/homebrew/bin:$PATH"
 export PATH="/opt/homebrew/sbin:$PATH"
@@ -11,16 +10,19 @@ export LSCOLORS=ExFxBxDxCxegedabagacad
 
 alias ls="ls -GFh"
 alias iroh="cd ~/code/iroh"
-alias sync-brew="brew bundle --verbose --cleanup --file ~/dotfiles/macos/Brewfile"
+alias sync-brew="brew bundle --verbose --cleanup --file ~/dotfiles/macos/Brewfile && brew cu -f -a"
 alias sync-syms="~/dotfiles/macos/symlinks.sh"
 alias sync-zsh="source ~/.zshrc"
 alias java-create-project="mvn archetype:generate"
 
 export PATH="/Users/wferreir/.gem/ruby/2.6.0/bin:$PATH"
 export PATH="$HOME/.jenv/bin:$PATH"
-eval "$(jenv init -)"
 
+# eval
+eval "$(jenv init -)"
 eval "$(direnv hook zsh)"
+
+if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
 # zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
