@@ -20,6 +20,13 @@
         org-roam-server-export-inline-images t)
   (require 'org-roam-protocol))
 
+;;; blog
+(after! ox-hugo
+  (setq org-hugo-base-dir "~/wandersoncferreira.github.io"
+        org-hugo-section "items"
+        org-hugo-front-matter-format "yaml"))
+
+
 ;; zettelkasten
 (after! org-roam
   (if IS-MAC
