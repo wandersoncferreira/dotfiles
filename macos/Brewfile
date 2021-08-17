@@ -29,6 +29,7 @@ brew "plantuml"
 brew "ledger"
 brew "pngpaste"
 brew "youtube-dl"
+brew "mplayer", args: ["with-mac-metal"]
 
 # gpg setup
 brew "gnupg"
@@ -88,5 +89,14 @@ cask "utm"
 brew "rbenv"
 brew "ruby-build"
 
+# * node
+brew "node@14"
+
+# * vpn
+cask "tunnelblick"
+
 # * blog
 brew "hugo"
+
+# * github
+brew "act"

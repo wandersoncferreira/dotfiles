@@ -18,6 +18,9 @@ alias java-create-project="mvn archetype:generate"
 export PATH="/Users/wferreir/.gem/ruby/2.6.0/bin:$PATH"
 export PATH="$HOME/.jenv/bin:$PATH"
 
+export LDFLAGS="-L/opt/homebrew/opt/node@14/lib"
+export CPPFLAGS="-I/opt/homebrew/opt/node@14/include"
+
 # eval
 eval "$(jenv init -)"
 eval "$(direnv hook zsh)"
@@ -27,3 +30,4 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 # zsh plugins
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+export PATH="/opt/homebrew/opt/node@14/bin:$PATH"
