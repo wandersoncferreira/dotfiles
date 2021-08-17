@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: pid
+# --
+(-> (java.lang.management.ManagementFactory/getRuntimeMXBean)
+    (.getName)
+    (clojure.string/split #"@")
+    (first))

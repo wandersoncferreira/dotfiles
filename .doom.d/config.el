@@ -15,12 +15,16 @@
               (lambda ()
                 (load-file fpath)))))
 
+(when IS-MAC
+  (setq alert-default-style 'osx-notifier))
+
 ;; defaults
 (load! "+extra-appearance")
 (load! "+extra-auth")
 (load! "+extra-org")
 (load! "+extra-window")
 (load! "+extra-vc")
+(load! "+extra-spell")
 
 ;; langs
 (load! "+extra-programming")

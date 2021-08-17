@@ -25,6 +25,17 @@
   (when IS-MAC
     (setq lsp-clojure-server-command "/opt/homebrew/bin/clojure-lsp")))
 
+(defun bk/clojure-pid ()
+  "Find PID of current clojure process."
+  (interactive)
+  (cider-repl-set-ns "user")
+  (message
+   (cider-nrepl-sync-request:eval
+    "(-> (java.lang.management.ManagementFactory/getRuntimeMXBean)
+    (.getName)
+    (clojure.string/split #\"@\")
+    (first)")))
+
 
 (after! cider-mode
   (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")

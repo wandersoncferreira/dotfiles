@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ppre
+# --
+{:pre [$1]
+ :post [$2]}

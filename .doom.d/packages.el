@@ -14,6 +14,10 @@
 (package! org-roam-server)
 (package! kaocha-runner)
 (package! crux)
+(package! pomidor)
+
+;; themes
+(package! alect-themes)
 
 ;;; disable packages
 

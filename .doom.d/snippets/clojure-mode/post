@@ -1,0 +1,4 @@
+# -*- mode: snippet -*-
+# name: post
+# --
+{:post [$1]}

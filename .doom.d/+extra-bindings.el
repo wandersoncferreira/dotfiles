@@ -36,6 +36,9 @@
       ;; completion
       "C-." #'completion-at-point
 
+      ;; pomidor
+      "<f12>" #'pomidor
+
       )
 
 ;; clojure
