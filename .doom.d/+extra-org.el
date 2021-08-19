@@ -32,3 +32,8 @@
   (if IS-MAC
       (setq org-roam-directory "/Users/wferreir/zettelkasten")
     (setq org-roam-directory "/home/wanderson/zettelkasten")))
+
+;; spaced-repetition
+(use-package org-fc
+  :load-path "~/.doom.d/sources/org-fc"
+  :custom (org-fc-directories '("~/zettelkasten")))

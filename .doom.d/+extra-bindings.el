@@ -39,6 +39,8 @@
       ;; pomidor
       "<f12>" #'pomidor
 
+      ;; tests
+      "H-t" #'projectile-toggle-between-implementation-and-test
       )
 
 ;; clojure
@@ -50,7 +52,6 @@
       "C-c k a" #'kaocha-runner-run-all-tests
       "C-c k w" #'kaocha-runner-show-warnings
       "C-c k h" #'kaocha-runner-hide-windows
-      "H-t" #'projectile-toggle-between-implementation-and-test
 
       ;; definition
       "M-." #'find-definition
