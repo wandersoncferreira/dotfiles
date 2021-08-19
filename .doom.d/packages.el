@@ -18,6 +18,7 @@
 
 ;; themes
 (package! alect-themes)
+(package! organic-green-theme)
 
 ;;; disable packages
 

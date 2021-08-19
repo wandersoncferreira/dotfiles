@@ -40,8 +40,19 @@
                   (get-char-property pos 'face))))
     (if face (message "Face: %s" face) (message "No face at %d" pos))))
 
-(custom-set-faces
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(font-lock-variable-name-face ((t (:foreground "#6a621b"))))
- '(ivy-current-match ((t (:extend t :background "#b0d0f3" :foreground "#101010" :weight bold)))))
+;; hacky: avoid saving custom faces in custom.el files
+(defun custom-save-faces ()
+  "No-op"
+  (interactive))
+
+(defun bk/alect-themes-customizations ()
+  (custom-set-faces
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(font-lock-variable-name-face ((t (:foreground "#6a621b"))))
+   '(ivy-current-match ((t (:extend t :background "#b0d0f3" :foreground "#101010" :weight bold))))))
+
+(defun bk/organic-green-customizations ()
+  (setq organic-green-boldless t))
+
+(bk/alect-themes-customizations)
