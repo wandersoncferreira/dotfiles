@@ -30,6 +30,8 @@ brew "ledger"
 brew "pngpaste"
 brew "youtube-dl"
 brew "mplayer", args: ["with-mac-metal"]
+brew "gawk"
+brew "findutils"
 
 # gpg setup
 brew "gnupg"
@@ -56,6 +58,7 @@ cask "slack"
 cask "datagrip"
 cask "mactex-no-gui"
 cask "kindle"
+cask "wireshark"
 
 # * emacs
 tap "railwaycat/emacsmacport"
