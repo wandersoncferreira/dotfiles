@@ -17,6 +17,9 @@ while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 ### * macOS defaults
 #########################
 
+# Enable login using Yubikey-only machine-to-machine
+sudo defaults write /Library/Preferences/com.apple.security.smartcard enforceSmartCard -bool true
+
 # Disable the sound effects on boot
 sudo nvram SystemAudioVolume=" "
 
