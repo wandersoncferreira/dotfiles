@@ -21,6 +21,10 @@ export PATH="$HOME/.jenv/bin:$PATH"
 export LDFLAGS="-L/opt/homebrew/opt/node@14/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/node@14/include"
 
+LANG=en_US.UTF-8;
+export LANG
+export LC_ALL=$LANG
+
 # eval
 eval "$(jenv init -)"
 eval "$(direnv hook zsh)"

@@ -32,6 +32,7 @@ brew "youtube-dl"
 brew "mplayer", args: ["with-mac-metal"]
 brew "gawk"
 brew "findutils"
+brew "cloc"
 
 # gpg setup
 brew "gnupg"
@@ -59,6 +60,7 @@ cask "datagrip"
 cask "mactex-no-gui"
 cask "kindle"
 cask "wireshark"
+cask "zulip"
 
 # * emacs
 tap "railwaycat/emacsmacport"
