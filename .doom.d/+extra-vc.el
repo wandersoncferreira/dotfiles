@@ -8,6 +8,9 @@
 (after! browse-at-remote
   (push (cons "github.com-advthreat" "github") browse-at-remote-remote-type-domains))
 
+(require 'bug-reference-github)
+(add-hook 'prog-mode-hook 'bug-reference-github-set-url-format)
+
 (defun bk/forge--add-draft (alist)
   "Add draft to ALIST."
   (append alist '((draft . "t"))))

@@ -16,6 +16,7 @@
 (package! crux)
 (package! pomidor)
 (package! delight)
+(package! bug-reference-github)
 
 ;; themes
 (package! alect-themes)
