@@ -35,3 +35,4 @@ if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 export PATH="/opt/homebrew/opt/node@14/bin:$PATH"
+if [ -e /Users/wferreir/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/wferreir/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
