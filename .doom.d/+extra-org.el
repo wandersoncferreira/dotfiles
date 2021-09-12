@@ -9,7 +9,14 @@
         org-fontify-whole-heading-line nil
         org-hide-leading-stars nil
         org-startup-indented nil
-        org-agenda-files (list "~/agenda/todo.org")))
+        org-agenda-files (list "~/agenda/todo.org"))
+
+  ;; fix shift+<cursor> movements
+  ;; Make windmove work in Org mode:
+  (add-hook 'org-shiftup-final-hook 'windmove-up)
+  (add-hook 'org-shiftleft-final-hook 'windmove-left)
+  (add-hook 'org-shiftdown-final-hook 'windmove-down)
+  (add-hook 'org-shiftright-final-hook 'windmove-right))
 
 (after! org-download
   (setq org-download-method 'directory))
@@ -36,4 +43,9 @@
 ;; spaced-repetition
 (use-package org-fc
   :load-path "~/.doom.d/sources/org-fc"
-  :custom (org-fc-directories '("~/zettelkasten")))
+  :custom (org-fc-directories '("~/zettelkasten"))
+  :config
+  (add-to-list 'org-fc-custom-contexts
+               '(security-cards . (:filter (tag "security"))))
+  (add-to-list 'org-fc-custom-contexts
+               '(comptia-QA . (:filter (tag "comptia-qa")))))

@@ -1,6 +1,6 @@
 ;;; ../dotfiles/.doom.d/+extra-appearance.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'alect-light-alt
+(setq doom-theme 'jb-simple
       display-line-numbers-type nil
       confirm-kill-emacs nil
       fill-column 180
@@ -11,14 +11,22 @@
   (setq doom-theme 'modus-operandi))
 
 (when IS-MAC
-  (set-face-attribute 'default nil :height 140))
+  (set-face-attribute 'default nil :height 130))
 
 ;; delete selection
 (delete-selection-mode +1)
 
+;; uniquify
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'forward)
+
 ;; disable from doom
 (remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
+
+(add-hook 'emacs-lisp-mode-hook
+          (lambda ()
+            (outline-minor-mode -1)))
 
 (defun bk/default-theme ()
   "Change highlight colors when using the default white theme."
@@ -50,9 +58,28 @@
    ;; Your init file should contain only one such instance.
    ;; If there is more than one, they won't work right.
    '(font-lock-variable-name-face ((t (:foreground "#6a621b"))))
-   '(ivy-current-match ((t (:extend t :background "#b0d0f3" :foreground "#101010" :weight bold))))))
+   '(ivy-current-match ((t (:extend t :background "#b0d0f3" :foreground "#101010" :weight bold))))
+   '(lsp-lsp-flycheck-info-unnecessary-face ((t (:foreground "#2020cc" :underline (:color "dark orange" :style wave)))) t)))
 
 (defun bk/organic-green-customizations ()
   (setq organic-green-boldless t))
 
-(bk/alect-themes-customizations)
+;; control the modeline info
+(use-package! delight
+  :config
+  (delight '(;; general
+             (whitespace-mode nil whitespace)
+             (vi-tilde-fringe-mode nil vi-tilde-fringe)
+             (ws-butler-mode nil ws-butler)
+             (eldoc-mode nil eldoc)
+             (gcmh-mode nil gcmh)
+             (which-key-mode nil which-key)
+             (better-jumper-local-mode nil better-jumper)
+             (company-mode nil company)
+             (paredit-mode nil paredit)
+             (ivy-mode nil ivy)
+             (org-roam-mode nil org-roam)
+
+             ;; clojure
+             (clj-refactor-mode nil clj-refactor)
+             (dtrt-indent-mode nil dtrt-indent))))

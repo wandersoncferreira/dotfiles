@@ -1,7 +1,7 @@
 ;;; ../dotfiles/.doom.d/+extra-programming.el -*- lexical-binding: t; -*-
 
 (after! company
-  (setq company-idle-delay 0.2))
+  (setq company-idle-delay 0.1))
 
 (after! lsp-mode
   (setq lsp-enable-file-watchers t

@@ -18,6 +18,16 @@
 (when IS-MAC
   (setq alert-default-style 'osx-notifier))
 
+;; scratch buffer
+(setq doom-scratch-initial-major-mode 'emacs-lisp-mode
+      initial-major-mode 'emacs-lisp-mode)
+
+;; utf8
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+
 ;; defaults
 (load! "+extra-appearance")
 (load! "+extra-auth")
@@ -25,6 +35,7 @@
 (load! "+extra-window")
 (load! "+extra-vc")
 (load! "+extra-spell")
+(load! "+extra-eshell")
 
 ;; langs
 (load! "+extra-programming")

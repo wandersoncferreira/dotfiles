@@ -7,9 +7,8 @@
 
        :ui
        doom              ; what makes DOOM look the way it does
-       doom-dashboard
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       (modeline +light) ; snazzy, Atom-inspired modeline, plus API
+       ;;(modeline +light) ; snazzy, Atom-inspired modeline, plus API
        (popup +defaults) ; tame sudden yet inevitable temporary windows
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
 
@@ -58,8 +57,7 @@
        ;;agda              ; types of types of types of types...
        ;;beancount         ; mind the GAAP
        cc                  ; C > C++ == 1
-       (clojure
-        +lsp)      ; java with a lisp
+       (clojure)           ; java with a lisp
        ;;common-lisp       ; if you've seen one lisp, you've seen them all
        ;;coq               ; proofs-as-programs
        ;;crystal           ; ruby at the speed of c

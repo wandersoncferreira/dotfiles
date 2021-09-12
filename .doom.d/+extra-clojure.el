@@ -1,22 +1,6 @@
 ;;; ../dotfiles/.doom.d/+extra-clojure.el -*- lexical-binding: t; -*-
 
 
-(defun find-refs ()
-  (interactive)
-  (lsp-find-references t))
-
-
-(defun find-definition ()
-  "Try to find definition of cursor via LSP otherwise fallback to cider."
-  (interactive)
-  (let ((cursor (point))
-        (buffer (current-buffer)))
-    (lsp-find-definition)
-    (when (and (eq buffer (current-buffer))
-               (eq cursor (point)))
-      (cider-find-var))))
-
-
 (after! clojure-mode
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (add-hook! 'clojure-mode-hook (enable-paredit-mode))
@@ -41,7 +25,9 @@
   (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
         cider-show-error-buffer t
         cider-save-file-on-load t
-        cider-eldoc-display-for-symbol-at-point nil)
+        cider-eldoc-display-for-symbol-at-point nil
+        clojure-toplevel-inside-comment-form t
+        cider-clojure-cli-command "/Users/wferreir/teste.sh")
 
   (set-popup-rule! "*cider-test-report*" :side 'right :width 0.4)
   (set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)

@@ -15,10 +15,13 @@
 (package! kaocha-runner)
 (package! crux)
 (package! pomidor)
+(package! delight)
 
 ;; themes
 (package! alect-themes)
 (package! organic-green-theme)
+(package! sublime-themes)
+(package! color-theme-modern)
 
 ;;; disable packages
 
