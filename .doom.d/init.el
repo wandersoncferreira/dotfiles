@@ -8,7 +8,6 @@
        :ui
        doom              ; what makes DOOM look the way it does
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
-       ;;(modeline +light) ; snazzy, Atom-inspired modeline, plus API
        (popup +defaults) ; tame sudden yet inevitable temporary windows
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
 
@@ -51,7 +50,6 @@
 
        :os
        (:if IS-MAC macos)  ; improve compatibility with macOS
-       ;;tty               ; improve the terminal Emacs experience
 
        :lang
        ;;agda              ; types of types of types of types...
@@ -118,15 +116,6 @@
        ;;zig               ; C, but simpler
 
        :email
-       ;;(mu4e +gmail)
-       ;;notmuch
-
        :app
-       ;;calendar
-       ;;emms
-       ;;irc               ; how neckbeards socialize
-       ;;(rss +org)        ; emacs as an RSS reader
-       ;;twitter           ; twitter client https://twitter.com/vnought
-
        :config
        (default +bindings))
