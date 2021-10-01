@@ -36,7 +36,11 @@
 (defun portal.api/open ()
   (interactive)
   (cider-nrepl-sync-request:eval
-   "(require 'portal.api) (portal.api/open) (portal.api/tap)"))
+   "
+(require 'portal.api)
+(portal.api/open {:portal.colors/theme :portal.colors/solarized-light})
+(portal.api/tap)
+"))
 
 (defun portal.api/clear ()
   (interactive)
@@ -45,6 +49,8 @@
 (defun portal.api/close ()
   (interactive)
   (cider-nrepl-sync-request:eval "(portal.api/close)"))
+
+;; reveal extensions
 
 (defun bk/reveal.extensions ()
   "Install Sean Corfield's extensions to Reveal panel"
@@ -57,11 +63,14 @@
         cider-show-error-buffer t
         cider-save-file-on-load t
         cider-eldoc-display-for-symbol-at-point nil
+        cider-repl-use-pretty-printing nil
+        cider-redirect-server-output-to-repl t
         clojure-toplevel-inside-comment-form t
         cider-clojure-cli-command "/Users/wferreir/teste.sh"
-        cider-clojure-cli-aliases "reveal:dev/reveal")
+        ;; cider-clojure-cli-aliases "portal"
+        )
 
-  (add-to-list 'cider-jack-in-nrepl-middlewares "vlaaad.reveal.nrepl/middleware")
+  ;; (add-to-list 'cider-jack-in-nrepl-middlewares "vlaaad.reveal.nrepl/middleware")
 
   (set-popup-rule! "*cider-test-report*" :side 'right :width 0.4)
   (set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)

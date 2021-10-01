@@ -4,7 +4,7 @@
 (require 'org-crypt)
 
 (setq auth-source-debug t
-      auth-sources '((:source "~/.secrets/authinfo.gpg"))
+      auth-sources '("~/.secrets/authinfo.gpg")
       epg-gpg-program "gpg"
       org-tags-exclude-from-inheritance (quote ("crypt"))
       )

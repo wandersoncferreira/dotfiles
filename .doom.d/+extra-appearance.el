@@ -1,6 +1,7 @@
 ;;; ../dotfiles/.doom.d/+extra-appearance.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'jb-simple
+(setq doom-theme 'spacemacs-light
+      doom-font (font-spec :family "Monaco" :size 13)
       display-line-numbers-type nil
       confirm-kill-emacs nil
       fill-column 180
@@ -9,9 +10,6 @@
 (when IS-LINUX
   (setq doom-font (font-spec :family "Source Code Pro" :size 15))
   (setq doom-theme 'modus-operandi))
-
-(when IS-MAC
-  (set-face-attribute 'default nil :height 130))
 
 ;; delete selection
 (delete-selection-mode +1)
@@ -61,8 +59,28 @@
    '(ivy-current-match ((t (:extend t :background "#b0d0f3" :foreground "#101010" :weight bold))))
    '(lsp-lsp-flycheck-info-unnecessary-face ((t (:foreground "#2020cc" :underline (:color "dark orange" :style wave)))) t)))
 
+(defun bk/high-contrast-customizations ()
+  (custom-set-faces
+   '(mode-line ((t (:background "Gray75" :foreground "Black"))))
+   '(mode-line-buffer-id ((t (:background "Gray75" :foreground "blue4"))))
+   '(mode-line-mousable ((t (:background "Gray75" :foreground "firebrick"))))
+   '(mode-line-mousable-minor-mode ((t (:background "Gray75" :foreground "green4"))))))
+
 (defun bk/organic-green-customizations ()
   (setq organic-green-boldless t))
+
+(defun bk/toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         80
+       100))))
+
 
 ;; control the modeline info
 (use-package! delight

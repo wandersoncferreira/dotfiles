@@ -5,9 +5,6 @@
         magit-commit-show-diff nil
         magit-display-buffer-function (lambda (buf) (display-buffer buf '(display-buffer-same-window)))))
 
-(after! browse-at-remote
-  (push (cons "github.com-advthreat" "github") browse-at-remote-remote-type-domains))
-
 (require 'bug-reference-github)
 (add-hook 'prog-mode-hook 'bug-reference-github-set-url-format)
 
@@ -26,6 +23,14 @@
      (advice-remove 'forge--topic-parse-buffer #'bk/forge--add-draft)
      (signal (car err) (cdr err))))
   (advice-remove 'forge--topic-parse-buffer #'bk/forge--add-draft))
+
+(after! forge
+  (setq forge-alist
+        (append forge-alist
+                '(("github.com-advthreat" "api.github.com" "github.com" forge-github-repository)))))
+
+(use-package gh-notify
+  :load-path "~/.doom.d/sources/gh-notify")
 
 (map! :map forge-post-mode-map
       "C-c C-d" #'bk/post-draft-pull-request)

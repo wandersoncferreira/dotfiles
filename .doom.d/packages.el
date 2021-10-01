@@ -22,6 +22,7 @@
 (package! alect-themes)
 (package! organic-green-theme)
 (package! sublime-themes)
+(package! spacemacs-theme)
 (package! color-theme-modern)
 
 ;;; disable packages
@@ -53,3 +54,7 @@
 (unpin! lsp-mode)
 (unpin! cider)
 (unpin! clojure-mode)
+(unpin! magit forge)
+
+;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
+(package! map :pin "bb50dba")

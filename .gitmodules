@@ -1,3 +1,6 @@
 [submodule ".doom.d/sources/org-fc"]
 	path = .doom.d/sources/org-fc
 	url = https://github.com/l3kn/org-fc.git
+[submodule ".doom.d/sources/gh-notify"]
+	path = .doom.d/sources/gh-notify
+	url = https://github.com/anticomputer/gh-notify.git

@@ -110,4 +110,10 @@
       (println (ex-message t)))))
 
 ;; start
-(tap> (install-reveal-extras))
+
+(try
+  (future
+    (do
+      (Thread/sleep 5000)
+      (tap> (install-reveal-extras))))
+  (catch Exception _exc))
