@@ -36,6 +36,7 @@
 (load! "+extra-vc")
 (load! "+extra-spell")
 (load! "+extra-eshell")
+(load! "+extra-workspaces")
 
 ;; langs
 (load! "+extra-programming")

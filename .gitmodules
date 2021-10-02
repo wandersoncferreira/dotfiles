@@ -4,3 +4,6 @@
 [submodule ".doom.d/sources/gh-notify"]
 	path = .doom.d/sources/gh-notify
 	url = https://github.com/anticomputer/gh-notify.git
+[submodule ".doom.d/sources/github-review"]
+	path = .doom.d/sources/github-review
+	url = git@github.com:wandersoncferreira/github-review.git

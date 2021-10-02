@@ -33,6 +33,7 @@ brew "mplayer", args: ["with-mac-metal"]
 brew "gawk"
 brew "findutils"
 brew "cloc"
+brew "the_silver_searcher"
 
 # gpg setup
 brew "gnupg"

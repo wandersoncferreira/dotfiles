@@ -1,6 +1,6 @@
 ;;; ../dotfiles/.doom.d/+extra-appearance.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'spacemacs-light
+(setq doom-theme 'default-black
       doom-font (font-spec :family "Monaco" :size 13)
       display-line-numbers-type nil
       confirm-kill-emacs nil
@@ -80,7 +80,6 @@
               100)
          80
        100))))
-
 
 ;; control the modeline info
 (use-package! delight
