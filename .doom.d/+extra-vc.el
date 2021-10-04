@@ -3,9 +3,6 @@
 (require 'bug-reference-github)
 (add-hook 'prog-mode-hook 'bug-reference-github-set-url-format)
 
-(require 'magit-todos)
-(magit-todos-mode +1)
-
 (defun bk/forge--add-draft (alist)
   "Add draft to ALIST."
   (append alist '((draft . "t"))))

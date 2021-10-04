@@ -46,6 +46,7 @@
 
 ;; vc
 (package! magit-gitflow :disable t)
+(package! magit-todos :disable t)
 ;; preference to my own fork
 (package! github-review :disable t)
 
