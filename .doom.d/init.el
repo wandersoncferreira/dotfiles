@@ -10,6 +10,7 @@
        hl-todo           ; highlight TODO/FIXME/NOTE/DEPRECATED/HACK/REVIEW
        (popup +defaults) ; tame sudden yet inevitable temporary windows
        vi-tilde-fringe   ; fringe tildes to mark beyond EOB
+       vc-gutter
        workspaces
 
        :editor

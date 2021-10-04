@@ -38,6 +38,9 @@
 (load! "+extra-eshell")
 (load! "+extra-workspaces")
 
+;; os
+(load! "+extra-macos")
+
 ;; langs
 (load! "+extra-programming")
 (load! "+extra-clojure")

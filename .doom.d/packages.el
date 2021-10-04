@@ -16,7 +16,13 @@
 (package! crux)
 (package! pomidor)
 (package! delight)
+(package! ripgrep)
+(package! ag)
 (package! bug-reference-github)
+
+;; support github-review
+(package! deferred)
+(package! a)
 
 ;; themes
 (package! alect-themes)
@@ -39,22 +45,18 @@
 (package! dired-rsync :disable t)
 
 ;; vc
-(package! diff-hl :disable t)
 (package! magit-gitflow :disable t)
+;; preference to my own fork
+(package! github-review :disable t)
 
 ;; lookup
 (package! request :disable t)
-
-;; elisp
-(package! buttercup :disable t)
-(package! macrostep :disable t)
-(package! overseer :disable t)
 
 ;;; unpin
 (unpin! lsp-mode)
 (unpin! cider)
 (unpin! clojure-mode)
-(unpin! magit forge)
+(unpin! magit magit-todos forge)
 
 ;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
 (package! map :pin "bb50dba")

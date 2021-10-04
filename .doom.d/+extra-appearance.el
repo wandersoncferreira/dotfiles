@@ -1,7 +1,7 @@
 ;;; ../dotfiles/.doom.d/+extra-appearance.el -*- lexical-binding: t; -*-
 
 (setq doom-theme 'default-black
-      doom-font (font-spec :family "Monaco" :size 13)
+      doom-font (font-spec :family "Monaco" :size 14)
       display-line-numbers-type nil
       confirm-kill-emacs nil
       fill-column 180
@@ -96,6 +96,7 @@
              (paredit-mode nil paredit)
              (ivy-mode nil ivy)
              (org-roam-mode nil org-roam)
+             (git-gutter-mode nil git-gutter)
 
              ;; clojure
              (clj-refactor-mode nil clj-refactor)

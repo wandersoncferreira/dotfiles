@@ -1,11 +1,10 @@
 ;;; ../dotfiles/.doom.d/+extra-vc.el -*- lexical-binding: t; -*-
 
-(after! magit-mode
-  (require 'magit-todos)
-  (magit-todos-mode))
-
 (require 'bug-reference-github)
 (add-hook 'prog-mode-hook 'bug-reference-github-set-url-format)
+
+(require 'magit-todos)
+(magit-todos-mode +1)
 
 (defun bk/forge--add-draft (alist)
   "Add draft to ALIST."
@@ -22,11 +21,6 @@
      (advice-remove 'forge--topic-parse-buffer #'bk/forge--add-draft)
      (signal (car err) (cdr err))))
   (advice-remove 'forge--topic-parse-buffer #'bk/forge--add-draft))
-
-(after! forge
-  (setq forge-alist
-        (append forge-alist
-                '(("github.com-advthreat" "api.github.com" "github.com" forge-github-repository)))))
 
 (defun bk/github-review--copy-suggestion ()
   "Kill a region of diff+ as a review suggestion template."
@@ -56,7 +50,10 @@
   (setq gh-notify-redraw-on-visit t))
 
 (use-package github-review
-  :load-path "~/.doom.d/sources/github-review")
+  :load-path "~/.doom.d/sources/github-review"
+  :config
+  (setq github-review-view-comments-in-code-lines t
+        github-review-reply-inline-comments t))
 
 (map! :map forge-post-mode-map
       "C-c C-d" #'bk/post-draft-pull-request
