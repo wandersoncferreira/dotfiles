@@ -18,3 +18,9 @@
     (when (not (string-empty-p to-be-installed))
       (async-shell-command
        (format "brew install %s" to-be-installed)))))
+
+
+(when IS-MAC
+  (setq mac-command-modifier 'meta
+        mac-option-modifier 'hyper
+        alert-default-style 'osx-notifier))

@@ -2,10 +2,11 @@
 
 (setq doom-theme 'default-black
       doom-font (font-spec :family "Monaco" :size 14)
+      fill-column 180
       display-line-numbers-type nil
       confirm-kill-emacs nil
-      fill-column 180
-      indent-tabs-mode nil)
+      indent-tabs-mode nil
+      font-lock-maximum-decoration t)
 
 (when IS-LINUX
   (setq doom-font (font-spec :family "Source Code Pro" :size 15))
@@ -19,7 +20,6 @@
 (setq uniquify-buffer-name-style 'forward)
 
 ;; disable from doom
-(remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
 
 (add-hook 'emacs-lisp-mode-hook
@@ -66,9 +66,6 @@
    '(mode-line-mousable ((t (:background "Gray75" :foreground "firebrick"))))
    '(mode-line-mousable-minor-mode ((t (:background "Gray75" :foreground "green4"))))))
 
-(defun bk/organic-green-customizations ()
-  (setq organic-green-boldless t))
-
 (defun bk/toggle-transparency ()
   (interactive)
   (let ((alpha (frame-parameter nil 'alpha)))
@@ -80,6 +77,14 @@
               100)
          80
        100))))
+
+(defun bk/default-black-customizations ()
+  "Customizations to be used with default black theme in Doom Emacs"
+  (custom-set-faces
+   '(doom-modeline-buffer-path ((t (:foreground "black" :weight bold))))
+   '(doom-modeline-project-dir ((t (:foreground "black" :weight bold))))
+   '(doom-modeline-buffer-modified ((t (:foreground "Blue" :weight bold))))
+   '(success ((t (:foreground "ForestGreen" :weight bold))))))
 
 ;; control the modeline info
 (use-package! delight
@@ -97,6 +102,8 @@
              (ivy-mode nil ivy)
              (org-roam-mode nil org-roam)
              (git-gutter-mode nil git-gutter)
+             (volatile-highlights-mode nil volatile-highlights)
+             (yas-minor-mode nil yasnippet)
 
              ;; clojure
              (clj-refactor-mode nil clj-refactor)

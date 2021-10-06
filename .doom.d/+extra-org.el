@@ -1,15 +1,15 @@
 ;;; ../dotfiles/.doom.d/+extra-org.el -*- lexical-binding: t; -*-
 
-(remove-hook 'org-mode-hook #'org-superstar-mode)
+(setq org-return-follows-link t
+      org-directory "~/org/"
+      org-fontify-quote-and-verse-blocks nil
+      org-fontify-whole-heading-line nil
+      org-hide-leading-stars nil
+      org-startup-indented nil
+      org-agenda-files (list "~/agenda/todo.org"))
 
 (after! org
-  (setq org-return-follows-link t
-        org-directory "~/org/"
-        org-fontify-quote-and-verse-blocks nil
-        org-fontify-whole-heading-line nil
-        org-hide-leading-stars nil
-        org-startup-indented nil
-        org-agenda-files (list "~/agenda/todo.org"))
+  (remove-hook 'org-mode-hook #'org-superstar-mode)
 
   ;; fix shift+<cursor> movements
   ;; Make windmove work in Org mode:
@@ -18,27 +18,23 @@
   (add-hook 'org-shiftdown-final-hook 'windmove-down)
   (add-hook 'org-shiftright-final-hook 'windmove-right))
 
-(after! org-download
-  (setq org-download-method 'directory))
+(setq org-download-method 'directory)
+(setq org-roam-server-host "127.0.0.1"
+      org-roam-server-port 17042
+      org-roam-server-export-inline-images t)
 
 (after! org-roam-server
-  (setq org-roam-server-host "127.0.0.1"
-        org-roam-server-port 17042
-        org-roam-server-export-inline-images t)
   (require 'org-roam-protocol))
 
 ;;; blog
-(after! ox-hugo
-  (setq org-hugo-base-dir "~/wandersoncferreira.github.io"
-        org-hugo-section "items"
-        org-hugo-front-matter-format "yaml"))
-
+(setq org-hugo-base-dir "~/wandersoncferreira.github.io"
+      org-hugo-section "items"
+      org-hugo-front-matter-format "yaml")
 
 ;; zettelkasten
-(after! org-roam
-  (if IS-MAC
-      (setq org-roam-directory "/Users/wferreir/zettelkasten")
-    (setq org-roam-directory "/home/wanderson/zettelkasten")))
+(if IS-MAC
+    (setq org-roam-directory "/Users/wferreir/zettelkasten")
+  (setq org-roam-directory "/home/wanderson/zettelkasten"))
 
 ;; spaced-repetition
 (use-package org-fc
@@ -49,7 +45,6 @@
                '(security-cards . (:filter (tag "security"))))
   (add-to-list 'org-fc-custom-contexts
                '(comptia-QA . (:filter (tag "comptia-qa")))))
-
 
 ;; plantuml
 (require 'plantuml-mode)

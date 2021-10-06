@@ -6,11 +6,7 @@
 (set-register ?l '(file . "/Users/wferreir/ledger"))
 (set-register ?b '(file . "/Users/wferreir/dotfiles/macos/Brewfile"))
 
-(when IS-MAC
-  (setq mac-command-modifier 'meta
-        mac-option-modifier 'hyper))
-
-(map! "C-x C-m" #'counsel-M-x
+(map! "C-x C-m" #'execute-extended-command
 
       "C-x C-j" #'dired-jump
 

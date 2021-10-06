@@ -3,7 +3,11 @@
 (setq user-full-name "Wanderson Ferreira"
       user-mail-address "wand@hey.com"
       byte-compile-warnings '(cl-functions)
-      enable-local-variables t)
+      enable-local-variables t
+      load-prefer-newer t)
+
+;; disable persistent undo history
+(remove-hook 'undo-fu-mode-hook #'global-undo-fu-session-mode)
 
 ;; mode alist
 (add-to-list 'auto-mode-alist '("\\ledger\\'" . ledger-mode))
@@ -14,9 +18,6 @@
     (add-hook 'after-init-hook
               (lambda ()
                 (load-file fpath)))))
-
-(when IS-MAC
-  (setq alert-default-style 'osx-notifier))
 
 ;; scratch buffer
 (setq doom-scratch-initial-major-mode 'emacs-lisp-mode

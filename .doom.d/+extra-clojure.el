@@ -58,22 +58,22 @@
   (cider-nrepl-sync-request:eval
    "(load-file (str (System/getProperty \"user.home\") \"/.clojure/dev.clj\"))"))
 
-(after! cider
-  (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
-        cider-show-error-buffer t
-        cider-save-file-on-load t
-        cider-eldoc-display-for-symbol-at-point nil
-        cider-repl-use-pretty-printing nil
-        cider-redirect-server-output-to-repl t
-        clojure-toplevel-inside-comment-form t
-        cider-clojure-cli-command "/Users/wferreir/teste.sh"
-        ;; cider-clojure-cli-aliases "portal"
-        )
+(setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
+      cider-show-error-buffer t
+      cider-save-file-on-load t
+      cider-eldoc-display-for-symbol-at-point nil
+      cider-repl-use-pretty-printing nil
+      cider-redirect-server-output-to-repl t
+      clojure-toplevel-inside-comment-form t
+      cider-clojure-cli-command "/Users/wferreir/teste.sh"
+      ;; cider-clojure-cli-aliases "portal"
 
-  ;; (add-to-list 'cider-jack-in-nrepl-middlewares "vlaaad.reveal.nrepl/middleware")
+      cljr-injected-middleware-version "3.0.0-alpha13")
 
-  (set-popup-rule! "*cider-test-report*" :side 'right :width 0.4)
-  (set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
+;; (add-to-list 'cider-jack-in-nrepl-middlewares "vlaaad.reveal.nrepl/middleware")
 
-  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
-  (load! "+patch-cider"))
+(set-popup-rule! "*cider-test-report*" :side 'right :width 0.4)
+(set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
+
+(add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
+(load! "+patch-cider")

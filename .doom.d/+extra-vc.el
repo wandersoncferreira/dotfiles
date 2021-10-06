@@ -1,5 +1,13 @@
 ;;; ../dotfiles/.doom.d/+extra-vc.el -*- lexical-binding: t; -*-
 
+(setq magit-diff-refine-hunk t
+      magit-section-initial-visibility-alist
+      `((untracked . show)
+        (unstaged . show)
+        (unpushed . show)
+        (unpulled . show)
+        (stashes . show)))
+
 (require 'bug-reference-github)
 (add-hook 'prog-mode-hook 'bug-reference-github-set-url-format)
 
@@ -37,8 +45,9 @@
         (format "%s___%s___%s___%s.diff" .owner .repo .num .sha)
       (goto-char (point-min)))))
 
+(setq github-review-fetch-top-level-and-review-comments t)
+
 (after! github-review
-  (setq github-review-fetch-top-level-and-review-comments t)
   (advice-add 'github-review-save-diff :after 'github-review--after-save-diff))
 
 (use-package gh-notify
