@@ -10,6 +10,14 @@
 
       "C-x C-j" #'dired-jump
 
+      "C-c c SPC" #'rotate-layout
+
+      "C-:" #'avy-goto-char
+      "M-g w" #'avy-goto-word-1
+
+      ;; screencast
+      "<f9>" #'gif-screencast-start-or-stop
+
       ;; editor
       "M-p" #'jump-char-backward
       "M-n" #'jump-char-forward

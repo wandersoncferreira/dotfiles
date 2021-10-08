@@ -6,7 +6,9 @@
 (setq auth-source-debug t
       auth-sources '("~/.secrets/authinfo.gpg")
       epg-gpg-program "gpg"
-      org-tags-exclude-from-inheritance (quote ("crypt")))
+      org-tags-exclude-from-inheritance (quote ("crypt"))
+      auth-source-cache-expiry nil
+      password-cache-expiry nil)
 
 (epa-file-enable)
 (org-crypt-use-before-save-magic)

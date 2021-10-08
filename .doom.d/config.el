@@ -3,11 +3,24 @@
 (setq user-full-name "Wanderson Ferreira"
       user-mail-address "wand@hey.com"
       byte-compile-warnings '(cl-functions)
+      scroll-margin 2
       enable-local-variables t
       load-prefer-newer t)
 
 ;; disable persistent undo history
 (remove-hook 'undo-fu-mode-hook #'global-undo-fu-session-mode)
+
+;; use single abbrev-table for multiple modes
+(add-hook 'doom-first-buffer-hook
+          (defun +abbrev-file-name ()
+            (setq-default abbrev-mode t)
+            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
+
+;; screencast
+(after! gif-screencast
+  (setq gif-screencast-args '("-x")
+        gif-screencast-cropping-program "mogrify"
+        gif-screencast-capture-format "ppm"))
 
 ;; mode alist
 (add-to-list 'auto-mode-alist '("\\ledger\\'" . ledger-mode))

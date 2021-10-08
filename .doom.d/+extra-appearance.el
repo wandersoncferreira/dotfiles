@@ -86,6 +86,8 @@
    '(doom-modeline-buffer-modified ((t (:foreground "Blue" :weight bold))))
    '(success ((t (:foreground "ForestGreen" :weight bold))))))
 
+(bk/default-black-customizations)
+
 ;; control the modeline info
 (use-package! delight
   :config
@@ -104,6 +106,7 @@
              (git-gutter-mode nil git-gutter)
              (volatile-highlights-mode nil volatile-highlights)
              (yas-minor-mode nil yasnippet)
+             (abbrev-mode nil abbrev)
 
              ;; clojure
              (clj-refactor-mode nil clj-refactor)

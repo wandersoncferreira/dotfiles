@@ -19,6 +19,11 @@
 (package! ripgrep)
 (package! ag)
 (package! bug-reference-github)
+(package! rotate)
+
+;; demo emacs buffers
+(package! keycast)
+(package! gif-screencast)
 
 ;; support github-review
 (package! deferred)
