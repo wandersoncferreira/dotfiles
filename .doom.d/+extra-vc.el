@@ -59,14 +59,16 @@
   :load-path "~/.doom.d/sources/github-review"
   :config
   (setq github-review-view-comments-in-code-lines t
+        github-review-view-comments-in-code-lines-outdated t
         github-review-reply-inline-comments t))
 
-(map! :map forge-post-mode-map
+(map! "s-g" #'gh-notify
+
+      :map forge-post-mode-map
       "C-c C-d" #'bk/post-draft-pull-request
 
       :map diff-mode-map
-      "M-DEL" nil
       "C-c s" #'bk/github-review--copy-suggestion
 
       :map forge-topic-mode-map
-      "C-x r" #'github-review-forge-pr-at-point)
+      "C-c r" #'github-review-forge-pr-at-point)

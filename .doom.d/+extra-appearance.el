@@ -107,6 +107,8 @@
              (volatile-highlights-mode nil volatile-highlights)
              (yas-minor-mode nil yasnippet)
              (abbrev-mode nil abbrev)
+             (annotate-mode nil annotate)
+             (symbol-focus-mode nil symbol-focus)
 
              ;; clojure
              (clj-refactor-mode nil clj-refactor)

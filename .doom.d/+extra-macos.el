@@ -22,5 +22,5 @@
 
 (when IS-MAC
   (setq mac-command-modifier 'meta
-        mac-option-modifier 'hyper
+        mac-option-modifier '(:ordinary super :button 2)
         alert-default-style 'osx-notifier))

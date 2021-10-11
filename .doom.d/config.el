@@ -16,6 +16,13 @@
             (setq-default abbrev-mode t)
             (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
 
+;; view large files
+(use-package! vlf
+  :config
+  (require 'vlf-setup)
+  (custom-set-variables
+   '(vlf-application 'dont-ask)))
+
 ;; screencast
 (after! gif-screencast
   (setq gif-screencast-args '("-x")

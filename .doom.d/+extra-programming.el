@@ -16,3 +16,20 @@
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'"))
 
 (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers)))
+
+;; when you hit Ctrl+;, all occurrences of the symbol under the cursor (or
+;; current selection) are highlighted, and any changes you make on one of them
+;; will be automatically applied to all others.
+(use-package! iedit
+  :defer
+  :config
+  (set-face-background 'iedit-occurrence "saddle brown")
+  :bind
+  ("C-;" . iedit-mode))
+
+;; incredible small utility by Magnars
+;; symbol-focus allow us to easily edit pieces of code in isolation
+(use-package! symbol-focus
+  :load-path "~/.doom.d/sources/symbol-focus"
+  :config
+  (add-hook 'prog-mode-hook #'symbol-focus-mode))

@@ -35,6 +35,8 @@ brew "findutils"
 brew "cloc"
 brew "the_silver_searcher"
 brew "ripgrep"
+brew "imagemagick"
+brew "gifsicle"
 
 # gpg setup
 brew "gnupg"

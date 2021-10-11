@@ -20,6 +20,11 @@
 (package! ag)
 (package! bug-reference-github)
 (package! rotate)
+(package! switch-buffer-functions)
+(package! iedit)
+(package! unfill)
+(package! annotate)
+(package! vlf)
 
 ;; demo emacs buffers
 (package! keycast)
@@ -49,6 +54,7 @@
 ;; dired
 (package! diredfl :disable t)
 (package! dired-rsync :disable t)
+(package! diff-hl-dired :disable t)
 
 ;; vc
 (package! magit-gitflow :disable t)

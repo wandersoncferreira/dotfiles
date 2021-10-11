@@ -3,12 +3,18 @@
 (require 'epa-file)
 (require 'org-crypt)
 
-(setq auth-source-debug t
-      auth-sources '("~/.secrets/authinfo.gpg")
-      epg-gpg-program "gpg"
+(setq epg-gpg-program "gpg"
       org-tags-exclude-from-inheritance (quote ("crypt"))
-      auth-source-cache-expiry nil
       password-cache-expiry nil)
+
+(after! auth-source
+  (setq auth-sources (nreverse auth-sources)
+        auth-source-cache-expiry nil
+        auth-source-debug t))
+
+(after! epa
+  (set 'epg-pinentry-mode nil)
+  (setq epa-file-encrypt-to '("wand@hey.com")))
 
 (epa-file-enable)
 (org-crypt-use-before-save-magic)

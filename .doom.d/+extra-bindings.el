@@ -10,10 +10,10 @@
 
       "C-x C-j" #'dired-jump
 
+      ;; buffers
       "C-c c SPC" #'rotate-layout
-
-      "C-:" #'avy-goto-char
-      "M-g w" #'avy-goto-word-1
+      "C-x b" #'counsel-switch-buffer
+      "C-x C-b" #'counsel-buffer-or-recentf
 
       ;; screencast
       "<f9>" #'gif-screencast-start-or-stop
@@ -36,6 +36,8 @@
 
       ;; movement
       "C-x p" #'pop-to-mark-command
+      "C-:" #'avy-goto-char
+      "M-g w" #'avy-goto-word-1
 
       ;; completion
       "C-." #'completion-at-point
@@ -44,16 +46,35 @@
       "<f12>" #'pomidor
 
       ;; tests
-      "H-t" #'projectile-toggle-between-implementation-and-test
+      "s-t" #'projectile-toggle-between-implementation-and-test
       )
+
+;; undo - map a separate "redo" action to Emacs
+(after! undo-fu
+  (map! :map undo-fu-mode-map
+        "C-?" #'undo-fu-only-redo))
 
 ;; clojure
 (map! :map clojure-mode-map
-
       ;; tests
       "C-c k t" #'kaocha-runner-run-test-at-point
       "C-c k r" #'kaocha-runner-run-tests
       "C-c k a" #'kaocha-runner-run-all-tests
       "C-c k w" #'kaocha-runner-show-warnings
-      "C-c k h" #'kaocha-runner-hide-windows
-      )
+      "C-c k h" #'kaocha-runner-hide-windows)
+
+;; useful functions
+(after! prog-mode
+  (map! :map prog-mode-map "C-h C-f" #'find-function-at-point)
+  (map! :map prog-mode-map
+        :localleader
+        :desc "Find function at point"
+        "g p" #'find-function-at-point))
+
+
+;; symbol focus bindings
+(map! :map symbol-focus-mode-map
+      "C-s-b" #'sf/back
+      "C-s-n" #'sf/next
+      "C-s-p" #'sf/prev
+      "C-s-r" #'sf/reset)
