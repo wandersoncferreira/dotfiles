@@ -1,13 +1,15 @@
 ;;; ../dotfiles/.doom.d/+extra-clojure.el -*- lexical-binding: t; -*-
 
-
-(after! clojure-mode
+(use-package! clojure-mode
+  :init
+  (setq clojure-thread-all-but-last t)
+  :config
   (cljr-add-keybindings-with-prefix "C-c C-m")
   (add-hook! 'clojure-mode-hook (enable-paredit-mode))
-  (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode)
+  (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
 
-  (when IS-MAC
-    (setq lsp-clojure-server-command "/opt/homebrew/bin/clojure-lsp")))
+(when IS-MAC
+  (setq lsp-clojure-server-command "/opt/homebrew/bin/clojure-lsp"))
 
 (defun bk/sync-eval-to-string (s)
   "Execute clojure code S and return the result as string"
@@ -58,26 +60,34 @@
   (cider-nrepl-sync-request:eval
    "(load-file (str (System/getProperty \"user.home\") \"/.clojure/dev.clj\"))"))
 
-(setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
-      cider-show-error-buffer t
-      cider-save-file-on-load t
-      cider-eldoc-display-for-symbol-at-point nil
-      cider-repl-use-pretty-printing nil
-      cider-redirect-server-output-to-repl t
-      clojure-toplevel-inside-comment-form t
-      cider-clojure-cli-command "/Users/wferreir/teste.sh"
-      ;; cider-clojure-cli-aliases "portal"
+(use-package! cider
+  :after clojure-mode
+  :init
+  (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
+        cider-show-error-buffer t
+        cider-save-file-on-load t
+        cider-eldoc-display-for-symbol-at-point nil
+        cider-repl-use-pretty-printing nil
+        cider-redirect-server-output-to-repl t
+        clojure-toplevel-inside-comment-form t
+        cider-clojure-cli-command "/Users/wferreir/teste.sh"
+        ;; cider-clojure-cli-aliases "portal"
 
-      cljr-injected-middleware-version "3.0.0-alpha13")
+        cljr-injected-middleware-version "3.0.0-alpha13")
+  :config
 
-;; (add-to-list 'cider-jack-in-nrepl-middlewares "vlaaad.reveal.nrepl/middleware")
+  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
 
-(set-popup-rule! "*cider-test-report*" :side 'right :width 0.4)
-(set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
+  (load! "+patch-cider"))
 
-(add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
-(load! "+patch-cider")
+(use-package! clj-refactor
+  :after clojure-mode
+  :config
+  (setq cljr-warn-on-eval nil))
 
 (after! lsp-mode
   (setq lsp-completion-enable nil
         lsp-enable-indentation nil))
+
+;; run `dash-docs-install-docset' to get it if new installation
+(set-docsets! 'clojure-mode "Clojure")

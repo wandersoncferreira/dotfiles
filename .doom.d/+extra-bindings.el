@@ -6,50 +6,54 @@
 (set-register ?l '(file . "/Users/wferreir/ledger"))
 (set-register ?b '(file . "/Users/wferreir/dotfiles/macos/Brewfile"))
 
-(map! "C-x C-m" #'execute-extended-command
+(map! "C-x p" nil) ;; I really need pop-to-mark here
 
-      "C-x C-j" #'dired-jump
+(map!
+ ;; C-x keys
+ "C-x 2" #'bk/vsplit-last-buffer
+ "C-x 3" #'bk/hsplit-last-buffer
+ "C-x b" #'+ivy/switch-workspace-buffer
+ "C-x p" #'pop-to-mark-command
+ "C-x k" #'kill-this-buffer
+ "C-x C-b" #'+ivy/switch-buffer
+ "C-x C-m" #'execute-extended-command
+ "C-x C-j" #'dired-jump
 
-      ;; buffers
-      "C-c c SPC" #'rotate-layout
-      "C-x b" #'+ivy/switch-workspace-buffer
-      "C-c b" #'+ivy/switch-workspace-buffer-other-window
-      "C-x C-b" #'+ivy/switch-buffer
-      "C-c C-b" #'+ivy/switch-buffer-other-window
+ ;; super keys
+ "s-t" #'projectile-toggle-between-implementation-and-test
+ "s-'" #'cycle-quotes
+ "s-s" #'deadgrep
+ "s-p" #'popper-toggle-latest
+ "s-P" #'popper-cycle
 
-      ;; screencast
-      "<f9>" #'gif-screencast-start-or-stop
+ ;; F-* keys
+ "<f5>" #'deadgrep
+ "<f9>" #'gif-screencast-start-or-stop
+ "<f12>" #'pomidor
 
-      ;; editor
-      "M-p" #'jump-char-backward
-      "M-n" #'jump-char-forward
-      "M-i" #'change-inner
-      "M-u" #'fix-word-upcase
-      "M-l" #'fix-word-downcase
-      "M-c" #'fix-word-capitalize
-      "C-<up>" #'move-text-up
-      "C-<down>" #'move-text-down
-      "C-c d" #'crux-duplicate-current-line-or-region
+ ;; C-c keys
+ "C-c b" #'+ivy/switch-workspace-buffer-other-window
+ "C-c d" #'crux-duplicate-current-line-or-region
+ "C-c c SPC" #'rotate-layout
+ "C-c C-b" #'+ivy/switch-buffer-other-window
 
-      ;; window
-      "C-x 3" #'bk/hsplit-last-buffer
-      "C-x 2" #'bk/vsplit-last-buffer
-      "C-x k" #'kill-this-buffer
+ ;; editor
+ "M-p" #'jump-char-backward
+ "M-n" #'jump-char-forward
+ "M-i" #'change-inner
+ "M-u" #'fix-word-upcase
+ "M-l" #'fix-word-downcase
+ "M-c" #'fix-word-capitalize
+ "C-<up>" #'move-text-up
+ "C-<down>" #'move-text-down
 
-      ;; movement
-      "C-x p" #'pop-to-mark-command
-      "C-:" #'avy-goto-char
-      "M-g w" #'avy-goto-word-1
+ ;; movement
+ "C-:" #'avy-goto-char
+ "M-g w" #'avy-goto-word-1
 
-      ;; completion
-      "C-." #'completion-at-point
-
-      ;; pomidor
-      "<f12>" #'pomidor
-
-      ;; tests
-      "s-t" #'projectile-toggle-between-implementation-and-test
-      )
+ ;; completion
+ "C-." #'completion-at-point
+ )
 
 ;; undo - map a separate "redo" action to Emacs
 (after! undo-fu

@@ -19,12 +19,6 @@
   (add-hook 'org-shiftright-final-hook 'windmove-right))
 
 (setq org-download-method 'directory)
-(setq org-roam-server-host "127.0.0.1"
-      org-roam-server-port 17042
-      org-roam-server-export-inline-images t)
-
-(after! org-roam-server
-  (require 'org-roam-protocol))
 
 ;;; blog
 (setq org-hugo-base-dir "~/wandersoncferreira.github.io"
@@ -33,7 +27,7 @@
 
 ;; zettelkasten
 (if IS-MAC
-    (setq org-roam-directory "/Users/wferreir/zettelkasten")
+    (setq org-roam-directory "/Users/wferreir/roam-v2")
   (setq org-roam-directory "/home/wanderson/zettelkasten"))
 
 ;; spaced-repetition

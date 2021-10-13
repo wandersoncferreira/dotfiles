@@ -2,11 +2,11 @@
 
 (setq doom-theme 'default-black
       doom-font (font-spec :family "Monaco" :size 14)
+      doom-themes-treemacs-theme "all-the-icons"
       fill-column 180
       display-line-numbers-type nil
       confirm-kill-emacs nil
-      indent-tabs-mode nil
-      font-lock-maximum-decoration t)
+      indent-tabs-mode nil)
 
 (when IS-LINUX
   (setq doom-font (font-spec :family "Source Code Pro" :size 15))
@@ -113,3 +113,6 @@
              ;; clojure
              (clj-refactor-mode nil clj-refactor)
              (dtrt-indent-mode nil dtrt-indent))))
+
+(use-package! projectile
+  :delight '(:eval (format " P[%s]" (projectile-project-name))))

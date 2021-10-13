@@ -1,53 +1,59 @@
 ;; -*- no-byte-compile: t; -*-
 ;;; $DOOMDIR/packages.el
 
+(package! pinentry)
+(package! nov)
+(package! uuidgen)
+(package! kaocha-runner)
+(package! crux)
+(package! vlf)
+
+;; apps
+(package! pomidor)
+(package! annotate)
+
+;; search
+(package! ripgrep)
+(package! ag)
+(package! deadgrep)
+
+;; editor & movement
 (package! paredit)
 (package! change-inner)
 (package! jump-char)
-(package! fix-word)
-(package! pinentry)
-(package! move-text)
-(package! nov)
-(package! uuidgen)
-(package! windresize)
-(package! webpaste)
-(package! org-roam-server)
-(package! kaocha-runner)
-(package! crux)
-(package! delight)
-(package! pomidor)
-(package! ripgrep)
-(package! ag)
-(package! bug-reference-github)
-(package! rotate)
-(package! switch-buffer-functions)
 (package! iedit)
 (package! unfill)
-(package! annotate)
-(package! vlf)
+(package! fix-word)
+(package! move-text)
+(package! cycle-quotes)
+
+;; window & buffers
+(package! rotate)
+(package! switch-buffer-functions)
+(package! windresize)
+(package! popper)
+
+;; network
+(package! httprepl)
+(package! webpaste)
+
+;; macos
+(package! counsel-osx-app)
 
 ;; demo emacs buffers
 (package! keycast)
 (package! gif-screencast)
 
-;; support github-review
-(package! deferred)
-(package! a)
-
-;; themes
+;; ui
+(package! solaire-mode :disable t) ;; makes non-file-visiting buffers darker than the rest of the Emacs' frame
+(package! delight)
 (package! alect-themes)
 (package! sublime-themes)
 (package! spacemacs-theme)
 (package! color-theme-modern)
+(package! treemacs-all-the-icons)
 
-;;; disable packages
-
-;; ui
-
-;; makes non-file-visiting buffers darker than the rest of the Emacs' frame. Disabled.
-(package! solaire-mode :disable t)
-
-;; ivy
+;; completion
 (package! ivy-rich :disable t)
 (package! ivy-hydra :disable t)
 
@@ -55,20 +61,29 @@
 (package! diredfl :disable t)
 
 ;; vc
+(package! bug-reference-github)
 (package! magit-gitflow :disable t)
 (package! magit-todos :disable t)
-
-;; preference to my own fork
-(package! github-review :disable t)
+(package! github-review :disable t) ;; preference to my own fork
 
 ;; lookup
 (package! request :disable t)
 
-;;; unpin
+;; unpin
 (unpin! cider)
 (unpin! clojure-mode)
 (unpin! clj-refactor)
+(unpin! parseclj)
+(unpin! treemacs)
 (unpin! magit forge)
+(unpin! lsp-mode
+        lsp-treemacs
+        lsp-mode
+        lsp-ui)
 
-;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
-(package! map :pin "bb50dba")
+;; pin
+(package! map :pin "bb50dba") ;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
+
+;; transitive dependencies
+(package! deferred) ;; support github-review
+(package! a) ;; support github-review

@@ -1,29 +1,41 @@
 ;;; ../dotfiles/.doom.d/+extra-programming.el -*- lexical-binding: t; -*-
 
-(set-company-backend! 'prog-mode nil)
-(set-company-backend! 'prog-mode
-  '(:separate company-capf company-files company-dabbrev-code company-yasnippet))
+(use-package! company
+  :init
+  (setq company-idle-delay 0.1
+        company-show-quick-access t
+        company-icon-size 20)
+  :config
+  (set-company-backend! 'prog-mode nil)
+  (set-company-backend! 'prog-mode
+    '(:separate company-capf company-files company-dabbrev-code company-yasnippet)))
 
-(setq company-idle-delay 0.1)
-
-(after! lsp-mode
+(use-package! lsp-mode
+  :init
   (setq lsp-enable-file-watchers t
-        lsp-ui-sideline-show-code-actions nil
         lsp-enable-symbol-highlighting t
         lsp-eldoc-enable-hover t
-        lsp-ui-sideline-show-diagnostics t
+        lsp-lens-enable t
         lsp-idle-delay 0.1
-        lsp-headerline-breadcrumb-enable nil))
-
-(after! lsp-mode
+        lsp-headerline-breadcrumb-enable nil)
+  :config
   (add-to-list 'lsp-file-watch-ignored-directories "classes")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\minio\\'")
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'"))
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'")
 
-(add-hook! 'lsp-before-open-hook
-  (remove-hook! 'lsp-completion-mode-hook #'+lsp-init-company-backends-h))
+  (add-hook! 'lsp-before-open-hook
+    (remove-hook! 'lsp-completion-mode-hook #'+lsp-init-company-backends-h))
 
-(advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers)))
+  (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers))))
+
+(use-package! lsp-ui
+  :after lsp-mode
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-doc-max-width 60
+        lsp-ui-peek-list-width 60
+        lsp-ui-peek-fontify 'always
+        lsp-ui-sideline-show-code-actions nil))
 
 ;; when you hit Ctrl+;, all occurrences of the symbol under the cursor (or
 ;; current selection) are highlighted, and any changes you make on one of them
@@ -41,3 +53,14 @@
   :load-path "~/.doom.d/sources/symbol-focus"
   :config
   (add-hook 'prog-mode-hook #'symbol-focus-mode))
+
+(use-package! annotate
+  :config
+  (add-hook 'prog-mode-hook #'annotate-mode))
+
+(use-package! lsp-treemacs
+  :config
+  (setq lsp-treemacs-error-list-current-project-only t))
+
+(use-package! treemacs-all-the-icons
+  :after treemacs)
