@@ -21,4 +21,5 @@
                 (when (string-equal (projectile-project-name) worktree-name)
                   (kill-buffer buffer)))))
           (buffer-list))
+    (projectile-remove-current-project-from-known-projects)
     (magit-worktree-delete worktree)))

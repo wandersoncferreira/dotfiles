@@ -12,8 +12,10 @@
 
       ;; buffers
       "C-c c SPC" #'rotate-layout
-      "C-x b" #'counsel-switch-buffer
-      "C-x C-b" #'counsel-buffer-or-recentf
+      "C-x b" #'+ivy/switch-workspace-buffer
+      "C-c b" #'+ivy/switch-workspace-buffer-other-window
+      "C-x C-b" #'+ivy/switch-buffer
+      "C-c C-b" #'+ivy/switch-buffer-other-window
 
       ;; screencast
       "<f9>" #'gif-screencast-start-or-stop

@@ -77,3 +77,7 @@
 
 (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
 (load! "+patch-cider")
+
+(after! lsp-mode
+  (setq lsp-completion-enable nil
+        lsp-enable-indentation nil))

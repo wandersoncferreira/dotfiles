@@ -53,8 +53,6 @@
 
 ;; dired
 (package! diredfl :disable t)
-(package! dired-rsync :disable t)
-(package! diff-hl-dired :disable t)
 
 ;; vc
 (package! magit-gitflow :disable t)
@@ -70,7 +68,7 @@
 (unpin! cider)
 (unpin! clojure-mode)
 (unpin! clj-refactor)
-(unpin! magit magit-todos forge)
+(unpin! magit forge)
 
 ;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
 (package! map :pin "bb50dba")
