@@ -76,9 +76,7 @@
         cljr-injected-middleware-version "3.0.0-alpha13")
   :config
 
-  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
-
-  (load! "+patch-cider"))
+  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines))
 
 (use-package! clj-refactor
   :after clojure-mode

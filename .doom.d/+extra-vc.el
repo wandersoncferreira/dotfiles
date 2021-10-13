@@ -27,29 +27,6 @@
      (signal (car err) (cdr err))))
   (advice-remove 'forge--topic-parse-buffer #'bk/forge--add-draft))
 
-(defun bk/github-review--copy-suggestion ()
-  "Kill a region of diff+ as a review suggestion template."
-  (interactive)
-  (setq deactivate-mark t)
-  (let ((s-region
-         (buffer-substring-no-properties
-          (region-beginning)
-          (region-end))))
-    (kill-new
-     (format "# ```suggestion\n%s\n# ```\n"
-             (replace-regexp-in-string "^\\+" "# " s-region)))))
-
-(defun github-review--after-save-diff (pr-alist _diff)
-  (let-alist pr-alist
-    (with-current-buffer
-        (format "%s___%s___%s___%s.diff" .owner .repo .num .sha)
-      (goto-char (point-min)))))
-
-(setq github-review-fetch-top-level-and-review-comments t)
-
-(after! github-review
-  (advice-add 'github-review-save-diff :after 'github-review--after-save-diff))
-
 (use-package gh-notify
   :load-path "~/.doom.d/sources/gh-notify"
   :config

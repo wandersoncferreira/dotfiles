@@ -68,7 +68,6 @@
 (load! "+extra-spell")
 (load! "+extra-eshell")
 (load! "+extra-workspaces")
-(load! "+extra-search")
 
 ;; os
 (load! "+extra-macos")
@@ -90,3 +89,8 @@
 (load! "+work-reifyhealth")
 (load! "+work-appsauce")
 (bk/load-gpg-file "+work-cisco")
+
+;; patches
+(load! "+patch-deadgrep")
+(load! "+patch-counsel")
+(load! "+patch-cider")

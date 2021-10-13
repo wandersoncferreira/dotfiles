@@ -33,7 +33,7 @@
 ;; spaced-repetition
 (use-package org-fc
   :load-path "~/.doom.d/sources/org-fc"
-  :custom (org-fc-directories '("~/zettelkasten"))
+  :custom (org-fc-directories '("~/roam-v2"))
   :config
   (add-to-list 'org-fc-custom-contexts
                '(security-cards . (:filter (tag "security"))))

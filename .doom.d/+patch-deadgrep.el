@@ -1,4 +1,4 @@
-;;; ../dotfiles/.doom.d/+extra-search.el -*- lexical-binding: t; -*-
+;;; ../dotfiles/.doom.d/+patch-deadgrep.el -*- lexical-binding: t; -*-
 
 (require 'deadgrep)
 
