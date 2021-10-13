@@ -66,6 +66,7 @@ cask "mactex-no-gui"
 cask "kindle"
 cask "wireshark"
 cask "zulip"
+cask "dash"
 
 # * emacs
 tap "railwaycat/emacsmacport"
