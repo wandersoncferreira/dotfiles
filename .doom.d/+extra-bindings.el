@@ -23,6 +23,7 @@
  "s-t" #'projectile-toggle-between-implementation-and-test
  "s-'" #'cycle-quotes
  "s-s" #'deadgrep
+ "s-g" #'gh-notify
  "s-p" #'+popup/toggle
 
  ;; F-* keys
@@ -78,3 +79,13 @@
       "C-s-n" #'sf/next
       "C-s-p" #'sf/prev
       "C-s-r" #'sf/reset)
+
+;; vc functions
+(map! :map forge-post-mode-map
+      "C-c C-d" #'bk/post-draft-pull-request
+
+      :map diff-mode-map
+      "C-c s" #'bk/github-review--copy-suggestion
+
+      :map forge-topic-mode-map
+      "C-c r" #'github-review-forge-pr-at-point)
