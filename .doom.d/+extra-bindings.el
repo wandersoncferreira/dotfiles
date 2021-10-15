@@ -54,11 +54,6 @@
  "C-." #'completion-at-point
  )
 
-;; undo - map a separate "redo" action to Emacs
-(after! undo-fu
-  (map! :map undo-fu-mode-map
-        "C-?" #'undo-fu-only-redo))
-
 ;; clojure
 (map! :map clojure-mode-map
       ;; tests
