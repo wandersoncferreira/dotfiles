@@ -54,10 +54,6 @@
   :config
   (add-hook 'prog-mode-hook #'symbol-focus-mode))
 
-(use-package! annotate
-  :config
-  (add-hook 'prog-mode-hook #'annotate-mode))
-
 (use-package! lsp-treemacs
   :config
   (setq lsp-treemacs-error-list-current-project-only t))

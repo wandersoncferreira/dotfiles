@@ -23,8 +23,7 @@
  "s-t" #'projectile-toggle-between-implementation-and-test
  "s-'" #'cycle-quotes
  "s-s" #'deadgrep
- "s-p" #'popper-toggle-latest
- "s-P" #'popper-cycle
+ "s-p" #'+popup/toggle
 
  ;; F-* keys
  "<f5>" #'deadgrep

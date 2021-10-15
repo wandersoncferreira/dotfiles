@@ -27,17 +27,3 @@
          (recentf-add-file buffer-file-name)))
   :init
   (add-hook 'switch-buffer-functions #'my-recentf-track-visited-file))
-
-;; tame the buffers!
-(use-package! popper
-  :init
-  (setq popper-reference-buffers
-        '("\\*Messages\\*"
-          ("\\*Async Shell Command\\*" . hide)
-          help-mode
-          (eshell-mode . hide)
-          cider-repl-mode)
-        popper-group-function #'popper-group-by-projectile)
-  :config
-  (popper-mode +1)
-  (popper-echo-mode +1))
