@@ -7,6 +7,7 @@
 (package! kaocha-runner)
 (package! crux)
 (package! vlf)
+(package! inflections)
 
 ;; apps
 (package! pomidor)
@@ -51,6 +52,7 @@
 (package! spacemacs-theme)
 (package! color-theme-modern)
 (package! treemacs-all-the-icons)
+(package! ivy-posframe)
 
 ;; completion
 (package! ivy-rich :disable t)

@@ -33,6 +33,8 @@
   :commands lsp-ui-mode
   :config
   (setq lsp-ui-doc-max-width 60
+        lsp-ui-doc-position 'top
+        lsp-ui-doc-delay 0.2
         lsp-ui-peek-list-width 60
         lsp-ui-peek-fontify 'always
         lsp-ui-sideline-show-code-actions nil))
@@ -60,3 +62,8 @@
 
 (use-package! treemacs-all-the-icons
   :after treemacs)
+
+(use-package! hungry-delete
+  :delight hungry-delete-mode
+  :config
+  (global-hungry-delete-mode))

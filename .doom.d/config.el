@@ -14,9 +14,6 @@
       projectile-enable-caching nil
       projectile-project-search-path '("~/code"))
 
-;; disable persistent undo history
-(remove-hook 'undo-fu-mode-hook #'global-undo-fu-session-mode)
-
 ;; use single abbrev-table for multiple modes
 (add-hook 'doom-first-buffer-hook
           (defun +abbrev-file-name ()
@@ -94,3 +91,5 @@
 (load! "+patch-deadgrep")
 (load! "+patch-counsel")
 (load! "+patch-cider")
+(load! "+patch-persp")
+(load! "+patch-ivy-posframe")

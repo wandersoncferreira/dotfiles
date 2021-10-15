@@ -1,14 +1,15 @@
 ;;; ../dotfiles/.doom.d/+extra-org.el -*- lexical-binding: t; -*-
 
-(setq org-return-follows-link t
-      org-directory "~/org/"
-      org-fontify-quote-and-verse-blocks nil
-      org-fontify-whole-heading-line nil
-      org-hide-leading-stars nil
-      org-startup-indented nil
-      org-agenda-files (list "~/agenda/todo.org"))
-
-(after! org
+(use-package! org
+  :init
+  (setq org-return-follows-link t
+        org-directory "~/org/"
+        org-fontify-quote-and-verse-blocks nil
+        org-fontify-whole-heading-line nil
+        org-hide-leading-stars nil
+        org-startup-indented nil
+        org-agenda-files (list "~/agenda/todo.org"))
+  :config
   (remove-hook 'org-mode-hook #'org-superstar-mode)
 
   ;; fix shift+<cursor> movements
