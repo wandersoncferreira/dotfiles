@@ -1,6 +1,6 @@
 ;;; ../dotfiles/.doom.d/+extra-appearance.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'default-black
+(setq doom-theme 'doom-solarized-white
       doom-font (font-spec :family "Monaco" :size 14)
       doom-themes-treemacs-theme "all-the-icons"
       fill-column 180
@@ -20,6 +20,7 @@
 (setq uniquify-buffer-name-style 'forward)
 
 ;; disable from doom
+(remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
 
 (add-hook 'emacs-lisp-mode-hook
@@ -86,8 +87,6 @@
    '(doom-modeline-buffer-modified ((t (:foreground "Blue" :weight bold))))
    '(success ((t (:foreground "ForestGreen" :weight bold))))))
 
-(bk/default-black-customizations)
-
 ;; control the modeline info
 (use-package! delight
   :config
@@ -109,10 +108,11 @@
              (abbrev-mode nil abbrev)
              (annotate-mode nil annotate)
              (symbol-focus-mode nil symbol-focus)
+             (lsp-lens-mode nil lsp-lens)
 
              ;; clojure
              (clj-refactor-mode nil clj-refactor)
              (dtrt-indent-mode nil dtrt-indent))))
 
 (use-package! projectile
-  :delight '(:eval (format " P[%s]" (projectile-project-name))))
+  :delight projectile-mode)
