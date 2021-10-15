@@ -26,12 +26,12 @@
 (package! fix-word)
 (package! move-text)
 (package! cycle-quotes)
+(package! hungry-delete)
 
 ;; window & buffers
 (package! rotate)
 (package! switch-buffer-functions)
 (package! windresize)
-(package! popper)
 
 ;; network
 (package! httprepl)
@@ -45,7 +45,6 @@
 (package! gif-screencast)
 
 ;; ui
-(package! solaire-mode :disable t) ;; makes non-file-visiting buffers darker than the rest of the Emacs' frame
 (package! delight)
 (package! alect-themes)
 (package! sublime-themes)
