@@ -70,12 +70,14 @@
         cider-repl-use-pretty-printing nil
         cider-redirect-server-output-to-repl t
         clojure-toplevel-inside-comment-form t
-        cider-clojure-cli-command "/Users/wferreir/teste.sh"
+        cider-clojure-cli-command "~/dotfiles/clojure/clojure-bin-enriched"
         ;; cider-clojure-cli-aliases "portal"
 
         cljr-injected-middleware-version "3.0.0-alpha13")
   :config
 
+  (set-popup-rule! "*cider-test-report*" :side 'right :width 0.5)
+  (set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
   (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines))
 
 (use-package! clj-refactor
@@ -89,3 +91,15 @@
 
 ;; run `dash-docs-install-docset' to get it if new installation
 (set-docsets! 'clojure-mode "Clojure")
+
+;; include cider buffer into current workspace
+(add-hook 'cider-repl-mode-hook
+          (lambda ()
+            (persp-add-buffer (current-buffer) (get-current-persp)
+                              nil nil)))
+
+;; include test report buffer to current perspective too
+(add-hook 'cider-test-report-mode-hook
+          (lambda ()
+            (persp-add-buffer (current-buffer) (get-current-persp)
+                              nil nil)))
