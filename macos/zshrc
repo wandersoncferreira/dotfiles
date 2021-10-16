@@ -18,6 +18,9 @@ alias java-create-project="mvn archetype:generate"
 export PATH="/Users/wferreir/.gem/ruby/2.6.0/bin:$PATH"
 export PATH="$HOME/.jenv/bin:$PATH"
 
+# make doom emacs available anywhere
+export PATH="$HOME/.emacs.d/bin:$PATH"
+
 export LDFLAGS="-L/opt/homebrew/opt/node@14/lib"
 export CPPFLAGS="-I/opt/homebrew/opt/node@14/include"
 

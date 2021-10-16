@@ -37,6 +37,7 @@ brew "the_silver_searcher"
 brew "ripgrep"
 brew "imagemagick"
 brew "gifsicle"
+brew "cmake"
 
 # gpg setup
 brew "gnupg"
