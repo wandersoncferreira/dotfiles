@@ -8,9 +8,6 @@
   (add-hook! 'clojure-mode-hook (enable-paredit-mode))
   (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
 
-(when IS-MAC
-  (setq lsp-clojure-server-command "/opt/homebrew/bin/clojure-lsp"))
-
 (defun bk/sync-eval-to-string (s)
   "Execute clojure code S and return the result as string"
   (let* ((x (concat "(do (clojure.core/in-ns '"
@@ -87,7 +84,9 @@
 
 (after! lsp-mode
   (setq lsp-completion-enable nil
-        lsp-enable-indentation nil))
+        lsp-enable-indentation nil)
+  (when IS-MAC
+    (setq lsp-clojure-server-command "/opt/homebrew/bin/clojure-lsp")))
 
 ;; run `dash-docs-install-docset' to get it if new installation
 (set-docsets! 'clojure-mode "Clojure")

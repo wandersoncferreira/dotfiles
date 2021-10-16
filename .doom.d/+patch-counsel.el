@@ -18,5 +18,6 @@
                      (member f buffers))
                    (counsel-recentf-candidates)))))
 
-(advice-add #'counsel-buffer-or-recentf-candidates
-            :override #'zz/counsel-buffer-or-recentf-candidates)
+(after! counsel
+  (advice-add #'counsel-buffer-or-recentf-candidates
+              :override #'zz/counsel-buffer-or-recentf-candidates))

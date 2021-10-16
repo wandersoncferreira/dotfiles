@@ -1,5 +1,8 @@
 ;;; +extra-ledger.el -*- lexical-binding: t; -*-
 
+;; mode alist
+(add-to-list 'auto-mode-alist '("\\ledger\\'" . ledger-mode))
+
 (defun bk/copy-ledger-entry ()
   "Copy last ledger entry."
   (interactive)

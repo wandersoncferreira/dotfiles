@@ -89,3 +89,6 @@
 
       :map forge-topic-mode-map
       "C-c r" #'github-review-forge-pr-at-point)
+
+;; enable command
+(put 'narrow-to-region 'disabled nil)

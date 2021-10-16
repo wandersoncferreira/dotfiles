@@ -1,8 +1,5 @@
 ;;; ../dotfiles/.doom.d/+extra-eshell.el -*- lexical-binding: t; -*-
 
-;;; startup
-(add-hook 'emacs-startup-hook 'eshell)
-
 ;;; alaises
 (require 'em-alias)
 (add-hook 'eshell-mode-hook
