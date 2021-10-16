@@ -13,3 +13,7 @@
   (setq gif-screencast-args '("-x")
         gif-screencast-cropping-program "mogrify"
         gif-screencast-capture-format "ppm"))
+
+(use-package! plantuml-mode
+  :config
+  (setq plantuml-jar-path "~/dotfiles/plantuml.jar"))

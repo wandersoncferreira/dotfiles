@@ -5,7 +5,6 @@
   (setq clojure-thread-all-but-last t)
   :config
   (cljr-add-keybindings-with-prefix "C-c C-m")
-  (add-hook! 'clojure-mode-hook (enable-paredit-mode))
   (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
 
 (defun bk/sync-eval-to-string (s)
@@ -102,3 +101,13 @@
           (lambda ()
             (persp-add-buffer (current-buffer) (get-current-persp)
                               nil nil)))
+
+;;; extra feedback when cider is not connected
+(defun bk/nrepl-warn-when-not-connected ()
+  (interactive)
+  (message "Oops! You'are not connected to an nREPL server."))
+
+(map! :map clojure-mode-map
+      "C-x C-e" #'bk/nrepl-warn-when-not-connected
+      "C-c C-k" #'bk/nrepl-warn-when-not-connected
+      "C-c C-z" #'bk/nrepl-warn-when-not-connected)

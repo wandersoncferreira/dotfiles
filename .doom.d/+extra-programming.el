@@ -66,4 +66,4 @@
 (use-package! hungry-delete
   :delight hungry-delete-mode
   :config
-  (global-hungry-delete-mode))
+  (add-hook 'prog-mode-hook 'hungry-delete-mode))

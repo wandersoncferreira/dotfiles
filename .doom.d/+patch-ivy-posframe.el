@@ -8,6 +8,7 @@
 
 (use-package! ivy-posframe
   :delight
+  :after ivy-mode
   :hook (ivy-mode . ivy-posframe-mode)
   :init
   (setq ivy-fixed-height-minibuffer nil

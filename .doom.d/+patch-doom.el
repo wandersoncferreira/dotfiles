@@ -1,7 +1,7 @@
 ;;; ../dotfiles/.doom.d/+patch-doom.el -*- lexical-binding: t; -*-
 
 ;; I want to overwrite the load! macro to take GPG files into account
-(defmacro load! (filename &optional path noerror gpg?)
+(defmacro load! (filename &optional path noerror)
   "Load a file relative to the current executing file (`load-file-name').
 
 FILENAME is either a file path string or a form that should evaluate to such a
@@ -16,14 +16,13 @@ If NOERROR is non-nil, don't throw an error if the file doesn't exist."
                           filename)))
          (file (if path
                    `(expand-file-name ,filename ,path)
-                 filename))
-         (file (if gpg?
-                   `(concat ,file ".el.gpg")
-                 file)))
-    `(condition-case-unless-debug e
-         (if ,gpg?
-             (load-file ,file)
+                 filename)))
+    `(if (string-match-p ".gpg$" ,file)
+         (add-hook 'after-init-hook (lambda
+                                      (let (file-name-handler-alist)
+                                        (load-file ,file))))
+       (condition-case-unless-debug e
            (let (file-name-handler-alist)
-             (load ,file ,noerror 'nomessage)))
-       (doom-error (signal (car e) (cdr e)))
-       (error (doom--handle-load-error e ,file ,path)))))
+             (load ,file ,noerror 'nomessage))
+         (doom-error (signal (car e) (cdr e)))
+         (error (doom--handle-load-error e ,file ,path))))))

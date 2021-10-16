@@ -39,4 +39,4 @@
 ;; work
 (load! "+work-reifyhealth")
 (load! "+work-appsauce")
-(load! "+work-cisco" nil nil t)
+(load! "+work-cisco.el.gpg")

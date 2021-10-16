@@ -11,7 +11,9 @@
           (unstaged . show)
           (unpushed . show)
           (unpulled . show)
-          (stashes . show))))
+          (stashes . show)))
+  :config
+  (add-to-list 'magit-no-confirm 'stage-all-changes))
 
 (use-package! bug-reference-github
   :config

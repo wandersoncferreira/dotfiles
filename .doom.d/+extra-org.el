@@ -40,7 +40,3 @@
                '(security-cards . (:filter (tag "security"))))
   (add-to-list 'org-fc-custom-contexts
                '(comptia-QA . (:filter (tag "comptia-qa")))))
-
-;; plantuml
-(require 'plantuml-mode)
-(setq plantuml-default-exec-mode 'executable)
