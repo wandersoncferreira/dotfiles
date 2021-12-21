@@ -65,7 +65,8 @@
 (package! bug-reference-github)
 (package! magit-gitflow :disable t)
 (package! magit-todos :disable t)
-(package! github-review :disable t) ;; preference to my own fork
+(package! github-review :disable t)
+(package! code-review :disable t)
 
 ;; lookup
 (package! request :disable t)
@@ -88,3 +89,18 @@
 ;; transitive dependencies
 (package! deferred) ;; support github-review
 (package! a) ;; support github-review
+(package! transient)
+
+;;; org roam
+(unpin! org-roam)
+(package! org-roam-ui)
+
+;; mode
+(package! graphql-mode)
+
+;; matrix
+(package! plz
+  :recipe (:host github :repo "alphapapa/plz.el"))
+
+(package! ement
+  :recipe (:host github :repo "alphapapa/ement.el" :files ("*.el")))

@@ -9,3 +9,11 @@
   (add-hook 'clojure-mode-hook 'enable-paredit-mode)
   (add-hook 'cider-mode-hook 'enable-paredit-mode)
   (add-hook 'cider-repl-mode-hook 'enable-paredit-mode))
+
+(use-package! buttercup
+  :config
+  (define-advice buttercup--run-suites (:around (orig-fun &rest args))
+    "Keep the cursor at-point after running test suite with buttercup."
+    (setq save-point (point))
+    (apply orig-fun args)
+    (goto-char save-point)))

@@ -31,6 +31,18 @@
     (setq org-roam-directory "/Users/wferreir/roam-v2")
   (setq org-roam-directory "/home/wanderson/zettelkasten"))
 
+(use-package! websocket
+  :after org-roam)
+
+(use-package! org-roam-ui
+  :after org-roam
+  :hook (after-init . org-roam-ui-mode)
+  :config
+  (setq org-roam-ui-sync-theme t
+        org-roam-ui-follow t
+        org-roam-ui-update-on-save t
+        org-roam-ui-open-on-start nil))
+
 ;; spaced-repetition
 (use-package org-fc
   :load-path "~/.doom.d/sources/org-fc"

@@ -12,10 +12,9 @@
  ;; C-x keys
  "C-x 2" #'bk/vsplit-last-buffer
  "C-x 3" #'bk/hsplit-last-buffer
- "C-x b" #'+ivy/switch-workspace-buffer
+ "C-x b" #'+vertico/switch-workspace-buffer
  "C-x p" #'pop-to-mark-command
  "C-x k" #'kill-this-buffer
- "C-x C-b" #'+ivy/switch-buffer
  "C-x C-m" #'execute-extended-command
  "C-x C-j" #'dired-jump
 
@@ -32,10 +31,8 @@
  "<f12>" #'pomidor
 
  ;; C-c keys
- "C-c b" #'+ivy/switch-workspace-buffer-other-window
  "C-c d" #'crux-duplicate-current-line-or-region
  "C-c c SPC" #'rotate-layout
- "C-c C-b" #'+ivy/switch-buffer-other-window
 
  ;; editor
  "M-p" #'jump-char-backward

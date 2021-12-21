@@ -42,25 +42,19 @@ brew "cmake"
 # gpg setup
 brew "gnupg"
 cask "gpg-suite-pinentry"
+brew "pinentry-mac"
 
 # * zsh
 brew "zsh-syntax-highlighting"
 brew "zsh-autosuggestions"
 
-# * mas
-mas "Bitwarden", id: 1352778147
-mas "WhatsApp Desktop", id: 1147396723
-mas "keynote", id: 409183694
-mas "numbers", id: 409203825
-mas "pages", id: 409201541
-
 # * casks
+cask "spectacle"
 cask "telegram-desktop"
 cask "phantomjs"
 cask "hey"
 cask "iterm2"
 cask "postman"
-cask "spotify"
 cask "slack"
 cask "datagrip"
 cask "mactex-no-gui"
@@ -68,6 +62,7 @@ cask "kindle"
 cask "wireshark"
 cask "zulip"
 cask "dash"
+cask "docker"
 
 # * emacs
 tap "railwaycat/emacsmacport"
@@ -83,7 +78,7 @@ brew "mvn"
 brew "leiningen"
 brew "clojure/tools/clojure@1.10.3.929"
 brew "jenv"
-brew "clojure-lsp", args: ["HEAD"]
+brew "clojure-lsp"
 brew "borkdude/brew/babashka"
 
 cask "zulu-jdk11"

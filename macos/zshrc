@@ -10,8 +10,8 @@ export LSCOLORS=ExFxBxDxCxegedabagacad
 
 alias ls="ls -GFh"
 alias iroh="cd ~/code/iroh"
-alias sync-brew="brew bundle --verbose --cleanup --file ~/dotfiles/macos/Brewfile && brew cu -f -a"
-alias sync-syms="~/dotfiles/macos/symlinks.sh"
+alias sync-brew="brew bundle --verbose --cleanup --file ~/code/dotfiles/macos/Brewfile && brew cu -f -a"
+alias sync-syms="~/code/dotfiles/macos/symlinks.sh"
 alias sync-zsh="source ~/.zshrc"
 alias java-create-project="mvn archetype:generate"
 
@@ -39,3 +39,10 @@ source /opt/homebrew/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 export PATH="/opt/homebrew/opt/node@14/bin:$PATH"
 if [ -e /Users/wferreir/.nix-profile/etc/profile.d/nix.sh ]; then . /Users/wferreir/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+# android
+export ANDROID_HOME=$HOME/Library/Android/sdk
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/tools
+export PATH=$PATH:$ANDROID_HOME/tools/bin
+export PATH=$PATH:$ANDROID_HOME/platform-tools

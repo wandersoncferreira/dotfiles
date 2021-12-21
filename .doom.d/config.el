@@ -6,7 +6,6 @@
 (load! "+patch-counsel")
 (load! "+patch-cider")
 (load! "+patch-persp")
-(load! "+patch-ivy-posframe")
 
 ;; defaults
 (load! "+extra-defaults")
@@ -18,6 +17,7 @@
 (load! "+extra-spell")
 (load! "+extra-eshell")
 (load! "+extra-workspaces")
+(load! "+extra-irc")
 
 ;; os
 (load! "+extra-macos")

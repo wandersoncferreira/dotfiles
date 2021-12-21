@@ -62,30 +62,40 @@
   (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
         cider-show-error-buffer t
         cider-save-file-on-load t
-        cider-eldoc-display-for-symbol-at-point nil
+        cider-eldoc-display-for-symbol-at-point nil ;; use lsp
         cider-repl-use-pretty-printing nil
         cider-redirect-server-output-to-repl t
         clojure-toplevel-inside-comment-form t
-        cider-clojure-cli-command "~/dotfiles/clojure/clojure-bin-enriched"
-        ;; cider-clojure-cli-aliases "portal"
-
-        cljr-injected-middleware-version "3.0.0-alpha13")
+        cider-clojure-cli-command "~/code/dotfiles/clojure/clojure-bin-enriched")
   :config
+  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
+  (add-hook 'cider-mode-hook
+            (lambda ()
+              ;; let's give LSP a chance.
+              (remove-hook 'completion-at-point-functions
+                           #'cider-complete-at-point)))
 
-  (set-popup-rule! "*cider-test-report*" :side 'right :width 0.5)
-  (set-popup-rule! "^\\*cider-repl" :side 'bottom :quit nil)
-  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines))
+  (add-to-list
+   'display-buffer-alist
+   `(, (rx bos (or "*cider-repl"
+                   "*nrepl-server"
+                   "*cider-test-report*"
+                   "*cider-error"
+                   "*cider-result"))
+       (display-buffer-reuse-window
+        display-buffer-in-direction)
+       (direction . right)
+       (window .root)
+       (dedicated . nil)
+       (window-width . 0.25))))
 
 (use-package! clj-refactor
   :after clojure-mode
   :config
-  (setq cljr-warn-on-eval nil))
-
-(after! lsp-mode
-  (setq lsp-completion-enable nil
-        lsp-enable-indentation nil)
-  (when IS-MAC
-    (setq lsp-clojure-server-command "/opt/homebrew/bin/clojure-lsp")))
+  (setq cljr-warn-on-eval nil
+        cljr-eagerly-build-asts-on-startup nil
+        cljr-add-ns-to-blank-clj-files nil ;; use lsp
+        ))
 
 ;; run `dash-docs-install-docset' to get it if new installation
 (set-docsets! 'clojure-mode "Clojure")

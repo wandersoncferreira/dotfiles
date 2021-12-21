@@ -18,9 +18,7 @@ If NOERROR is non-nil, don't throw an error if the file doesn't exist."
                    `(expand-file-name ,filename ,path)
                  filename)))
     `(if (string-match-p ".gpg$" ,file)
-         (add-hook 'after-init-hook (lambda
-                                      (let (file-name-handler-alist)
-                                        (load-file ,file))))
+         (add-hook 'after-init-hook (lambda () (load-file ,file)))
        (condition-case-unless-debug e
            (let (file-name-handler-alist)
              (load ,file ,noerror 'nomessage))

@@ -1,6 +1,6 @@
 ;;; ../dotfiles/.doom.d/+extra-appearance.el -*- lexical-binding: t; -*-
 
-(setq doom-theme 'doom-solarized-white
+(setq doom-theme 'doom-zenburn
       doom-font (font-spec :family "Monaco" :size 14)
       doom-themes-treemacs-theme "all-the-icons"
       fill-column 180

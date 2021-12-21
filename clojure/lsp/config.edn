@@ -1,7 +1,7 @@
 {:keep-require-at-start? true
  :show-docs-arity-on-same-line? true
  :auto-add-ns-to-new-files? false
- :semantic-tokens? true
+ :semantic-tokens? false
  :linters {:unused-public-var {:level :off}}
  :cljfmt {:indentation? true
           :remove-surrounding-whitespace? true
