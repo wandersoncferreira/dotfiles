@@ -15,5 +15,6 @@
   (define-advice buttercup--run-suites (:around (orig-fun &rest args))
     "Keep the cursor at-point after running test suite with buttercup."
     (setq save-point (point))
-    (apply orig-fun args)
-    (goto-char save-point)))
+    (unwind-protect
+        (apply orig-fun args)
+      (goto-char save-point))))
