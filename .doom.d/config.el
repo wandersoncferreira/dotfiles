@@ -18,6 +18,7 @@
 (load! "+extra-eshell")
 (load! "+extra-workspaces")
 (load! "+extra-irc")
+(load! "+extra-editing")
 
 ;; os
 (load! "+extra-macos")

@@ -37,7 +37,6 @@
 
 (add-hook! 'next-error-hook #'recenter)
 
-
 (defadvice kill-line (before kill-line-autoreindent activate)
   "Kill excess whitespace when joining lines.
 If the next line is joined to the current line, kill the extra indent whitespace."
@@ -70,3 +69,13 @@ If the next line is joined to the current line, kill the extra indent whitespace
     ad-do-it))
 
 (ad-activate 'align-regexp)
+
+(setq auto-save-visited-interval 1)
+(auto-save-visited-mode +1)
+
+(defun bk/shame-on-you ()
+  (interactive)
+  (message "Stop this bad habbit!"))
+
+(map!
+ "C-x C-s" #'bk/shame-on-you)

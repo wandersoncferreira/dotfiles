@@ -96,3 +96,9 @@
 
 (package! ement
   :recipe (:host github :repo "alphapapa/ement.el" :files ("*.el")))
+
+;;; keyfreq
+(package! keyfreq)
+
+;;; disable mouse
+(package! disable-mouse)

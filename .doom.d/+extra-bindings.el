@@ -72,7 +72,9 @@
 ;; paredit
 (map! :map paredit-mode-map
       "C-c ( n" #'paredit-add-to-next-list
-      "C-c ( p" #'paredit-add-to-previous-list)
+      "C-c ( p" #'paredit-add-to-previous-list
+      "M-s" nil ;; TODO splice needs a new place
+      )
 
 ;; symbol focus bindings
 (map! :map symbol-focus-mode-map

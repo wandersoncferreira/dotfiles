@@ -8,7 +8,9 @@
   :config
   (set-company-backend! 'prog-mode nil)
   (set-company-backend! 'prog-mode
-    '(:separate company-capf company-files company-dabbrev-code company-yasnippet)))
+    '(:separate company-capf company-files company-dabbrev-code company-yasnippet))
+  (define-key company-active-map [(control) (meta) ?s] 'company-search-candidates)
+  (define-key company-active-map "\C-s" 'company-filter-candidates))
 
 (use-package! lsp-mode
   :init

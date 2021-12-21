@@ -17,3 +17,17 @@
 (use-package! plantuml-mode
   :config
   (setq plantuml-jar-path "~/dotfiles/plantuml.jar"))
+
+;;; keyfreq
+(use-package! keyfreq
+  :init
+  (setq keyfreq-excluded-commands
+        '(self-insert-command))
+  :config
+  (keyfreq-mode +1)
+  (keyfreq-autosave-mode +1))
+
+;;; mouse
+(use-package disable-mouse
+  :config
+  (global-disable-mouse-mode))
