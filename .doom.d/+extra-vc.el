@@ -40,13 +40,6 @@
   :config
   (setq gh-notify-redraw-on-visit t))
 
-(use-package github-review
-  :load-path "~/.doom.d/sources/github-review"
-  :config
-  (setq github-review-view-comments-in-code-lines t
-        github-review-view-comments-in-code-lines-outdated t
-        github-review-reply-inline-comments t))
-
 (use-package code-review
   :load-path "~/code/code-review"
   :defer t

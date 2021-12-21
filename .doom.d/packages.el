@@ -54,18 +54,13 @@
 (package! treemacs-all-the-icons)
 (package! ivy-posframe)
 
-;; completion
-(package! ivy-rich :disable t)
-(package! ivy-hydra :disable t)
-
 ;; dired
 (package! diredfl :disable t)
+(package! dired-imenu)
 
 ;; vc
 (package! bug-reference-github)
 (package! magit-gitflow :disable t)
-(package! magit-todos :disable t)
-(package! github-review :disable t)
 (package! code-review :disable t)
 
 ;; lookup
@@ -85,11 +80,6 @@
 
 ;; pin
 (package! map :pin "bb50dba") ;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
-
-;; transitive dependencies
-(package! deferred) ;; support github-review
-(package! a) ;; support github-review
-(package! transient)
 
 ;;; org roam
 (unpin! org-roam)
