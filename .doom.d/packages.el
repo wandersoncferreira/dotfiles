@@ -78,6 +78,8 @@
         lsp-mode
         lsp-ui)
 
+(package! a)
+
 ;; pin
 (package! map :pin "bb50dba") ;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
 
