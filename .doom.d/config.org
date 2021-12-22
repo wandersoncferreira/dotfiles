@@ -116,6 +116,28 @@ test file. This =advice= is a workaround to keep the point where it was:
       (goto-char save-point))))
 #+end_src
 
+** Java
+LSP is very good to develop in Java.
+
+#+begin_src emacs-lisp
+(use-package! lsp-java
+  :init
+  (setq lsp-java-format-settings-profile "GoogleStyle"
+        lsp-java-format-settings-url "https://raw.githubusercontent.com/google/styleguide/gh-pages/eclipse-java-google-style.xml"
+        lsp-java-save-actions-organize-imports t)
+  :config
+  (add-hook! 'java-mode-hook (electric-pair-mode +1))
+  (add-hook! 'java-mode-hook (subword-mode +1)))
+#+end_src
+
+*** Appearance
+
+No colorful window either
+#+begin_src emacs-lisp
+(after! cc-mode
+  (remove-hook 'java-mode-hook #'rainbow-delimiters-mode))
+#+end_src
+
 * MacOS specifics
 
 I prefer to change Command to =meta=.
