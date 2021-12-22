@@ -37,6 +37,8 @@
   - [[#github][Github]]
   - [[#code-review][Code Review]]
 - [[#key-bindings][Key bindings]]
+  - [[#registers][Registers]]
+  - [[#general-1][General]]
   - [[#parenthesis][Parenthesis]]
 - [[#shell][Shell]]
   - [[#eshell][Eshell]]
@@ -747,6 +749,75 @@ I'm the maintainer of this package
 #+end_src
 
 * Key bindings
+
+Minor default changes
+#+begin_src emacs-lisp
+(setq which-key-idle-delay 0.4
+      tab-always-indent 'complete)
+#+end_src
+
+Disabling =C-x p= because I really like to pop to mark with these keys.
+#+begin_src emacs-lisp
+(map! "C-x p" nil)
+#+end_src
+
+Enabling disabled commands
+#+begin_src emacs-lisp
+(put 'narrow-to-region 'disabled nil)
+#+end_src
+
+** Registers
+
+#+begin_src emacs-lisp
+(set-register ?l '(file . "/Users/wferreir/ledger"))
+(set-register ?b '(file . "/Users/wferreir/dotfiles/macos/Brewfile"))
+#+end_src
+
+** General
+
+#+begin_src emacs-lisp
+(map!
+ ;; C-x keys
+ "C-x b" #'+vertico/switch-workspace-buffer
+ "C-x p" #'pop-to-mark-command
+ "C-x k" #'kill-this-buffer
+ "C-x C-m" #'execute-extended-command
+ "C-x C-j" #'dired-jump
+
+ ;; super keys
+ "s-t" #'projectile-toggle-between-implementation-and-test
+ "s-'" #'cycle-quotes
+ "s-s" #'deadgrep
+ "s-g" #'gh-notify
+ "s-p" #'+popup/toggle
+
+ ;; F-* keys
+ "<f5>" #'deadgrep
+ "<f9>" #'gif-screencast-start-or-stop
+ "<f12>" #'pomidor
+
+ ;; C-c keys
+ "C-c d" #'crux-duplicate-current-line-or-region
+ "C-c c SPC" #'rotate-layout
+
+ ;; editor
+ "M-p" #'jump-char-backward
+ "M-n" #'jump-char-forward
+ "M-i" #'change-inner
+ "M-u" #'fix-word-upcase
+ "M-l" #'fix-word-downcase
+ "M-c" #'fix-word-capitalize
+ "C-<up>" #'move-text-up
+ "C-<down>" #'move-text-down
+
+ ;; movement
+ "C-:" #'avy-goto-char
+ "M-g w" #'avy-goto-word-1
+
+ ;; completion
+ "C-." #'completion-at-point
+ )
+#+end_src
 
 ** Parenthesis
 
