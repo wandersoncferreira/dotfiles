@@ -23,6 +23,10 @@
   - [[#vlf][VLF]]
 - [[#authentication][Authentication]]
   - [[#auxiliary-functions][Auxiliary functions]]
+- [[#work][Work]]
+  - [[#app-sauce][App Sauce]]
+  - [[#reify-health][Reify Health]]
+  - [[#cisco][Cisco]]
 
 * Appearance
 
@@ -254,3 +258,39 @@ me to get some useful data in the gpg file.
              :host "bitwarden.app"
              :user "bartuka")))
 #+end_src
+
+* Work
+
+Every now and then I have to write some elisp code to help me in my work. I like
+to keep them organized to keep at least some context to where/why the function
+came to existence.
+
+** App Sauce
+
+** Reify Health
+
+Basic functions to connect to Clojure REPL.
+#+begin_src emacs-lisp
+(defun reifyhealth/cider-connect ()
+  "Connect into eSource."
+  (interactive)
+  (cider-connect-clj (list :host "localhost" :port 12344)))
+#+end_src
+
+Open my specific notes from work.
+#+begin_src emacs-lisp
+(defun reifyhealth ()
+  "Open file notes from work."
+  (interactive)
+  (find-file "~/repos/reifyhealth/work.org"))
+#+end_src
+
+and we had to generate UUIDs to mock some tests every so often.
+#+begin_src emacs-lisp
+(defun bk/uuid ()
+  "Create uuid and add to clipboard."
+  (interactive)
+  (kill-new (uuidgen-4)))
+#+end_src
+
+** Cisco
