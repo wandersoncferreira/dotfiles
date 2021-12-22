@@ -38,5 +38,6 @@ clojure/lsp/sqlite.db
 .emacs.d/nov-places
 .emacs.d/request
 .doom.d/custom.el
+.doom.d/config.el
 
 .DS_Store
