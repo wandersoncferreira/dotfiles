@@ -296,6 +296,25 @@ Also delete the workspace automatically if there is no buffers associated anymor
 (setq persp-autokill-persp-when-removed-last-buffer t)
 #+end_src
 
+*** Change modeline workspace name
+
+Overwrite the Doom function that writes to the modeline.
+#+begin_src emacs-lisp
+(after! persp
+  (setq persp-lighter
+        '(:eval
+          (format
+           (propertize
+            " #%.10s"
+            'face (let ((persp (get-current-persp)))
+                    (if persp
+                        (if (persp-contain-buffer-p (current-buffer) persp)
+                            'persp-face-lighter-default
+                          'persp-face-lighter-buffer-not-in-persp)
+                      'persp-face-lighter-nil-persp)))
+           (safe-persp-name (get-current-persp))))))
+#+end_src
+
 * Programming Languages
 
 ** Emacs Lisp
