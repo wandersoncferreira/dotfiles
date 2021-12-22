@@ -24,6 +24,7 @@
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#clojure][Clojure]]
   - [[#java][Java]]
+  - [[#typescript][TypeScript]]
 - [[#key-bindings][Key bindings]]
   - [[#parenthesis][Parenthesis]]
 - [[#macos-specifics][MacOS specifics]]
@@ -494,6 +495,15 @@ No colorful window either
 #+begin_src emacs-lisp
 (after! cc-mode
   (remove-hook 'java-mode-hook #'rainbow-delimiters-mode))
+#+end_src
+
+** TypeScript
+
+This auto formatting is not good :/
+
+#+begin_src emacs-lisp
+(add-hook 'typescript-mode-hook #'format-all-mode)
+(setq-hook! 'typescript-mode-hook +format-with-lsp nil)
 #+end_src
 
 * Key bindings
