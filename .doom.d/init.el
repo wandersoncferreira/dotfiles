@@ -11,7 +11,6 @@
  doom
  (emoji +github)
  hl-todo
- modeline
  (popup
   +all
   +defaults)

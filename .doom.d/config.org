@@ -20,6 +20,8 @@
     - [[#bindings-1][Bindings]]
 - [[#search][Search]]
 - [[#spelling][Spelling]]
+- [[#project][Project]]
+  - [[#projectile][Projectile]]
 - [[#completion][Completion]]
   - [[#company][Company]]
 - [[#appearance][Appearance]]
@@ -84,8 +86,6 @@
 (setq user-full-name "Wanderson Ferreira"
       user-mail-address "wand@hey.com"
 
-      byte-compile-warnings '(cl-functions)
-
       scroll-margin 2
       line-spacing 3
 
@@ -95,10 +95,12 @@
       load-prefer-newer t
       show-help-function nil
       read-process-output-max (* 1024 1024)
-      dired-listing-switches "-ahl -v"
+      dired-listing-switches "-ahl -v")
+#+end_src
 
-      projectile-enable-caching nil
-      projectile-project-search-path '("~/code"))
+Remove byte compilation warnings related to old =cl= library.
+#+begin_src emacs-lisp
+(setq byte-compile-warnings '(cl-functions))
 #+end_src
 
 ** Scratch buffer
@@ -304,6 +306,20 @@ Change dictionary of Ispell
   (ispell-change-dictionary "en"))
 #+end_src
 
+* Project
+
+** Projectile
+
+Disable cache
+#+begin_src emacs-lisp
+(setq projectile-enable-caching nil)
+#+end_src
+
+Direct projectile to look for code in a specific folder.
+#+begin_src emacs-lisp
+(setq projectile-project-search-path '("~/code"))
+#+end_src
+
 * Completion
 
 ** Company
@@ -438,9 +454,6 @@ time.
              ;; clojure
              (clj-refactor-mode nil clj-refactor)
              (dtrt-indent-mode nil dtrt-indent))))
-
-(use-package! projectile
-  :delight projectile-mode)
 #+end_src
 
 * Window
@@ -504,6 +517,12 @@ projects.
 Also delete the workspace automatically if there is no buffers associated anymore
 #+begin_src emacs-lisp
 (setq persp-autokill-persp-when-removed-last-buffer t)
+#+end_src
+
+Remove the modeline indicator of Projectile.
+#+begin_src emacs-lisp
+(use-package! projectile
+  :delight projectile-mode)
 #+end_src
 
 *** Change modeline workspace name
