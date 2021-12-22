@@ -12,6 +12,7 @@
 - [[#window][Window]]
   - [[#moving][Moving]]
   - [[#better-split][Better split]]
+  - [[#workspace][Workspace]]
 - [[#programming-languages][Programming Languages]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#clojure][Clojure]]
@@ -85,6 +86,22 @@ Overwrite the default split bindings
 #+begin_src emacs-lisp
 (map! "C-x 2" #'bk/vsplit-last-buffer
       "C-x 3" #'bk/hsplit-last-buffer)
+#+end_src
+
+** Workspace
+
+Using a dedicated set of buffers to specific kind of work has been interesting.
+There are some annoyances along the way but we can fix it.
+
+I want to switch to a new workspace automatically if I change projectile
+projects.
+#+begin_src emacs-lisp
+(setq +workspaces-on-switch-project-behavior t)
+#+end_src
+
+Also delete the workspace automatically if there is no buffers associated anymore
+#+begin_src emacs-lisp
+(setq persp-autokill-persp-when-removed-last-buffer t)
 #+end_src
 
 * Programming Languages
