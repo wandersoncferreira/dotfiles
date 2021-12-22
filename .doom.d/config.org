@@ -9,6 +9,11 @@
 
 * Summary :TOC_2_gh:
 - [[#appearance][Appearance]]
+- [[#window][Window]]
+  - [[#moving][Moving]]
+  - [[#better-split][Better split]]
+- [[#programming-languages][Programming Languages]]
+  - [[#emacs-lisp][Emacs Lisp]]
 - [[#macos-specifics][MacOS specifics]]
   - [[#search-in-homebrew][Search in Homebrew]]
 - [[#apps][Apps]]
@@ -24,6 +29,85 @@ time.
 
 #+begin_src emacs-lisp
 (setq doom-theme 'doom-zenburn)
+#+end_src
+
+* Window
+
+** Moving
+
+Use shift arrows to move between windows.
+#+begin_src emacs-lisp
+(windmove-default-keybindings)
+#+end_src
+
+However, Org mode requires a little workaround to make shift arrow movements to
+work.
+#+begin_src emacs-lisp
+(add-hook 'org-shiftup-final-hook 'windmove-up)
+(add-hook 'org-shiftleft-final-hook 'windmove-left)
+(add-hook 'org-shiftdown-final-hook 'windmove-down)
+(add-hook 'org-shiftright-final-hook 'windmove-right)
+#+end_src
+
+** Better split
+
+When you split the buffer in any direction, move the cursor there and show the
+previous buffer.
+#+begin_src emacs-lisp
+(defun bk/vsplit-last-buffer ()
+  (interactive)
+  (split-window-vertically)
+  (other-window 1 nil)
+  (switch-to-next-buffer))
+
+(defun bk/hsplit-last-buffer ()
+  (interactive)
+  (split-window-horizontally)
+  (other-window 1 nil)
+  (switch-to-next-buffer))
+#+end_src
+
+Overwrite the default split bindings
+#+begin_src emacs-lisp
+(map! "C-x 2" #'bk/vsplit-last-buffer
+      "C-x 3" #'bk/hsplit-last-buffer)
+#+end_src
+
+* Programming Languages
+
+** Emacs Lisp
+
+*** Appearance
+
+I don't like the too colorful buffers. So, removing the rainbow delimiter mode.
+#+begin_src emacs-lisp
+(after! elisp-mode
+  (remove-hook 'emacs-lisp-mode-hook #'rainbow-delimiters-mode))
+#+end_src
+
+*** Taming Parenthesis
+
+You will definitely hate Lisp if you don't understand structural editing.
+#+begin_src emacs-lisp
+(use-package! paredit
+  :config
+  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode))
+#+end_src
+
+*** Test frameworks
+
+Buttercup (Behavior Driven Emacs Lisp Testing) framework has one annoyance when
+you run the test suite: it moves the cursor from the point to the end of the
+test file. This =advice= is a workaround to keep the point where it was:
+#+begin_src emacs-lisp
+(use-package! buttercup
+  :config
+  (define-advice buttercup--run-suites (:around (orig-fun &rest args))
+    "Keep the cursor at-point after running test suite with buttercup."
+    (setq save-point (point))
+    (unwind-protect
+        (apply orig-fun args)
+      (goto-char save-point))))
 #+end_src
 
 * MacOS specifics

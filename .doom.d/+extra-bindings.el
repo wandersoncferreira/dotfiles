@@ -10,8 +10,6 @@
 
 (map!
  ;; C-x keys
- "C-x 2" #'bk/vsplit-last-buffer
- "C-x 3" #'bk/hsplit-last-buffer
  "C-x b" #'+vertico/switch-workspace-buffer
  "C-x p" #'pop-to-mark-command
  "C-x k" #'kill-this-buffer

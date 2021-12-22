@@ -10,14 +10,7 @@
         org-startup-indented nil
         org-agenda-files (list "~/agenda/todo.org"))
   :config
-  (remove-hook 'org-mode-hook #'org-superstar-mode)
-
-  ;; fix shift+<cursor> movements
-  ;; Make windmove work in Org mode:
-  (add-hook 'org-shiftup-final-hook 'windmove-up)
-  (add-hook 'org-shiftleft-final-hook 'windmove-left)
-  (add-hook 'org-shiftdown-final-hook 'windmove-down)
-  (add-hook 'org-shiftright-final-hook 'windmove-right))
+  (remove-hook 'org-mode-hook #'org-superstar-mode))
 
 (setq org-download-method 'directory)
 
