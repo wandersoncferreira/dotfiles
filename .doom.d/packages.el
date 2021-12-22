@@ -79,6 +79,7 @@
         lsp-ui)
 
 (package! a)
+(package! deferred)
 
 ;; pin
 (package! map :pin "bb50dba") ;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
