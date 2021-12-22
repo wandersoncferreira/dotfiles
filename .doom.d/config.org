@@ -15,6 +15,7 @@
   - [[#auxiliary-functions][Auxiliary Functions]]
   - [[#bindings][Bindings]]
   - [[#abbreviations][Abbreviations]]
+- [[#search][Search]]
 - [[#appearance][Appearance]]
 - [[#window][Window]]
   - [[#moving][Moving]]
@@ -224,6 +225,20 @@ Default global table
 (map!
  "C-x a l" #'bk/add-region-local-abbrev
  "C-x a g" #'bk/add-region-global-abbrev)
+#+end_src
+
+* Search
+
+Workaround to make =deadgrep= consider hidden folders and symlinks
+#+begin_src emacs-lisp
+(require 'deadgrep)
+
+(defun deadgrep--include-args (rg-args)
+  (push "--hidden" rg-args) ;; consider hidden folders/files
+  (push "--follow" rg-args) ;; follow symlink
+  )
+
+(advice-add 'deadgrep--arguments :filter-return #'deadgrep--include-args)
 #+end_src
 
 * Appearance
