@@ -59,14 +59,6 @@
       "C-c k w" #'kaocha-runner-show-warnings
       "C-c k h" #'kaocha-runner-hide-windows)
 
-;; useful functions
-(after! prog-mode
-  (map! :map prog-mode-map "C-h C-f" #'find-function-at-point)
-  (map! :map prog-mode-map
-        :localleader
-        :desc "Find function at point"
-        "g p" #'find-function-at-point))
-
 ;; symbol focus bindings
 (map! :map symbol-focus-mode-map
       "C-s-b" #'sf/back

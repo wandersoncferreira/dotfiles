@@ -8,6 +8,13 @@
 #+end_src
 
 * Summary :TOC_2_gh:
+- [[#general][General]]
+  - [[#scratch-buffer][Scratch buffer]]
+  - [[#disabled-major-modes][Disabled major modes]]
+- [[#editing][Editing]]
+  - [[#auxiliary-functions][Auxiliary Functions]]
+  - [[#bindings][Bindings]]
+  - [[#abbreviations][Abbreviations]]
 - [[#appearance][Appearance]]
 - [[#window][Window]]
   - [[#moving][Moving]]
@@ -29,13 +36,192 @@
   - [[#irc][IRC]]
   - [[#ledger][Ledger]]
 - [[#authentication][Authentication]]
-  - [[#auxiliary-functions][Auxiliary functions]]
+  - [[#auxiliary-functions-1][Auxiliary functions]]
 - [[#patches][Patches]]
   - [[#doom][Doom]]
 - [[#work][Work]]
   - [[#app-sauce][App Sauce]]
   - [[#reify-health][Reify Health]]
   - [[#cisco][Cisco]]
+
+* General
+
+#+begin_src emacs-lisp
+(setq user-full-name "Wanderson Ferreira"
+      user-mail-address "wand@hey.com"
+
+      byte-compile-warnings '(cl-functions)
+
+      scroll-margin 2
+      line-spacing 3
+
+      enable-local-variables t
+      messages-buffer-max-lines 10000
+
+      load-prefer-newer t
+      show-help-function nil
+      read-process-output-max (* 1024 1024)
+      dired-listing-switches "-ahl -v"
+
+      projectile-enable-caching nil
+      projectile-project-search-path '("~/code"))
+#+end_src
+
+** Scratch buffer
+
+#+begin_src emacs-lisp
+(setq doom-scratch-initial-major-mode 'emacs-lisp-mode
+      initial-major-mode 'emacs-lisp-mode)
+#+end_src
+
+** Disabled major modes
+
+highlighting current line is very distracting to me.
+#+begin_src emacs-lisp
+(remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
+#+end_src
+
+Paredit >> Smartparens IMHO
+#+begin_src emacs-lisp
+(remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
+#+end_src
+
+* Editing
+
+UTF-8
+#+begin_src emacs-lisp
+(prefer-coding-system 'utf-8)
+(set-default-coding-systems 'utf-8)
+(set-terminal-coding-system 'utf-8)
+(set-keyboard-coding-system 'utf-8)
+#+end_src
+
+Kill additional whitespaces when joining lines
+#+begin_src emacs-lisp
+(defadvice kill-line (before kill-line-autoreindent activate)
+  "Kill excess whitespace when joining lines.
+If the next line is joined to the current line, kill the extra indent whitespace."
+  (when (and (eolp) (not (bobp)))
+    (save-excursion
+      (forward-char 1)
+      (just-one-space 1))))
+#+end_src
+
+Copy and cut single line when no region available.
+#+begin_src emacs-lisp
+(defadvice kill-ring-save (before slick-copy activate compile)
+  "When called interactively with no active region, copy a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (message "Single line killed")
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+
+(defadvice kill-region (before slick-cut activate compile)
+  "When called interactively with no activate region, kill a single line instead."
+  (interactive
+   (if mark-active (list (region-beginning) (region-end))
+     (list (line-beginning-position)
+           (line-beginning-position 2)))))
+#+end_src
+
+** Auxiliary Functions
+
+#+begin_src emacs-lisp
+(defun bk/point-to-register ()
+  "Store cursor position in a register."
+  (interactive)
+  (point-to-register 8)
+  (message "Point set"))
+
+ (defun bk/jump-to-register ()
+  "Switch between current pos and stored pos."
+  (interactive)
+  (let ((tmp (point-marker)))
+    (jump-to-register 8)
+    (set-register 8 tmp)))
+
+(defun bk/kill-inner-word ()
+  "Equivalent to ciw in vim."
+  (interactive)
+  (forward-char 1)
+  (backward-word)
+  (kill-word 1))
+
+(defun bk/copy-whole-line ()
+  "Copies a line without refard for cursor position."
+  (interactive)
+  (save-excursion
+    (kill-new
+     (buffer-substring
+      (point-at-bol)
+      (point-at-eol)))))
+
+(defun bk/zap-to-char-backward (arg char)
+  (interactive "p\ncZap up to char backward: ")
+  (save-excursion
+    (zap-up-to-char -1 char)))
+#+end_src
+
+** Bindings
+#+begin_src emacs-lisp
+(map!
+ "C-c r p" #'bk/point-to-register
+ "C-c r j" #'bk/jump-to-register
+ "C-c k w" #'bk/kill-inner-word
+ "C-c k f" #'zap-up-to-char
+ "C-c k b" #'bk/zap-to-char-backward
+ "C-c y l" #'bk/copy-whole-line)
+#+end_src
+
+** Abbreviations
+
+Use single abbrev-table for multiple modes
+#+begin_src emacs-lisp
+(add-hook 'doom-first-buffer-hook
+          (defun +abbrev-file-name ()
+            (setq-default abbrev-mode t)
+            (setq abbrev-file-name (expand-file-name "abbrev.el" doom-private-dir))))
+#+end_src
+
+Default global table
+#+begin_src emacs-lisp
+(define-abbrev-table 'global-abbrev-table
+  '(
+    ("reuslt" "result" nil 0)
+    ("requier" "require" nil 0)
+    ))
+#+end_src
+
+*** Auxiliary Functions
+
+#+begin_src emacs-lisp
+(defun bk/add-region-local-abbrev (start end)
+  "Go from START to END and add the selected text to a local abbrev."
+  (interactive "r")
+  (if (use-region-p)
+      (let ((num-words (count-words-region start end)))
+        (add-mode-abbrev num-words)
+        (deactivate-mark))
+    (message "No selected region!")))
+
+(defun bk/add-region-global-abbrev (start end)
+  "Go from START to END and add the selected text to global abbrev."
+  (interactive "r")
+  (if (use-region-p)
+      (let ((num-words (count-words-region start end)))
+        (add-abbrev global-abbrev-table "Global" num-words)
+        (deactivate-mark))
+    (message "No selected region!")))
+#+end_src
+
+*** Bindings
+
+#+begin_src emacs-lisp
+(map!
+ "C-x a l" #'bk/add-region-local-abbrev
+ "C-x a g" #'bk/add-region-global-abbrev)
+#+end_src
 
 * Appearance
 
@@ -47,6 +233,11 @@ time.
 #+end_src
 
 * Window
+
+Recenter on next-error
+#+begin_src emacs-lisp
+(add-hook! 'next-error-hook #'recenter)
+#+end_src
 
 ** Moving
 
@@ -120,8 +311,7 @@ I don't like the too colorful buffers. So, removing the rainbow delimiter mode.
 
 You will definitely hate Lisp if you don't understand structural editing.
 #+begin_src emacs-lisp
-(use-package! paredit
-  :config
+(after! elisp-mode
   (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode))
 #+end_src
 
@@ -240,8 +430,7 @@ special buffers are not bound to the current workspace. Let's fix this
 *** Parenthesis
 
 #+begin_src emacs-lisp
-(use-package! paredit
-  :config
+(after! clojure-mode
   (add-hook 'clojure-mode-hook 'enable-paredit-mode)
   (add-hook 'cider-mode-hook 'enable-paredit-mode)
   (add-hook 'cider-repl-mode-hook 'enable-paredit-mode))

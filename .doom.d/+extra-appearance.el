@@ -19,10 +19,6 @@
 (require 'uniquify)
 (setq uniquify-buffer-name-style 'forward)
 
-;; disable from doom
-(remove-hook 'doom-first-buffer-hook 'global-hl-line-mode)
-(remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
-
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (outline-minor-mode -1)))

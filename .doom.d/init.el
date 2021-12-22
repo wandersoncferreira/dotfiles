@@ -2,6 +2,7 @@
 
 (doom!
  :input
+
  :completion
  company
  (vertico +icons)
@@ -77,6 +78,7 @@
  yaml
 
  :email
+
  :app
  irc
  (rss +org)
