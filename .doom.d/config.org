@@ -16,6 +16,7 @@
   - [[#bindings][Bindings]]
   - [[#abbreviations][Abbreviations]]
 - [[#search][Search]]
+- [[#spelling][Spelling]]
 - [[#appearance][Appearance]]
 - [[#window][Window]]
   - [[#moving][Moving]]
@@ -239,6 +240,25 @@ Workaround to make =deadgrep= consider hidden folders and symlinks
   )
 
 (advice-add 'deadgrep--arguments :filter-return #'deadgrep--include-args)
+#+end_src
+
+* Spelling
+
+Langtool is very useful to not native English speakers. You can download the jar from [[curl -o langtool.zip https://languagetool.org/download/LanguageTool-stable.zip && unzip langtool.zip][here]]
+#+begin_src emacs-lisp
+(setq langtool-language-tool-jar "~/Downloads/LanguageTool-5.5/languagetool-commandline.jar")
+#+end_src
+
+Change dictionary of Ispell
+#+begin_src emacs-lisp
+(defun bk/dict-pt ()
+  "Change to pt-BR dictionary."
+  (interactive)
+  (ispell-change-dictionary "pt_BR"))
+
+(defun bk/dict-en ()
+  "Change to en dictionary."
+  (ispell-change-dictionary "en"))
 #+end_src
 
 * Appearance
