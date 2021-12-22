@@ -11,6 +11,11 @@
 - [[#appearance][Appearance]]
 - [[#macos-specifics][MacOS specifics]]
   - [[#search-in-homebrew][Search in Homebrew]]
+- [[#apps][Apps]]
+  - [[#gif][Gif]]
+  - [[#plantuml][PlantUML]]
+  - [[#keyfreq][Keyfreq]]
+  - [[#vlf][VLF]]
 
 * Appearance
 
@@ -56,4 +61,66 @@ the query from Emacs has been useful.
     (when (not (string-empty-p to-be-installed))
       (async-shell-command
        (format "brew install %s" to-be-installed)))))
+#+end_src
+
+* Apps
+
+I'm not sure how to classify something as an "app" inside Emacs. Perhaps they
+are heavily dependent of external tools?
+
+To be honest, most things in this section are here because I don't know a better
+place to put it.
+
+** Gif
+
+I need to show off some Emacs work or feature and be able to record a small GIF
+in seconds is perfect. During the development of my Emacs packages I've been
+recording GIFs to reproduce feature behaviors to new users a lot.
+
+#+begin_src emacs-lisp
+(use-package! gif-screencast
+  :config
+  (setq gif-screencast-args '("-x")
+        gif-screencast-cropping-program "mogrify"
+        gif-screencast-capture-format "ppm"))
+#+end_src
+
+
+** PlantUML
+
+Drawing diagrams to put some form to your system design ideas? Yeap!
+
+#+begin_src emacs-lisp
+(use-package! plantuml-mode
+  :config
+  (setq plantuml-jar-path "~/dotfiles/plantuml.jar"))
+#+end_src
+
+
+** Keyfreq
+
+Important to monitor your key usage in order to improve your editing skills in
+the long run. More tips [[https://github.com/wandersoncferreira/vim-mindset-apply-emacs#general-tips][here]].
+
+#+begin_src emacs-lisp
+(use-package! keyfreq
+  :init
+  (setq keyfreq-excluded-commands
+        '(self-insert-command))
+  :config
+  (keyfreq-mode +1)
+  (keyfreq-autosave-mode +1))
+#+end_src
+
+
+** VLF
+
+Help opening very large files.
+
+#+begin_src emacs-lisp
+(use-package! vlf
+  :config
+  (require 'vlf-setup)
+  (custom-set-variables
+   '(vlf-application 'dont-ask)))
 #+end_src
