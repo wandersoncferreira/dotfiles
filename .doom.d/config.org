@@ -21,6 +21,8 @@
   - [[#plantuml][PlantUML]]
   - [[#keyfreq][Keyfreq]]
   - [[#vlf][VLF]]
+- [[#authentication][Authentication]]
+  - [[#auxiliary-functions][Auxiliary functions]]
 
 * Appearance
 
@@ -207,4 +209,48 @@ Help opening very large files.
   (require 'vlf-setup)
   (custom-set-variables
    '(vlf-application 'dont-ask)))
+#+end_src
+
+* Authentication
+
+I rely on =auth-source= a lot to store my passwords. A =~/.authinfo.gpg= file is
+a safe way to keep passwords stored for as long as you remember your GPG
+password :')
+
+The following piece of configuration was carefully crafted to be integrated with
+MacOS key manager.
+
+#+begin_src emacs-lisp
+(require 'epa-file)
+(require 'org-crypt)
+
+(setq epg-gpg-program "gpg"
+      org-tags-exclude-from-inheritance (quote ("crypt"))
+      password-cache-expiry nil)
+
+(after! auth-source
+  (setq auth-sources (nreverse auth-sources)
+        auth-source-cache-expiry nil
+        auth-source-debug t))
+
+(after! epa
+  (set 'epg-pinentry-mode nil)
+  (setq epa-file-encrypt-to '("wand@hey.com")))
+
+(epa-file-enable)
+(org-crypt-use-before-save-magic)
+#+end_src
+
+** Auxiliary functions
+
+I also have a Bitwarden account to store things in the web. This function helps
+me to get some useful data in the gpg file.
+
+#+begin_src emacs-lisp
+(defun bk/bitwarden ()
+  "Get bitwarden."
+  (interactive)
+  (kill-new (auth-source-pick-first-password
+             :host "bitwarden.app"
+             :user "bartuka")))
 #+end_src
