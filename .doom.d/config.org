@@ -25,6 +25,8 @@
   - [[#ledger][Ledger]]
 - [[#authentication][Authentication]]
   - [[#auxiliary-functions][Auxiliary functions]]
+- [[#patches][Patches]]
+  - [[#doom][Doom]]
 - [[#work][Work]]
   - [[#app-sauce][App Sauce]]
   - [[#reify-health][Reify Health]]
@@ -392,6 +394,39 @@ me to get some useful data in the gpg file.
   (kill-new (auth-source-pick-first-password
              :host "bitwarden.app"
              :user "bartuka")))
+#+end_src
+
+* Patches
+
+Sometimes I need to overwrite some implementation in a package.
+
+** Doom
+
+Overwrite the =load!= macro to consider GPG configuration files.
+#+begin_src emacs-lisp
+(defmacro load! (filename &optional path noerror)
+  "Load a file relative to the current executing file (`load-file-name').
+
+FILENAME is either a file path string or a form that should evaluate to such a
+string at run time. PATH is where to look for the file (a string representing a
+directory path). If omitted, the lookup is relative to either `load-file-name',
+`byte-compile-current-file' or `buffer-file-name' (checked in that order).
+
+If NOERROR is non-nil, don't throw an error if the file doesn't exist."
+  (let* ((path (or path
+                   (dir!)
+                   (error "Could not detect path to look for '%s' in"
+                          filename)))
+         (file (if path
+                   `(expand-file-name ,filename ,path)
+                 filename)))
+    `(if (string-match-p ".gpg$" ,file)
+         (add-hook 'after-init-hook (lambda () (load-file ,file)))
+       (condition-case-unless-debug e
+           (let (file-name-handler-alist)
+             (load ,file ,noerror 'nomessage))
+         (doom-error (signal (car e) (cdr e)))
+         (error (doom--handle-load-error e ,file ,path))))))
 #+end_src
 
 * Work
