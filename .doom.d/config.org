@@ -1,18 +1,39 @@
-;; [[file:../code/dotfiles/.doom.d/config.org::+begin_src emacs-lisp][No heading:1]]
+#+TITLE: Emacs configuration
+#+AUTHOR: Wanderson Ferreira
+#+PROPERTY: header-args :emacs-lisp :tangle yes :comments link
+#+STARTUP: org-startup-folded: showall
+
+#+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
-;; No heading:1 ends here
+#+end_src
 
-;; [[file:../code/dotfiles/.doom.d/config.org::*Appearance][Appearance:1]]
+
+* Appearance
+
+Doom comes with some nice themes. For now, I've been using Zenburn most of the
+time.
+
+#+begin_src emacs-lisp
 (setq doom-theme 'doom-zenburn)
-;; Appearance:1 ends here
+#+end_src
 
-;; [[file:../code/dotfiles/.doom.d/config.org::*MacOS specifics][MacOS specifics:1]]
+* MacOS specifics
+
+I prefer to change Command to =meta=.
+
+#+begin_src emacs-lisp
 (when IS-MAC
   (setq mac-command-modifier 'meta
         mac-option-modifier '(:ordinary super :button 2)))
-;; MacOS specifics:1 ends here
+#+end_src
 
-;; [[file:../code/dotfiles/.doom.d/config.org::*Search in Homebrew][Search in Homebrew:1]]
+
+** Search in Homebrew
+
+Sometimes I need to verify if a package is available in homebrew or not. Making
+the query from Emacs has been useful.
+
+#+begin_src emacs-lisp
 (defun bk/brew-search ()
   "Search homebrew for a file to be installed."
   (interactive "")
@@ -31,4 +52,4 @@
     (when (not (string-empty-p to-be-installed))
       (async-shell-command
        (format "brew install %s" to-be-installed)))))
-;; Search in Homebrew:1 ends here
+#+end_src

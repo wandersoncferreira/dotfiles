@@ -70,9 +70,6 @@ If the next line is joined to the current line, kill the extra indent whitespace
 
 (ad-activate 'align-regexp)
 
-(setq auto-save-visited-interval 1)
-(auto-save-visited-mode +1)
-
 (defun bk/shame-on-you ()
   (interactive)
   (message "Stop this bad habbit!"))
