@@ -76,6 +76,3 @@ If the next line is joined to the current line, kill the extra indent whitespace
 (defun bk/shame-on-you ()
   (interactive)
   (message "Stop this bad habbit!"))
-
-(map!
- "C-x C-s" #'bk/shame-on-you)
