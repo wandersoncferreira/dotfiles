@@ -50,31 +50,5 @@
  "C-." #'completion-at-point
  )
 
-;; clojure
-(map! :map clojure-mode-map
-      ;; tests
-      "C-c k t" #'kaocha-runner-run-test-at-point
-      "C-c k r" #'kaocha-runner-run-tests
-      "C-c k a" #'kaocha-runner-run-all-tests
-      "C-c k w" #'kaocha-runner-show-warnings
-      "C-c k h" #'kaocha-runner-hide-windows)
-
-;; symbol focus bindings
-(map! :map symbol-focus-mode-map
-      "C-s-b" #'sf/back
-      "C-s-n" #'sf/next
-      "C-s-p" #'sf/prev
-      "C-s-r" #'sf/reset)
-
-;; vc functions
-(map! :map forge-post-mode-map
-      "C-c C-d" #'bk/post-draft-pull-request
-
-      :map diff-mode-map
-      "C-c s" #'bk/github-review--copy-suggestion
-
-      :map forge-topic-mode-map
-      "C-c r" #'github-review-forge-pr-at-point)
-
 ;; enable command
 (put 'narrow-to-region 'disabled nil)

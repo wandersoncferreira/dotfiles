@@ -12,17 +12,21 @@
   - [[#scratch-buffer][Scratch buffer]]
   - [[#disabled-major-modes][Disabled major modes]]
 - [[#editing][Editing]]
+  - [[#iedit][iEdit]]
   - [[#auxiliary-functions][Auxiliary Functions]]
   - [[#bindings][Bindings]]
   - [[#abbreviations][Abbreviations]]
 - [[#search][Search]]
 - [[#spelling][Spelling]]
+- [[#completion][Completion]]
+  - [[#company][Company]]
 - [[#appearance][Appearance]]
 - [[#window][Window]]
   - [[#moving][Moving]]
   - [[#better-split][Better split]]
   - [[#workspace][Workspace]]
-- [[#programming-languages][Programming Languages]]
+- [[#programming][Programming]]
+  - [[#lsp][LSP]]
   - [[#emacs-lisp][Emacs Lisp]]
   - [[#clojure][Clojure]]
   - [[#java][Java]]
@@ -133,6 +137,20 @@ Copy and cut single line when no region available.
    (if mark-active (list (region-beginning) (region-end))
      (list (line-beginning-position)
            (line-beginning-position 2)))))
+#+end_src
+
+** iEdit
+
+#+begin_src emacs-lisp
+;; when you hit Ctrl+;, all occurrences of the symbol under the cursor (or
+;; current selection) are highlighted, and any changes you make on one of them
+;; will be automatically applied to all others.
+(use-package! iedit
+  :defer
+  :config
+  (set-face-background 'iedit-occurrence "saddle brown")
+  :bind
+  ("C-;" . iedit-mode))
 #+end_src
 
 ** Auxiliary Functions
@@ -266,6 +284,23 @@ Change dictionary of Ispell
   (ispell-change-dictionary "en"))
 #+end_src
 
+* Completion
+
+** Company
+#+begin_src emacs-lisp
+(use-package! company
+  :init
+  (setq company-idle-delay 0.1
+        company-show-quick-access t
+        company-icon-size 20)
+  :config
+  (set-company-backend! 'prog-mode nil)
+  (set-company-backend! 'prog-mode
+    '(:separate company-capf company-files company-dabbrev-code company-yasnippet))
+  (define-key company-active-map [(control) (meta) ?s] 'company-search-candidates)
+  (define-key company-active-map "\C-s" 'company-filter-candidates))
+#+end_src
+
 * Appearance
 
 Doom comes with some nice themes. For now, I've been using Zenburn most of the
@@ -357,7 +392,51 @@ Overwrite the Doom function that writes to the modeline.
            (safe-persp-name (get-current-persp))))))
 #+end_src
 
-* Programming Languages
+* Programming
+
+** LSP
+
+#+begin_src emacs-lisp
+(use-package! lsp-mode
+  :init
+  (setq lsp-enable-file-watchers t
+        lsp-enable-symbol-highlighting t
+        lsp-eldoc-enable-hover t
+        lsp-lens-enable t
+        lsp-idle-delay 0.1
+        lsp-headerline-breadcrumb-enable nil)
+  :config
+  (add-to-list 'lsp-file-watch-ignored-directories "classes")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\minio\\'")
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'")
+
+  (add-hook! 'lsp-before-open-hook
+    (remove-hook! 'lsp-completion-mode-hook #'+lsp-init-company-backends-h))
+
+  (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers))))
+#+end_src
+
+#+begin_src emacs-lisp
+(use-package! lsp-ui
+  :after lsp-mode
+  :commands lsp-ui-mode
+  :config
+  (setq lsp-ui-doc-max-width 60
+        lsp-ui-doc-position 'top
+        lsp-ui-doc-delay 0.2
+        lsp-ui-peek-list-width 60
+        lsp-ui-peek-fontify 'always
+        lsp-ui-sideline-show-code-actions nil))
+#+end_src
+
+#+begin_src emacs-lisp
+ (use-package! lsp-treemacs
+  :config
+  (setq lsp-treemacs-error-list-current-project-only t))
+
+(use-package! treemacs-all-the-icons
+  :after treemacs)
+#+end_src
 
 ** Emacs Lisp
 
@@ -420,7 +499,14 @@ warning message is very helpful.
 (map! :map clojure-mode-map
       "C-x C-e" #'bk/nrepl-warn-when-not-connected
       "C-c C-k" #'bk/nrepl-warn-when-not-connected
-      "C-c C-z" #'bk/nrepl-warn-when-not-connected)
+      "C-c C-z" #'bk/nrepl-warn-when-not-connected
+
+      ;; tests
+      "C-c k t" #'kaocha-runner-run-test-at-point
+      "C-c k r" #'kaocha-runner-run-tests
+      "C-c k a" #'kaocha-runner-run-all-tests
+      "C-c k w" #'kaocha-runner-show-warnings
+      "C-c k h" #'kaocha-runner-hide-windows)
 #+end_src
 
 *** CIDER
@@ -487,6 +573,22 @@ special buffers are not bound to the current workspace. Let's fix this
         cljr-eagerly-build-asts-on-startup nil
         cljr-add-ns-to-blank-clj-files nil ;; use lsp
         ))
+#+end_src
+
+Magnars created this amazing code called =symbol-focus= to help refactoring
+activity in Clojure. The package allow us to easily edit pieces of code in
+isolation.
+#+begin_src emacs-lisp
+(use-package! symbol-focus
+  :load-path "~/.doom.d/sources/symbol-focus"
+  :config
+  (add-hook 'prog-mode-hook #'symbol-focus-mode)
+
+  (map! :map symbol-focus-mode-map
+      "C-s-b" #'sf/back
+      "C-s-n" #'sf/next
+      "C-s-p" #'sf/prev
+      "C-s-r" #'sf/reset))
 #+end_src
 
 *** Parenthesis
@@ -635,7 +737,13 @@ I'm the maintainer of this package
   :load-path "~/code/code-review"
   :defer t
   :commands (code-review-start
-             code-review-forge-pr-at-point))
+             code-review-forge-pr-at-point)
+  :config
+  (map! :map forge-post-mode-map
+      "C-c C-d" #'bk/post-draft-pull-request
+
+      :map forge-topic-mode-map
+      "C-c r" #'code-review-forge-pr-at-point))
 #+end_src
 
 * Key bindings
