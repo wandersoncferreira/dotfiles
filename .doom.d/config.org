@@ -1,6 +1,7 @@
 #+TITLE: Emacs configuration
 #+AUTHOR: Wanderson Ferreira
 #+PROPERTY: header-args :emacs-lisp :tangle yes :comments link
+#+STARTUP: fold
 
 #+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
@@ -13,7 +14,10 @@
   - [[#better-split][Better split]]
 - [[#programming-languages][Programming Languages]]
   - [[#emacs-lisp][Emacs Lisp]]
+  - [[#clojure][Clojure]]
   - [[#java][Java]]
+- [[#key-bindings][Key bindings]]
+  - [[#parenthesis][Parenthesis]]
 - [[#macos-specifics][MacOS specifics]]
   - [[#search-in-homebrew][Search in Homebrew]]
 - [[#apps][Apps]]
@@ -120,6 +124,150 @@ test file. This =advice= is a workaround to keep the point where it was:
       (goto-char save-point))))
 #+end_src
 
+** Clojure
+
+Very lucky to be working with Clojure for so many years. I've learned a lot
+about FP and other languages in the process and so many great people in the
+community.
+
+*** Clojure Mode
+
+#+begin_src emacs-lisp
+(use-package! clojure-mode
+  :init
+  (setq clojure-thread-all-but-last t)
+  :config
+  (cljr-add-keybindings-with-prefix "C-c C-m")
+  (remove-hook 'clojure-mode-hook #'rainbow-delimiters-mode))
+#+end_src
+
+Sometimes I forget to start the REPL and I try to use a CIDER command. This
+warning message is very helpful.
+#+begin_src emacs-lisp
+(defun bk/nrepl-warn-when-not-connected ()
+  (interactive)
+  (message "Oops! You'are not connected to an nREPL server."))
+
+(map! :map clojure-mode-map
+      "C-x C-e" #'bk/nrepl-warn-when-not-connected
+      "C-c C-k" #'bk/nrepl-warn-when-not-connected
+      "C-c C-z" #'bk/nrepl-warn-when-not-connected)
+#+end_src
+
+*** CIDER
+
+#+begin_src emacs-lisp
+(use-package! cider
+  :after clojure-mode
+  :init
+  (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
+        cider-show-error-buffer t
+        cider-save-file-on-load t
+        cider-eldoc-display-for-symbol-at-point nil ;; use lsp
+        cider-repl-use-pretty-printing nil
+        cider-redirect-server-output-to-repl t
+        clojure-toplevel-inside-comment-form t
+        cider-clojure-cli-command "~/code/dotfiles/clojure/clojure-bin-enriched")
+  :config
+  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
+  (add-hook 'cider-mode-hook
+            (lambda ()
+              ;; let's give LSP a chance.
+              (remove-hook 'completion-at-point-functions
+                           #'cider-complete-at-point)))
+
+  (add-to-list
+   'display-buffer-alist
+   `(, (rx bos (or "*cider-repl"
+                   "*nrepl-server"
+                   "*cider-test-report*"
+                   "*cider-error"
+                   "*cider-result"))
+       (display-buffer-reuse-window
+        display-buffer-in-direction)
+       (direction . right)
+       (window .root)
+       (dedicated . nil)
+       (window-width . 0.25))))
+#+end_src
+
+Working with =+workspace= enabled in DOOM makes a new workspace to be created
+for each project. However, if you start a CIDER REPL in any workspace the
+special buffers are not bound to the current workspace. Let's fix this
+#+begin_src emacs-lisp
+;; include cider buffer into current workspace
+(add-hook 'cider-repl-mode-hook
+          (lambda ()
+            (persp-add-buffer (current-buffer) (get-current-persp)
+                              nil nil)))
+
+;; include test report buffer to current perspective too
+(add-hook 'cider-test-report-mode-hook
+          (lambda ()
+            (persp-add-buffer (current-buffer) (get-current-persp)
+                              nil nil)))
+#+end_src
+
+*** Clojure Refactor
+
+#+begin_src emacs-lisp
+(use-package! clj-refactor
+  :after clojure-mode
+  :config
+  (setq cljr-warn-on-eval nil
+        cljr-eagerly-build-asts-on-startup nil
+        cljr-add-ns-to-blank-clj-files nil ;; use lsp
+        ))
+#+end_src
+
+*** Parenthesis
+
+#+begin_src emacs-lisp
+(use-package! paredit
+  :config
+  (add-hook 'clojure-mode-hook 'enable-paredit-mode)
+  (add-hook 'cider-mode-hook 'enable-paredit-mode)
+  (add-hook 'cider-repl-mode-hook 'enable-paredit-mode))
+#+end_src
+
+*** Docs
+
+Let's enable Clojure docset for Dash.
+#+begin_src emacs-lisp
+;; run `dash-docs-install-docset' to get it if new installation
+(set-docsets! 'clojure-mode "Clojure")
+#+end_src
+
+*** Auxiliary Functions
+
+Execute clojure code and return the result as string
+#+begin_src emacs-lisp
+(defun bk/sync-eval-to-string (s)
+  "Execute clojure code S and return the result as string"
+  (let* ((x (concat "(do (clojure.core/in-ns '"
+                    (cider-current-ns)
+                    ") " s ")"))
+         (dict (cider-nrepl-sync-request:eval x))
+         (e (nrepl-dict-get dict "err"))
+         (v (nrepl-dict-get dict "value")))
+    (if e
+        (user-error! e)
+      v)))
+#+end_src
+
+Find the PID of the current process
+#+begin_src emacs-lisp
+(defun bk/clojure-pid ()
+  "Find PID of current clojure process."
+  (interactive)
+  (message
+   (bk/sync-eval-to-string
+    "(-> (java.lang.management.ManagementFactory/getRuntimeMXBean)
+         (.getName)
+         (clojure.string/split #\"@\")
+         (first))")))
+#+end_src
+
 ** Java
 LSP is very good to develop in Java.
 
@@ -140,6 +288,18 @@ No colorful window either
 #+begin_src emacs-lisp
 (after! cc-mode
   (remove-hook 'java-mode-hook #'rainbow-delimiters-mode))
+#+end_src
+
+* Key bindings
+
+** Parenthesis
+
+#+begin_src emacs-lisp
+(map! :map paredit-mode-map
+      "C-c ( n" #'paredit-add-to-next-list
+      "C-c ( p" #'paredit-add-to-previous-list
+      "M-s" nil ;; TODO splice needs a new place
+      )
 #+end_src
 
 * MacOS specifics
@@ -494,3 +654,8 @@ and we had to generate UUIDs to mock some tests every so often.
 #+end_src
 
 ** Cisco
+
+Good stuff.
+#+begin_src emacs-lisp
+(load! "+work-cisco.el.gpg")
+#+end_src
