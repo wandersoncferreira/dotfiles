@@ -27,6 +27,8 @@
   - [[#typescript][TypeScript]]
 - [[#key-bindings][Key bindings]]
   - [[#parenthesis][Parenthesis]]
+- [[#shell][Shell]]
+  - [[#eshell][Eshell]]
 - [[#macos-specifics][MacOS specifics]]
   - [[#search-in-homebrew][Search in Homebrew]]
 - [[#apps][Apps]]
@@ -535,6 +537,33 @@ This auto formatting is not good :/
       "C-c ( p" #'paredit-add-to-previous-list
       "M-s" nil ;; TODO splice needs a new place
       )
+#+end_src
+
+* Shell
+
+** Eshell
+
+These aliases follow me since the beginning of my Emacs experience
+#+begin_src emacs-lisp
+(require 'em-alias)
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (eshell/alias "e" "find-file $1")
+            (eshell/alias "ee" "find-file-other-window $1")))
+#+end_src
+
+Clean buffer with =C-l=
+#+begin_src emacs-lisp
+(defun eshell-clear-buffer ()
+  "Clear the terminal buffer."
+  (interactive)
+  (let ((inhibit-read-only t))
+    (erase-buffer)
+    (eshell-send-input)))
+
+(add-hook 'eshell-mode-hook
+          (lambda ()
+            (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
 #+end_src
 
 * MacOS specifics
