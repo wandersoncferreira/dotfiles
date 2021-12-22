@@ -14,6 +14,7 @@
   - [[#better-split][Better split]]
 - [[#programming-languages][Programming Languages]]
   - [[#emacs-lisp][Emacs Lisp]]
+  - [[#java][Java]]
 - [[#macos-specifics][MacOS specifics]]
   - [[#search-in-homebrew][Search in Homebrew]]
 - [[#apps][Apps]]
@@ -21,6 +22,7 @@
   - [[#plantuml][PlantUML]]
   - [[#keyfreq][Keyfreq]]
   - [[#vlf][VLF]]
+  - [[#irc][IRC]]
 - [[#authentication][Authentication]]
   - [[#auxiliary-functions][Auxiliary functions]]
 - [[#work][Work]]
@@ -235,6 +237,61 @@ Help opening very large files.
   (require 'vlf-setup)
   (custom-set-variables
    '(vlf-application 'dont-ask)))
+#+end_src
+
+
+** IRC
+
+I like to communicate like its the 70's again.
+
+#+begin_src emacs-lisp
+(require 'erc)
+(require 'erc-track)
+
+(setq erc-server "irc.libera.chat"
+      erc-nick "bartuka"
+      erc-user-full-name "Wanderson Ferreira"
+      erc-track-shorten-start 8
+      erc-kill-buffer-on-part t
+      erc-auto-query 'bury
+      erc-prompt-for-password nil)
+
+(erc-autojoin-mode +1)
+(setq erc-autojoin-channels-alist
+      '(("irc.libera.chat" "#emacs" "#systemcrafters" "#code-review-emacs"))
+      erc-autojoin-timing :ident
+      erc-autojoin-delay 30
+      erc-join-buffer 'bury)
+
+(erc-track-mode +1)
+(setq erc-keywords '("code-review" "emacs" "clojure")
+      erc-track-exclude-server-buffer t
+      erc-track-exclude-types '("JOIN" "PART" "QUIT" "NICK" "MODE")
+      erc-track-use-faces t
+      erc-track-faces-priority-list
+      '(erc-current-nick-face
+        erc-keyword-face
+        erc-direct-msg-face)
+      erc-track-priority-faces-only 'all)
+#+end_src
+
+*** Twitch IRC
+
+I learned it was possible to connect to a Twitch chat via IRC>
+#+begin_src emacs-lisp
+(defun twitch-start-irc ()
+  "Connect to Twitch IRC.
+Get an oauth token from this website https://twitchapps.com/tmi/."
+  (interactive)
+  (let* ((host "irc.chat.twitch.tv")
+         (user "bartuka_")
+         (pwd (auth-source-pick-first-password
+               :host host
+               :user user)))
+    (erc-tls :server host
+             :port 6697
+             :nick user
+             :password pwd)))
 #+end_src
 
 * Authentication
