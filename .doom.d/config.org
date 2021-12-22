@@ -1,7 +1,6 @@
 #+TITLE: Emacs configuration
 #+AUTHOR: Wanderson Ferreira
 #+PROPERTY: header-args :emacs-lisp :tangle yes :comments link
-#+STARTUP: org-startup-folded: showall
 
 #+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
