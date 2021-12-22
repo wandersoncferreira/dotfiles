@@ -7,6 +7,10 @@
 ;; -*- lexical-binding: t -*-
 #+end_src
 
+* Summary :TOC_2_gh:
+- [[#appearance][Appearance]]
+- [[#macos-specifics][MacOS specifics]]
+  - [[#search-in-homebrew][Search in Homebrew]]
 
 * Appearance
 
