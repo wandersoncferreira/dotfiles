@@ -5,12 +5,19 @@
 #+PROPERTY: header-args :emacs-lisp :tangle yes :comments link
 #+STARTUP: fold noinlineimages
 
+[[https://imgs.xkcd.com/comics/cautionary.png]]
+
+Emacs changes how you _think_ about computers.
+
+I believe software should be malleable and allow users to tinker and create
+something completely unpredictable from the creators of the original software.
+Emacs is one of the few systems that allow us to do this.
+
 #+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
 #+end_src
 
 * Summary :TOC_3_gh:
-- [[#emacs][Emacs]]
 - [[#general][General]]
   - [[#scratch-buffer][Scratch buffer]]
   - [[#disabled-major-modes][Disabled major modes]]
@@ -85,16 +92,6 @@
   - [[#app-sauce][App Sauce]]
   - [[#reify-health][Reify Health]]
   - [[#cisco][Cisco]]
-
-* Emacs
-
-[[https://imgs.xkcd.com/comics/cautionary.png]]
-
-Emacs changes how you _think_ about computers.
-
-I believe software should be malleable and allow users to tinker and create
-something completely unpredictable from the creators of the original software.
-Emacs is one of the few systems that allow us to do this.
 
 * General
 
