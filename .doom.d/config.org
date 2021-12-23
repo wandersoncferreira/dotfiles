@@ -25,6 +25,7 @@
 - [[#spelling][Spelling]]
 - [[#project][Project]]
   - [[#projectile][Projectile]]
+- [[#dired][Dired]]
 - [[#completion][Completion]]
   - [[#company][Company]]
 - [[#appearance][Appearance]]
@@ -50,6 +51,8 @@
     - [[#appearance-2][Appearance]]
   - [[#typescript][TypeScript]]
 - [[#org-mode][Org mode]]
+  - [[#default][Default]]
+  - [[#easy-templates][Easy Templates]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
   - [[#forge][Forge]]
@@ -95,20 +98,26 @@ Emacs is one of the few systems that allow us to do this.
 
 * General
 
+Define name and email.
 #+begin_src emacs-lisp
 (setq user-full-name "Wanderson Ferreira"
-      user-mail-address "wand@hey.com"
+      user-mail-address "wand@hey.com")
+#+end_src
 
-      scroll-margin 2
-      line-spacing 3
+The line spacing configuration is something new to me, but makes emacs looks a
+lot nicer!
+#+begin_src emacs-lisp
+(setq scroll-margin 2
+      line-spacing 3)
+#+end_src
 
-      enable-local-variables t
+#+begin_src emacs-lisp
+(setq enable-local-variables t
       messages-buffer-max-lines 10000
 
       load-prefer-newer t
       show-help-function nil
-      read-process-output-max (* 1024 1024)
-      dired-listing-switches "-ahl -v")
+      read-process-output-max (* 1024 1024))
 #+end_src
 
 Remove byte compilation warnings related to old =cl= library.
@@ -185,7 +194,7 @@ Copy and cut single line when no region available.
   :config
   (set-face-background 'iedit-occurrence "saddle brown")
   :bind
-  ("C-;" . iedit-mode))
+  ("C-." . iedit-mode))
 #+end_src
 
 ** Auxiliary Functions
@@ -302,6 +311,34 @@ Workaround to make =deadgrep= consider hidden folders and symlinks
 
 * Spelling
 
+I am using the fast spell checkers =spell-fu= instead of =flyspell=. Something I
+miss from flyspell is the =flyspell-correct-previous= which kept the point in
+the same place but fixed the previous error.
+
+If you use Universal Argument =C-u= with the following function you will be
+prompted to Add or Fix the previous error at point.
+#+begin_src emacs-lisp
+(defun bk/spell-fu-correct-previous (arg)
+  (interactive "P")
+  (save-excursion
+    (if arg
+        (progn
+          (+spell/previous-error)
+          (let ((res (y-or-n-p "Add word at point? ")))
+            (if res
+                (+spell/add-word)
+              (+spell/correct))))
+        (progn
+          (+spell/previous-error)
+          (+spell/correct)))))
+#+end_src
+
+Add the binding to the default =C-;=
+#+begin_src emacs-lisp
+(map!
+ "C-;" #'bk/spell-fu-correct-previous)
+#+end_src
+
 Langtool is very useful to not native English speakers. You can download the jar from [[curl -o langtool.zip https://languagetool.org/download/LanguageTool-stable.zip && unzip langtool.zip][here]]
 #+begin_src emacs-lisp
 (setq langtool-language-tool-jar "~/Downloads/LanguageTool-5.5/languagetool-commandline.jar")
@@ -331,6 +368,19 @@ Disable cache
 Direct projectile to look for code in a specific folder.
 #+begin_src emacs-lisp
 (setq projectile-project-search-path '("~/code"))
+#+end_src
+
+* Dired
+
+Change the default listing command in Dired to show file size in
+"human-readable" format.
+#+begin_src emacs-lisp :tangle yes
+(setq dired-listing-switches "-alh")
+#+end_src
+
+Dired jump is indispensable nowadays
+#+begin_src emacs-lisp
+(map! "C-x C-j" #'dired-jump)
 #+end_src
 
 * Completion
@@ -542,19 +592,18 @@ Remove the modeline indicator of Projectile.
 
 Overwrite the Doom function that writes to the modeline.
 #+begin_src emacs-lisp
-(after! persp
-  (setq persp-lighter
-        '(:eval
-          (format
-           (propertize
-            " #%.10s"
-            'face (let ((persp (get-current-persp)))
-                    (if persp
-                        (if (persp-contain-buffer-p (current-buffer) persp)
-                            'persp-face-lighter-default
-                          'persp-face-lighter-buffer-not-in-persp)
-                      'persp-face-lighter-nil-persp)))
-           (safe-persp-name (get-current-persp))))))
+(setq persp-lighter
+      '(:eval
+        (format
+         (propertize
+          " #%.10s"
+          'face (let ((persp (get-current-persp)))
+                  (if persp
+                      (if (persp-contain-buffer-p (current-buffer) persp)
+                          'persp-face-lighter-default
+                        'persp-face-lighter-buffer-not-in-persp)
+                    'persp-face-lighter-nil-persp)))
+         (safe-persp-name (get-current-persp)))))
 #+end_src
 
 * Programming
@@ -895,6 +944,8 @@ This auto formatting is not good :/
 
 * Org mode
 
+** Default
+
 #+begin_src emacs-lisp
 (use-package! org
   :init
@@ -925,7 +976,7 @@ This auto formatting is not good :/
 
 (use-package! org-roam-ui
   :after org-roam
-  :hook (after-init . org-roam-ui-mode)
+  :defer t
   :config
   (setq org-roam-ui-sync-theme t
         org-roam-ui-follow t
@@ -942,6 +993,18 @@ This auto formatting is not good :/
   (add-to-list 'org-fc-custom-contexts
                '(comptia-QA . (:filter (tag "comptia-qa")))))
 
+#+end_src
+
+** Easy Templates
+
+The "Easy Templates" as often is the standard way in Emacs to handle inline code
+blocks when writing in literate programming style.
+
+You can find all the different templates available by =C-h v org-structure-template-alist=.
+
+Let's define an Elisp template as I am using it soo often.
+#+begin_src emacs-lisp
+(add-to-list 'org-structure-template-alist '("elisp" . "src emacs-lisp"))
 #+end_src
 
 * Version Control
@@ -1055,7 +1118,6 @@ Enabling disabled commands
  "C-x p" #'pop-to-mark-command
  "C-x k" #'kill-this-buffer
  "C-x C-m" #'execute-extended-command
- "C-x C-j" #'dired-jump
 
  ;; super keys
  "s-t" #'projectile-toggle-between-implementation-and-test
