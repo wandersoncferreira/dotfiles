@@ -23,6 +23,7 @@ Talk to your kids about Emacs... before somebody else does.
 - [[#general][General]]
   - [[#scratch-buffer][Scratch buffer]]
   - [[#disabled-major-modes][Disabled major modes]]
+  - [[#enable-the-disabled-commands][Enable the disabled commands]]
 - [[#editing][Editing]]
   - [[#iedit][iEdit]]
   - [[#auxiliary-functions][Auxiliary Functions]]
@@ -38,8 +39,11 @@ Talk to your kids about Emacs... before somebody else does.
 - [[#completion][Completion]]
   - [[#company][Company]]
 - [[#appearance][Appearance]]
+  - [[#modeline][Modeline]]
+  - [[#extra-functions][Extra functions]]
 - [[#window][Window]]
-  - [[#moving][Moving]]
+  - [[#moving-between-windows][Moving between windows]]
+  - [[#scroll][Scroll]]
   - [[#better-split][Better split]]
   - [[#workspace][Workspace]]
     - [[#change-modeline-workspace-name][Change modeline workspace name]]
@@ -124,6 +128,26 @@ Remove byte compilation warnings related to old =cl= library.
 (setq byte-compile-warnings '(cl-functions))
 #+end_src
 
+Learned this in my first week of Emacs with Magnars: real emacs knights don't
+use shift to mark things
+#+begin_src emacs-lisp
+(setq shift-select-mode nil)
+#+end_src
+
+Uniquify buffer names dependent on file name. Emacs's traditional method for
+making buffer names unique is to add <2>, <3>, <4>, .... to the end of the
+buffer names.
+
+#+begin_src emacs-lisp
+(use-package! uniquify
+  :config
+  (setq uniquify-buffer-name-style 'post-forward-angle-brackets
+        uniquify-separator " * "
+        uniquify-after-kill-buffer-p t
+        uniquify-strip-common-suffix t
+        uniquify-ignore-buffers-re "^\\*"))
+#+end_src
+
 ** Scratch buffer
 
 #+begin_src emacs-lisp
@@ -143,6 +167,14 @@ Paredit >> Smartparens IMHO
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
 #+end_src
 
+** Enable the disabled commands
+
+#+begin_src emacs-lisp
+(put 'downcase-region 'disabled nil)
+(put 'upcase-region 'disabled nil)
+(put 'narrow-to-region 'disabled nil)
+#+end_src
+
 * Editing
 
 UTF-8
@@ -153,7 +185,7 @@ UTF-8
 (set-keyboard-coding-system 'utf-8)
 #+end_src
 
-Kill additional whitespaces when joining lines
+Kill additional white spaces when joining lines
 #+begin_src emacs-lisp
 (defadvice kill-line (before kill-line-autoreindent activate)
   "Kill excess whitespace when joining lines.
@@ -323,19 +355,30 @@ prompted to Add or Fix the previous error at point.
     (if arg
         (progn
           (+spell/previous-error)
-          (let ((res (y-or-n-p "Add word at point? ")))
+          (let* ((word (word-at-point))
+                 (res (y-or-n-p (format "Add %s at point? " word))))
             (if res
                 (+spell/add-word)
               (+spell/correct))))
-        (progn
-          (+spell/previous-error)
-          (+spell/correct)))))
+      (progn
+        (+spell/previous-error)
+        (+spell/correct)))))
 #+end_src
 
 Add the binding to the default =C-;=
 #+begin_src emacs-lisp
 (map!
  "C-;" #'bk/spell-fu-correct-previous)
+#+end_src
+
+I type in portuguese and english most of the time, therefore would be handy if Emacs could tell which one is it in the current buffer.
+#+begin_src emacs-lisp
+(use-package! guess-language
+  :config
+  (setq guess-language-languages '(en pt)
+        guess-language-langcodes
+        '((en . ("en_US" "English"))
+          (pt . ("pt_BR" "Portuguese")))))
 #+end_src
 
 Langtool is very useful to not native English speakers. You can download the jar from [[curl -o langtool.zip https://languagetool.org/download/LanguageTool-stable.zip && unzip langtool.zip][here]]
@@ -469,18 +512,6 @@ time.
    '(mode-line-mousable ((t (:background "Gray75" :foreground "firebrick"))))
    '(mode-line-mousable-minor-mode ((t (:background "Gray75" :foreground "green4"))))))
 
-(defun bk/toggle-transparency ()
-  (interactive)
-  (let ((alpha (frame-parameter nil 'alpha)))
-    (set-frame-parameter
-     nil 'alpha
-     (if (eql (cond ((numberp alpha) alpha)
-                    ((numberp (cdr alpha)) (cdr alpha))
-                    ((numberp (cadr alpha)) (cadr alpha)))
-              100)
-         80
-       100))))
-
 (defun bk/default-black-customizations ()
   "Customizations to be used with default black theme in Doom Emacs"
   (custom-set-faces
@@ -488,8 +519,20 @@ time.
    '(doom-modeline-project-dir ((t (:foreground "black" :weight bold))))
    '(doom-modeline-buffer-modified ((t (:foreground "Blue" :weight bold))))
    '(success ((t (:foreground "ForestGreen" :weight bold))))))
+#+end_src
 
-;; control the modeline info
+Show column number in the modeline.
+#+begin_src emacs-lisp
+(column-number-mode +1)
+#+end_src
+
+** Modeline
+
+I am not using any Doom modeline as I prefer the default one. Therefore I need
+to use some package to clean the modeline from all the indicators of minor modes
+enabled.
+
+#+begin_src emacs-lisp
 (use-package! delight
   :config
   (delight '(;; general
@@ -514,19 +557,41 @@ time.
              (symbol-focus-mode nil symbol-focus)
              (lsp-lens-mode nil lsp-lens)
 
+             ;; org
+             (visual-line-mode nil simple)
+             (org-indent-mode nil org-indent)
+             (org-fancy-priorities-mode nil org-fancy-priorities)
+             (writegood-mode nil writegood-mode)
+
              ;; clojure
              (clj-refactor-mode nil clj-refactor)
              (dtrt-indent-mode nil dtrt-indent))))
 #+end_src
 
-* Window
+** Extra functions
 
+In some moods I like to have some level of transparency while coding.
+#+begin_src emacs-lisp
+(defun bk/toggle-transparency ()
+  (interactive)
+  (let ((alpha (frame-parameter nil 'alpha)))
+    (set-frame-parameter
+     nil 'alpha
+     (if (eql (cond ((numberp alpha) alpha)
+                    ((numberp (cdr alpha)) (cdr alpha))
+                    ((numberp (cadr alpha)) (cadr alpha)))
+              100)
+         90
+       100))))
+#+end_src
+
+* Window
 Recenter on next-error
 #+begin_src emacs-lisp
 (add-hook! 'next-error-hook #'recenter)
 #+end_src
 
-** Moving
+** Moving between windows
 
 Use shift arrows to move between windows.
 #+begin_src emacs-lisp
@@ -540,6 +605,24 @@ work.
 (add-hook 'org-shiftleft-final-hook 'windmove-left)
 (add-hook 'org-shiftdown-final-hook 'windmove-down)
 (add-hook 'org-shiftright-final-hook 'windmove-right)
+#+end_src
+
+** Scroll
+
+Scrolling whole screens seems so weird to me. I like a predefined number of
+lines. 8 to be exact.
+#+begin_src emacs-lisp
+(defun bk/scroll-up ()
+ (interactive)
+  (scroll-up-command 8))
+
+(defun bk/scroll-down ()
+ (interactive)
+  (scroll-down-command 8))
+
+(map!
+ "C-v" #'bk/scroll-up
+ "M-v" #'bk/scroll-down)
 #+end_src
 
 ** Better split

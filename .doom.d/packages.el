@@ -95,3 +95,6 @@
 
 ;;; keyfreq
 (package! keyfreq)
+
+;;; spell
+(package! guess-language)
