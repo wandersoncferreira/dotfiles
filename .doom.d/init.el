@@ -2,6 +2,9 @@
 
 (setq +literate-config-file "~/.doom.d/README.org")
 
+;;; remove the automatic tangle functionality
+(remove-hook 'org-mode-hook #'+literate-enable-recompile-h)
+
 (doom!
  :input
 

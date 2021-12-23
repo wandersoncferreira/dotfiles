@@ -10,8 +10,10 @@
 Emacs changes how you _think_ about computers.
 
 I believe software should be malleable and allow users to tinker and create
-something completely unpredictable from the creators of the original software.
+something completely unpredictable by the creators of the original software.
 Emacs is one of the few systems that allow us to do this.
+
+Talk to your kids about Emacs... before somebody else does.
 
 #+begin_src emacs-lisp
 ;; -*- lexical-binding: t -*-
@@ -139,12 +141,6 @@ highlighting current line is very distracting to me.
 Paredit >> Smartparens IMHO
 #+begin_src emacs-lisp
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
-#+end_src
-
-Do not automatically tangle the =config.org= file because it is too slow for me
-and introduce a lot of undesired noise.
-#+begin_src emacs-lisp
-(remove-hook 'org-mode-hook #'+literate-enable-recompile-h)
 #+end_src
 
 * Editing
@@ -356,6 +352,7 @@ Change dictionary of Ispell
 
 (defun bk/dict-en ()
   "Change to en dictionary."
+  (interactive)
   (ispell-change-dictionary "en"))
 #+end_src
 
