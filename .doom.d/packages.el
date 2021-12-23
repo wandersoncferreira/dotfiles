@@ -27,7 +27,6 @@
 (package! fix-word)
 (package! move-text)
 (package! cycle-quotes)
-(package! hungry-delete)
 
 ;; window & buffers
 (package! rotate)
@@ -37,9 +36,6 @@
 ;; network
 (package! httprepl)
 (package! webpaste)
-
-;; macos
-(package! counsel-osx-app)
 
 ;; demo emacs buffers
 (package! keycast)
@@ -52,16 +48,13 @@
 (package! spacemacs-theme)
 (package! color-theme-modern)
 (package! treemacs-all-the-icons)
-(package! ivy-posframe)
 
 ;; dired
-(package! diredfl :disable t)
-(package! dired-imenu)
+ (package! dired-imenu)
 
 ;; vc
 (package! bug-reference-github)
 (package! magit-gitflow :disable t)
-(package! code-review :disable t)
 
 ;; lookup
 (package! request :disable t)
@@ -78,6 +71,8 @@
         lsp-mode
         lsp-ui)
 
+;; code review development
+(package! code-review :disable t)
 (package! a)
 (package! deferred)
 
@@ -100,6 +95,3 @@
 
 ;;; keyfreq
 (package! keyfreq)
-
-;;; disable mouse
-(package! disable-mouse)

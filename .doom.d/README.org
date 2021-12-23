@@ -2,7 +2,7 @@
 #+AUTHOR: Wanderson Ferreira
 #+EMAIL: wand@hey.com
 #+LANGUAGE: en
-#+PROPERTY: header-args :emacs-lisp :tangle yes :comments link
+#+PROPERTY: header-args :emacs-lisp :tangle "~/.doom.d/config.el" :comments link
 #+STARTUP: fold noinlineimages
 
 [[https://imgs.xkcd.com/comics/cautionary.png]]
@@ -139,6 +139,12 @@ highlighting current line is very distracting to me.
 Paredit >> Smartparens IMHO
 #+begin_src emacs-lisp
 (remove-hook 'doom-first-buffer-hook 'smartparens-global-mode)
+#+end_src
+
+Do not automatically tangle the =config.org= file because it is too slow for me
+and introduce a lot of undesired noise.
+#+begin_src emacs-lisp
+(remove-hook 'org-mode-hook #'+literate-enable-recompile-h)
 #+end_src
 
 * Editing
@@ -371,7 +377,7 @@ Direct projectile to look for code in a specific folder.
 
 Change the default listing command in Dired to show file size in
 "human-readable" format.
-#+begin_src emacs-lisp :tangle yes
+#+begin_src emacs-lisp
 (setq dired-listing-switches "-alh")
 #+end_src
 

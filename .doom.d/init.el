@@ -1,5 +1,7 @@
 ;;; init.el -*- lexical-binding: t; -*-
 
+(setq +literate-config-file "~/.doom.d/README.org")
+
 (doom!
  :input
 
