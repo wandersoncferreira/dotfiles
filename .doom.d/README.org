@@ -522,7 +522,7 @@ fix the cursor positioning when we hit =C-<= and =C->= to beg/end of buffer.
 Completion is a feature that fills in the rest of a name starting from an
 abbreviation for it. Completion works by comparing the user’s input against a
 list of valid names and determining how much of the name is determined uniquely
-by what the user has typed. -- Emacs Manual (section 20.6)
+by what the user has typed. -- Emacs Manual
 #+end_quote
 
 
