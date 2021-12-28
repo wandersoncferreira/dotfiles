@@ -535,16 +535,11 @@ time.
 
 #+begin_src emacs-lisp
 (setq doom-theme 'kaolin-dark
-      doom-font (font-spec :family "Monaco" :size 14)
       doom-themes-treemacs-theme "all-the-icons"
       fill-column 180
       display-line-numbers-type nil
       confirm-kill-emacs nil
       indent-tabs-mode nil)
-
-(when IS-LINUX
-  (setq doom-font (font-spec :family "Source Code Pro" :size 15))
-  (setq doom-theme 'modus-operandi))
 
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
@@ -580,6 +575,16 @@ Show size indication
 
 ** Fonts
 
+Set default fonts in Doom
+#+begin_src emacs-lisp
+(setq doom-font (font-spec :family "Monaco" :size 14)
+      doom-variable-pitch-font (font-spec :family "Roboto"
+                                          :style "Regular"
+                                          :size 14
+                                          :weight 'regular)
+      doom-unicode-font (font-spec :family "Apple Color Emoji"))
+#+end_src
+
 Use proportional fonts
 #+begin_src emacs-lisp
 (use-package! mixed-pitch
@@ -598,35 +603,35 @@ enabled.
 (use-package! delight
   :config
   (delight '(;; general
-             (whitespace-mode nil whitespace)
-             (vi-tilde-fringe-mode nil vi-tilde-fringe)
-             (ws-butler-mode nil ws-butler)
              (eldoc-mode nil eldoc)
              (gcmh-mode nil gcmh)
              (which-key-mode nil which-key)
              (better-jumper-local-mode nil better-jumper)
              (company-mode nil company)
-             (company-box-mode nil company-box)
              (paredit-mode nil paredit)
-             (ivy-mode nil ivy)
-             (ivy-posframe-mode nil ivy-posframe)
-             (org-roam-mode nil org-roam)
              (git-gutter-mode nil git-gutter)
-             (volatile-highlights-mode nil volatile-highlights)
-             (yas-minor-mode nil yasnippet)
              (abbrev-mode nil abbrev)
              (annotate-mode nil annotate)
-             (symbol-focus-mode nil symbol-focus)
+
+             ;; programming
              (lsp-lens-mode nil lsp-lens)
+             (whitespace-mode nil whitespace)
+             (ws-butler-mode nil ws-butler)
+             (yas-minor-mode nil yasnippet)
+
+             (mixed-pitch-mode nil mixed-pitch)
 
              ;; org
              (visual-line-mode nil simple)
+             (org-roam-mode nil org-roam)
              (org-indent-mode nil org-indent)
              (org-fancy-priorities-mode nil org-fancy-priorities)
              (writegood-mode nil writegood-mode)
+             (org-roam-bibtex-mode nil org-roam-bibtex)
 
              ;; clojure
              (clj-refactor-mode nil clj-refactor)
+             (symbol-focus-mode nil symbol-focus)
              (dtrt-indent-mode nil dtrt-indent))))
 #+end_src
 
