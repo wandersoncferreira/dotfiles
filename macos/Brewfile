@@ -67,6 +67,8 @@ cask "docker"
 # * emacs
 tap "railwaycat/emacsmacport"
 brew "railwaycat/emacsmacport/emacs-mac", args: ["with-mac-metal", "with-starter"]
+brew "fd" # required by Doom to speedup searches
+brew "shellcheck" # required by sh spell checking
 
 # * clojure & java
 tap "clojure/tools"
@@ -84,10 +86,13 @@ brew "borkdude/brew/babashka"
 cask "zulu-jdk11"
 cask "adoptopenjdk11"
 
+brew "clang-format"
+
 # * haskell
 brew "stack"
 brew "haskell-language-server"
 brew "ghc"
+brew "cabal"
 
 # * virtualization
 cask "utm"
@@ -111,3 +116,9 @@ brew "act"
 # * fonts
 brew "svn"
 brew "font-roboto"
+
+# * c
+brew "rcm"
+brew "glslang"
+brew "swig"
+brew "llvm"
