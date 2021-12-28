@@ -36,9 +36,11 @@ Talk to your kids about Emacs... before somebody else does.
 - [[#project][Project]]
   - [[#projectile][Projectile]]
 - [[#dired][Dired]]
+  - [[#functions][Functions]]
 - [[#completion][Completion]]
   - [[#company][Company]]
 - [[#appearance][Appearance]]
+  - [[#fonts][Fonts]]
   - [[#modeline][Modeline]]
   - [[#extra-functions][Extra functions]]
 - [[#window][Window]]
@@ -57,14 +59,20 @@ Talk to your kids about Emacs... before somebody else does.
     - [[#clojure-mode][Clojure Mode]]
     - [[#cider][CIDER]]
     - [[#clojure-refactor][Clojure Refactor]]
+    - [[#snippets][Snippets]]
     - [[#parenthesis][Parenthesis]]
     - [[#docs][Docs]]
-    - [[#auxiliary-functions-2][Auxiliary Functions]]
+    - [[#functions-1][Functions]]
   - [[#java][Java]]
     - [[#appearance-2][Appearance]]
   - [[#typescript][TypeScript]]
 - [[#org-mode][Org mode]]
   - [[#default][Default]]
+  -  [[#roam][Roam]]
+  - [[#org-ref][Org-ref]]
+  - [[#download][Download]]
+  - [[#latex-fragments][Latex fragments]]
+  - [[#notes-on-pdfs][Notes on PDFs]]
   - [[#easy-templates][Easy Templates]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
@@ -89,9 +97,9 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#irc][IRC]]
     - [[#twitch-irc][Twitch IRC]]
   - [[#ledger][Ledger]]
-    - [[#auxiliary-functions-3][Auxiliary Functions]]
+    - [[#auxiliary-functions-2][Auxiliary Functions]]
 - [[#authentication][Authentication]]
-  - [[#auxiliary-functions-4][Auxiliary functions]]
+  - [[#auxiliary-functions-3][Auxiliary functions]]
 - [[#patches][Patches]]
   - [[#doom][Doom]]
 - [[#work][Work]]
@@ -184,6 +192,34 @@ UTF-8
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
 #+end_src
+
+Delete selection
+#+begin_src emacs-lisp
+(delete-selection-mode +1)
+#+end_src
+
+Group digits to ease reading large numbers
+#+begin_src emacs-lisp
+(use-package! digit-groups
+  :config
+  (digit-groups-global-mode t))
+#+end_src
+
+#+begin_quote
+In recent times, a vicious beast known only as the "Unicode troll" has risen
+from the abyss, wielding his fearsome tool, the Unicode homoglyph. Looking
+nearly identical to common ASCII characters, these homoglyphs hide in code,
+lying in wait for an unsuspecting programmer to devour whole without warning.
+
+Don't be the next victim. Enable =unicode-troll-stopper-mode= and force these
+vicious beasts from the shadows in which they lurk.
+#+end_quote
+
+#+begin_src emacs-lisp
+(use-package! unicode-troll-stopper
+  :hook (prog-mode-hook . unicode-troll-stopper-mode))
+#+end_src
+
 
 Kill additional white spaces when joining lines
 #+begin_src emacs-lisp
@@ -413,6 +449,18 @@ Direct projectile to look for code in a specific folder.
 (setq projectile-project-search-path '("~/code"))
 #+end_src
 
+Remove the modeline indicator of Projectile.
+#+begin_src emacs-lisp
+(use-package! projectile
+  :delight projectile-mode)
+#+end_src
+
+Toggle between implementation and tests using the super key.
+#+begin_src emacs-lisp
+(map!
+ "s-t" #'projectile-toggle-between-implementation-and-test)
+#+end_src
+
 * Dired
 
 Change the default listing command in Dired to show file size in
@@ -424,6 +472,43 @@ Change the default listing command in Dired to show file size in
 Dired jump is indispensable nowadays
 #+begin_src emacs-lisp
 (map! "C-x C-j" #'dired-jump)
+#+end_src
+
+** Functions
+
+Sort dired listings with directories first
+#+begin_src emacs-lisp
+(defun bk/dired-directories-first ()
+  (save-excursion
+    (let (buffer-read-only)
+      (forward-line 2)
+      (sort-regexp-fields t "^.*$" "[ ]*." (point) (point-max)))
+    (set-buffer-modified-p nil)))
+
+(advice-add 'dired-readin :after #'bk/dired-directories-first)
+#+end_src
+
+fix the cursor positioning when we hit =C-<= and =C->= to beg/end of buffer.
+#+begin_src emacs-lisp
+(defun bk/dired-back-to-start-of-files ()
+  (interactive)
+  (backward-char (- (current-column) 2)))
+
+(defun bk/dired-back-to-top ()
+  (interactive)
+  (beginning-of-buffer)
+  (next-line 2)
+  (bk/dired-back-to-start-of-files))
+
+(defun bk/dired-back-to-bottom ()
+  (interactive)
+  (end-of-buffer)
+  (next-line -1)
+  (bk/dired-back-to-start-of-files))
+
+(map! :map dired-mode-map
+      "M-<" #'bk/dired-back-to-top
+      "M->" #'bk/dired-back-to-bottom)
 #+end_src
 
 * Completion
@@ -449,7 +534,7 @@ Doom comes with some nice themes. For now, I've been using Zenburn most of the
 time.
 
 #+begin_src emacs-lisp
-(setq doom-theme 'doom-zenburn
+(setq doom-theme 'kaolin-dark
       doom-font (font-spec :family "Monaco" :size 14)
       doom-themes-treemacs-theme "all-the-icons"
       fill-column 180
@@ -461,69 +546,46 @@ time.
   (setq doom-font (font-spec :family "Source Code Pro" :size 15))
   (setq doom-theme 'modus-operandi))
 
-;; delete selection
-(delete-selection-mode +1)
-
-;; uniquify
-(require 'uniquify)
-(setq uniquify-buffer-name-style 'forward)
-
 (add-hook 'emacs-lisp-mode-hook
           (lambda ()
             (outline-minor-mode -1)))
+#+end_src
 
-(defun bk/default-theme ()
-  "Change highlight colors when using the default white theme."
-  (set-face-attribute 'lazy-highlight nil :background "khaki1")
-  (set-face-attribute 'isearch nil :background "khaki1")
-  (set-face-attribute 'region nil :background "khaki1"))
+Highlight numbers
+#+begin_src emacs-lisp
+(use-package! highlight-numbers
+  :hook (prog-mode-hook . highlight-numbers-mode))
+#+end_src
 
-(defun bk/slate-gray-theme ()
-  "Slate Grat"
-  (interactive)
-  (set-background-color "DarkSlateGray")
-  (set-face-background 'mode-line "Wheat")
-  (set-face-foreground 'mode-line "DarkSlateGray")
-  (set-foreground-color "Wheat"))
-
-(defun what-face (pos)
-  (interactive "d")
-  (let ((face (or (get-char-property pos 'read-face-name)
-                  (get-char-property pos 'face))))
-    (if face (message "Face: %s" face) (message "No face at %d" pos))))
-
-;; hacky: avoid saving custom faces in custom.el files
-(defun custom-save-faces ()
-  "No-op"
-  (interactive))
-
-(defun bk/alect-themes-customizations ()
-  (custom-set-faces
-   ;; Your init file should contain only one such instance.
-   ;; If there is more than one, they won't work right.
-   '(font-lock-variable-name-face ((t (:foreground "#6a621b"))))
-   '(ivy-current-match ((t (:extend t :background "#b0d0f3" :foreground "#101010" :weight bold))))
-   '(lsp-lsp-flycheck-info-unnecessary-face ((t (:foreground "#2020cc" :underline (:color "dark orange" :style wave)))) t)))
-
-(defun bk/high-contrast-customizations ()
-  (custom-set-faces
-   '(mode-line ((t (:background "Gray75" :foreground "Black"))))
-   '(mode-line-buffer-id ((t (:background "Gray75" :foreground "blue4"))))
-   '(mode-line-mousable ((t (:background "Gray75" :foreground "firebrick"))))
-   '(mode-line-mousable-minor-mode ((t (:background "Gray75" :foreground "green4"))))))
-
-(defun bk/default-black-customizations ()
-  "Customizations to be used with default black theme in Doom Emacs"
-  (custom-set-faces
-   '(doom-modeline-buffer-path ((t (:foreground "black" :weight bold))))
-   '(doom-modeline-project-dir ((t (:foreground "black" :weight bold))))
-   '(doom-modeline-buffer-modified ((t (:foreground "Blue" :weight bold))))
-   '(success ((t (:foreground "ForestGreen" :weight bold))))))
+Change theme based on time of the day.
+#+begin_src emacs-lisp
+(use-package! theme-changer
+  :init
+  (setq calendar-location-name "Sao Paulo, BR"
+        calendar-latitude -23.550520
+        calendar-longitude -46.633308)
+  :config
+  (change-theme 'kaolin-light 'kaolin-dark))
 #+end_src
 
 Show column number in the modeline.
 #+begin_src emacs-lisp
 (column-number-mode +1)
+#+end_src
+
+Show size indication
+#+begin_src emacs-lisp
+(size-indication-mode t)
+#+end_src
+
+** Fonts
+
+Use proportional fonts
+#+begin_src emacs-lisp
+(use-package! mixed-pitch
+  :hook (org-mode . mixed-pitch-mode)
+  :config
+  (setq mixed-pitch-face 'variable-pitch))
 #+end_src
 
 ** Modeline
@@ -583,6 +645,62 @@ In some moods I like to have some level of transparency while coding.
               100)
          90
        100))))
+#+end_src
+
+Print what face is under the cursor
+#+begin_src emacs-lisp
+(defun what-face (pos)
+  (interactive "d")
+  (let ((face (or (get-char-property pos 'read-face-name)
+                  (get-char-property pos 'face))))
+    (if face (message "Face: %s" face) (message "No face at %d" pos))))
+#+end_src
+
+Hacky way to avoid saving faces in custom.el file.
+#+begin_src emacs-lisp
+(defun custom-save-faces ()
+  "No-op"
+  (interactive))
+#+end_src
+
+Customization to specific themes
+#+begin_src emacs-lisp
+(defun bk/default-theme ()
+  "Change highlight colors when using the default white theme."
+  (set-face-attribute 'lazy-highlight nil :background "khaki1")
+  (set-face-attribute 'isearch nil :background "khaki1")
+  (set-face-attribute 'region nil :background "khaki1"))
+
+(defun bk/slate-gray-theme ()
+  "Slate Grat"
+  (interactive)
+  (set-background-color "DarkSlateGray")
+  (set-face-background 'mode-line "Wheat")
+  (set-face-foreground 'mode-line "DarkSlateGray")
+  (set-foreground-color "Wheat"))
+
+(defun bk/alect-themes-customizations ()
+  (custom-set-faces
+   ;; Your init file should contain only one such instance.
+   ;; If there is more than one, they won't work right.
+   '(font-lock-variable-name-face ((t (:foreground "#6a621b"))))
+   '(ivy-current-match ((t (:extend t :background "#b0d0f3" :foreground "#101010" :weight bold))))
+   '(lsp-lsp-flycheck-info-unnecessary-face ((t (:foreground "#2020cc" :underline (:color "dark orange" :style wave)))) t)))
+
+(defun bk/high-contrast-customizations ()
+  (custom-set-faces
+   '(mode-line ((t (:background "Gray75" :foreground "Black"))))
+   '(mode-line-buffer-id ((t (:background "Gray75" :foreground "blue4"))))
+   '(mode-line-mousable ((t (:background "Gray75" :foreground "firebrick"))))
+   '(mode-line-mousable-minor-mode ((t (:background "Gray75" :foreground "green4"))))))
+
+(defun bk/default-black-customizations ()
+  "Customizations to be used with default black theme in Doom Emacs"
+  (custom-set-faces
+   '(doom-modeline-buffer-path ((t (:foreground "black" :weight bold))))
+   '(doom-modeline-project-dir ((t (:foreground "black" :weight bold))))
+   '(doom-modeline-buffer-modified ((t (:foreground "Blue" :weight bold))))
+   '(success ((t (:foreground "ForestGreen" :weight bold))))))
 #+end_src
 
 * Window
@@ -665,12 +783,6 @@ Also delete the workspace automatically if there is no buffers associated anymor
 (setq persp-autokill-persp-when-removed-last-buffer t)
 #+end_src
 
-Remove the modeline indicator of Projectile.
-#+begin_src emacs-lisp
-(use-package! projectile
-  :delight projectile-mode)
-#+end_src
-
 *** Change modeline workspace name
 
 Overwrite the Doom function that writes to the modeline.
@@ -679,7 +791,7 @@ Overwrite the Doom function that writes to the modeline.
       '(:eval
         (format
          (propertize
-          " #%.10s"
+          " #%.15s"
           'face (let ((persp (get-current-persp)))
                   (if persp
                       (if (persp-contain-buffer-p (current-buffer) persp)
@@ -695,35 +807,20 @@ Overwrite the Doom function that writes to the modeline.
 
 #+begin_src emacs-lisp
 (use-package! lsp-mode
-  :init
-  (setq lsp-enable-file-watchers t
-        lsp-enable-symbol-highlighting t
-        lsp-eldoc-enable-hover t
-        lsp-lens-enable t
-        lsp-idle-delay 0.1
-        lsp-headerline-breadcrumb-enable nil)
   :config
   (add-to-list 'lsp-file-watch-ignored-directories "classes")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\minio\\'")
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\terraform\\'")
-
-  (add-hook! 'lsp-before-open-hook
-    (remove-hook! 'lsp-completion-mode-hook #'+lsp-init-company-backends-h))
-
+  ;; fix "bug"
+  (advice-remove #'lsp #'+lsp-dont-prompt-to-install-servers-maybe-a)
+  
   (advice-add #'lsp-rename :after (lambda (&rest _) (projectile-save-project-buffers))))
 #+end_src
 
+Disable the reference marks in LSP.
 #+begin_src emacs-lisp
-(use-package! lsp-ui
-  :after lsp-mode
-  :commands lsp-ui-mode
-  :config
-  (setq lsp-ui-doc-max-width 60
-        lsp-ui-doc-position 'top
-        lsp-ui-doc-delay 0.2
-        lsp-ui-peek-list-width 60
-        lsp-ui-peek-fontify 'always
-        lsp-ui-sideline-show-code-actions nil))
+(after! lsp-mode
+  (setq lsp-lens-enable nil))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -813,34 +910,36 @@ warning message is very helpful.
   :after clojure-mode
   :init
   (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
-        cider-show-error-buffer t
-        cider-save-file-on-load t
-        cider-eldoc-display-for-symbol-at-point nil ;; use lsp
-        cider-repl-use-pretty-printing nil
-        cider-redirect-server-output-to-repl t
-        clojure-toplevel-inside-comment-form t
-        cider-clojure-cli-command "~/code/dotfiles/clojure/clojure-bin-enriched")
+        cider-clojure-cli-command "~/code/dotfiles/clojure/clojure-bin-enriched"
+        ;; cider-show-error-buffer t
+        ;; cider-save-file-on-load t
+        ;; cider-eldoc-display-for-symbol-at-point nil ;; use lsp
+        ;; cider-repl-use-pretty-printing nil
+        ;; cider-redirect-server-output-to-repl t
+        ;; clojure-toplevel-inside-comment-form t
+        )
   :config
-  (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
-  (add-hook 'cider-mode-hook
-            (lambda ()
-              ;; let's give LSP a chance.
-              (remove-hook 'completion-at-point-functions
-                           #'cider-complete-at-point)))
+  ;; (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
+  ;; (add-hook 'cider-mode-hook
+  ;;           (lambda ()
+  ;;             ;; let's give LSP a chance.
+  ;;             (remove-hook 'completion-at-point-functions
+  ;;                          #'cider-complete-at-point)))
 
-  (add-to-list
-   'display-buffer-alist
-   `(, (rx bos (or "*cider-repl"
-                   "*nrepl-server"
-                   "*cider-test-report*"
-                   "*cider-error"
-                   "*cider-result"))
-       (display-buffer-reuse-window
-        display-buffer-in-direction)
-       (direction . right)
-       (window .root)
-       (dedicated . nil)
-       (window-width . 0.25))))
+  ;; (add-to-list
+  ;;  'display-buffer-alist
+  ;;  `(, (rx bos (or "*cider-repl"
+  ;;                  "*nrepl-server"
+  ;;                  "*cider-test-report*"
+  ;;                  "*cider-error"
+  ;;                  "*cider-result"))
+  ;;      (display-buffer-reuse-window
+  ;;       display-buffer-in-direction)
+  ;;      (direction . right)
+  ;;      (window .root)
+  ;;      (dedicated . nil)
+  ;;      (window-width . 0.25)))
+  )
 #+end_src
 
 Working with =+workspace= enabled in DOOM makes a new workspace to be created
@@ -926,9 +1025,15 @@ and integrating it in clj-refactor.
   :after clojure-mode
   :config
   (setq cljr-warn-on-eval nil
-        cljr-eagerly-build-asts-on-startup nil
-        cljr-add-ns-to-blank-clj-files nil ;; use lsp
-        ))
+        cljr-eagerly-build-asts-on-startup t
+        cljr-add-ns-to-blank-clj-files t
+        cljr-magic-require-namespaces
+        '(("io" . "clojure.java.io")
+          ("set" . "clojure.set")
+          ("str" . "clojure.string")
+          ("walk" . "clojure.walk")
+          ("zip" . "clojure.zip")
+          ("m" . "muuntaja.core"))))
 #+end_src
 
 Magnars created this amazing code called =symbol-focus= to help refactoring
@@ -945,6 +1050,13 @@ isolation.
       "C-s-n" #'sf/next
       "C-s-p" #'sf/prev
       "C-s-r" #'sf/reset))
+#+end_src
+
+*** Snippets
+
+I am trying to rely more on snippets, they are life savers.
+#+begin_src emacs-lisp
+(use-package! clojure-snippets)
 #+end_src
 
 *** Parenthesis
@@ -964,7 +1076,7 @@ Let's enable Clojure docset for Dash.
 (set-docsets! 'clojure-mode "Clojure")
 #+end_src
 
-*** Auxiliary Functions
+*** Functions
 
 Execute clojure code and return the result as string
 #+begin_src emacs-lisp
@@ -992,6 +1104,28 @@ Find the PID of the current process
          (.getName)
          (clojure.string/split #\"@\")
          (first))")))
+#+end_src
+
+Clear all cider buffers
+#+begin_src emacs-lisp
+(defun bk/cider/clear-all-buffers ()
+  (interactive)
+  (let ((inhibit-read-only 't))
+    (dolist (repl (cider-repls))
+      (with-current-buffer repl
+        (cider-repl--clear-region (point-min) cider-repl-prompt-start-mark)
+        (cider-repl--clear-region cider-repl-output-start cider-repl-output-end)
+        (when (< (point) cider-repl-input-start-mark)
+          (goto-char cider-repl-input-start-mark))))))
+#+end_src
+
+Delete all cider REPL buffers
+#+begin_src emacs-lisp
+(defun bk/cider/kill-all-buffers ()
+  (interactive)
+  (dolist (b (buffer-list))
+    (when (string-prefix-p "*cider-repl" (buffer-name b))
+      (kill-buffer (buffer-name b)))))
 #+end_src
 
 ** Java
@@ -1042,17 +1176,11 @@ This auto formatting is not good :/
   :config
   (remove-hook 'org-mode-hook #'org-superstar-mode))
 
-(setq org-download-method 'directory)
-
 ;;; blog
 (setq org-hugo-base-dir "~/wandersoncferreira.github.io"
       org-hugo-section "items"
       org-hugo-front-matter-format "yaml")
 
-;; zettelkasten
-(if IS-MAC
-    (setq org-roam-directory "/Users/wferreir/roam-v2")
-  (setq org-roam-directory "/home/wanderson/zettelkasten"))
 
 (use-package! websocket
   :after org-roam)
@@ -1076,6 +1204,90 @@ This auto formatting is not good :/
   (add-to-list 'org-fc-custom-contexts
                '(comptia-QA . (:filter (tag "comptia-qa")))))
 
+#+end_src
+
+**  Roam
+
+Define the roam directory:
+#+begin_src emacs-lisp
+(use-package! org-roam
+  :config
+  (setq org-roam-directory "/Users/wferreir/roam-v2"
+        org-roam-dailies-directory "/Users/wferreir/roam-v2/dailies"))
+#+end_src
+
+** Org-ref
+makes it easy to insert citations, cross-references, indexes, and glossaries as
+hyper-functional links into org files.
+
+#+begin_src emacs-lisp
+(use-package! org-ref
+  :after org
+  :commands
+  (org-ref-cite-hydra/body
+   org-ref-bibtex-hydra/body)
+  :config
+  (setq org-ref-default-bibliography '("~/roam-v2/references.bib")
+        org-ref-show-broken-links nil
+        org-ref-pdf-directory "~/roam-v2/resources")
+  :bind
+  (:map org-mode-map
+   (("C-c ]" . org-ref-insert-link))))
+#+end_src
+
+Allow me to manage my bibliographical notes using Org Roam
+#+begin_src emacs-lisp
+(use-package! org-roam-bibtex
+  :after org-roam
+  :init
+  (setq bibtex-completion-bibliography '("~/roam-v2/references.bib")
+        bibtex-completion-library-path "~/roam-v2/resources")
+  :config
+  (org-roam-bibtex-mode))
+#+end_src
+
+** Download
+
+Let you screenshot and yank images from the web into your org buffer.
+#+begin_src emacs-lisp
+(use-package! org-download
+  :after org
+  :bind
+  (:map org-mode-map
+   (("s-Y" . org-download-screenshot)
+    ("s-y" . org-download-yank))))
+#+end_src
+
+** Latex fragments
+
+#+begin_src emacs-lisp
+(use-package! org-fragtog
+  :after org
+  :hook (org-mode . org-fragtog-mode))
+#+end_src
+
+** Notes on PDFs
+
+Enable pdf-tools
+#+begin_src emacs-lisp
+(pdf-tools-install)
+#+end_src
+
+
+#+begin_src emacs-lisp
+(use-package! org-noter
+  :after (:any org pdf-view)
+  :config (setq org-noter-hide-other nil
+                org-noter-notes-search-path (list "~/roam-v2")))
+
+(use-package! org-pdftools
+  :hook (org-load . org-pdftools-setup-link))
+
+(use-package! org-noter-pdftools
+  :after org-noter
+  :config
+  (with-eval-after-load 'pdf-annot
+    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
 #+end_src
 
 ** Easy Templates
@@ -1203,7 +1415,6 @@ Enabling disabled commands
  "C-x C-m" #'execute-extended-command
 
  ;; super keys
- "s-t" #'projectile-toggle-between-implementation-and-test
  "s-'" #'cycle-quotes
  "s-s" #'deadgrep
  "s-g" #'gh-notify

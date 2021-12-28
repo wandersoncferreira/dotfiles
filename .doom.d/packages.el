@@ -27,6 +27,8 @@
 (package! fix-word)
 (package! move-text)
 (package! cycle-quotes)
+(package! digit-groups)
+(package! unicode-troll-stopper)
 
 ;; window & buffers
 (package! rotate)
@@ -47,6 +49,8 @@
 (package! sublime-themes)
 (package! spacemacs-theme)
 (package! color-theme-modern)
+(package! theme-changer)
+(package! kaolin-themes)
 (package! treemacs-all-the-icons)
 
 ;; dired
@@ -59,10 +63,12 @@
 ;; lookup
 (package! request :disable t)
 
-;; unpin
+;; clojure
 (unpin! cider)
 (unpin! clojure-mode)
 (unpin! clj-refactor)
+(package! clojure-snippets)
+
 (unpin! parseclj)
 (unpin! treemacs)
 (unpin! magit forge)
@@ -79,9 +85,14 @@
 ;; pin
 (package! map :pin "bb50dba") ;; fix cider bug here https://github.com/clojure-emacs/cider/issues/3029
 
-;;; org roam
+;;; org
 (unpin! org-roam)
 (package! org-roam-ui)
+(package! mixed-pitch)
+(package! org-fragtog)
+(package! org-noter-pdftools)
+(package! org-ref)
+(package! org-roam-bibtex)
 
 ;; mode
 (package! graphql-mode)

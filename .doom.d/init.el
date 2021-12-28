@@ -62,8 +62,7 @@
 
  :lang
  cc
- (clojure
-  +lsp)
+ clojure
  emacs-lisp
  (haskell +lsp)
  json
