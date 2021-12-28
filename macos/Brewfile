@@ -107,3 +107,7 @@ brew "hugo"
 
 # * github
 brew "act"
+
+# * fonts
+brew "svn"
+brew "font-roboto"
