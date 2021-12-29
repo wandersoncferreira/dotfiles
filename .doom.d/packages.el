@@ -12,6 +12,7 @@
 ;; apps
 (package! pomidor)
 (package! annotate)
+(package! hackernews)
 
 ;; search
 (package! ripgrep)
@@ -108,4 +109,6 @@
 (package! keyfreq)
 
 ;;; spell
-(package! guess-language)
+ (package! lsp-grammarly)
+(package! keytar)
+(package! define-it)

@@ -9,8 +9,11 @@
 
 Emacs changes how you _think_ about computers.
 
+Emacs is a *mutable environment*. You can set variables, tweak functions with
+advice, or redefine entire functions. Nothing is off-limits.
+
 I believe software should be malleable and allow users to tinker and create
-something completely unpredictable by the creators of the original software.
+something unpredictable by the creators of the original software.
 Emacs is one of the few systems that allow us to do this.
 
 Talk to your kids about Emacs... before somebody else does.
@@ -32,11 +35,17 @@ Talk to your kids about Emacs... before somebody else does.
     - [[#auxiliary-functions-1][Auxiliary Functions]]
     - [[#bindings-1][Bindings]]
 - [[#search][Search]]
-- [[#spelling][Spelling]]
+- [[#writing][Writing]]
+  - [[#spell-fu-improvements][Spell fu improvements]]
+  - [[#grammarly][Grammarly]]
+  - [[#define-it][Define it]]
+  - [[#google-translate][Google translate]]
+  - [[#language-tool][Language Tool]]
+  - [[#functions][Functions]]
 - [[#project][Project]]
   - [[#projectile][Projectile]]
 - [[#dired][Dired]]
-  - [[#functions][Functions]]
+  - [[#functions-1][Functions]]
 - [[#completion][Completion]]
   - [[#vertico][Vertico]]
   - [[#company][Company]]
@@ -63,7 +72,7 @@ Talk to your kids about Emacs... before somebody else does.
     - [[#snippets][Snippets]]
     - [[#parenthesis][Parenthesis]]
     - [[#docs][Docs]]
-    - [[#functions-1][Functions]]
+    - [[#functions-2][Functions]]
   - [[#java][Java]]
     - [[#appearance-2][Appearance]]
   - [[#typescript][TypeScript]]
@@ -103,6 +112,7 @@ Talk to your kids about Emacs... before somebody else does.
     - [[#twitch][Twitch]]
   - [[#ledger][Ledger]]
     - [[#auxiliary-functions-2][Auxiliary Functions]]
+  - [[#hacker-news][Hacker News]]
 - [[#authentication][Authentication]]
   - [[#auxiliary-functions-3][Auxiliary functions]]
 - [[#patches][Patches]]
@@ -120,7 +130,7 @@ Define name and email.
       user-mail-address "wand@hey.com")
 #+end_src
 
-The line spacing configuration is something new to me, but makes emacs looks a
+The line spacing configuration is something new to me but makes Emacs looks a
 lot nicer!
 #+begin_src emacs-lisp
 (setq scroll-margin 2
@@ -141,15 +151,18 @@ Remove byte compilation warnings related to old =cl= library.
 (setq byte-compile-warnings '(cl-functions))
 #+end_src
 
-Learned this in my first week of Emacs with Magnars: real emacs knights don't
-use shift to mark things
+   When I started learning Emacs I found the great work of  Magnars.
+#+begin_quote
+ real emacs knights don't use shift to mark things
+#+end_quote
+
 #+begin_src emacs-lisp
 (setq shift-select-mode nil)
 #+end_src
 
-Uniquify buffer names dependent on file name. Emacs's traditional method for
-making buffer names unique is to add <2>, <3>, <4>, .... to the end of the
-buffer names.
+Uniquify buffer names dependent on the file name.
+
+The Emacs traditional method for making buffer names unique is to add <2>, <3>, <4>, and so on to the end of the buffer names.
 
 #+begin_src emacs-lisp
 (use-package! uniquify
@@ -381,8 +394,9 @@ Workaround to make =deadgrep= consider hidden folders and symlinks
 (advice-add 'deadgrep--arguments :filter-return #'deadgrep--include-args)
 #+end_src
 
-* Spelling
+* Writing
 
+** Spell fu improvements
 I am using the fast spell checkers =spell-fu= instead of =flyspell=. Something I
 miss from flyspell is the =flyspell-correct-previous= which kept the point in
 the same place but fixed the previous error.
@@ -412,21 +426,89 @@ Add the binding to the default =C-;=
  "C-;" #'bk/spell-fu-correct-previous)
 #+end_src
 
-I type in portuguese and english most of the time, therefore would be handy if Emacs could tell which one is it in the current buffer.
+Set my personal dictionary file path.
 #+begin_src emacs-lisp
-(use-package! guess-language
+(setq ispell-personal-dictionary "~/code/dotfiles/spell-fu-personal-dict")
+#+end_src
+
+** Grammarly
+
+I never used grammarly before, but seems like there is an unofficial server over
+LSP to interact with it. Let's give it a try
+#+begin_src emacs-lisp
+(use-package! lsp-grammarly
+  :defer t
+  :commands lsp-grammarly-check-grammar
+  :hook ((text-mode . lsp)
+         (markdown-mode . lsp))
+  :init
+  (setq lsp-grammarly-auto-activate nil
+        lsp-grammarly-domain "technical"
+        lsp-grammarly-audience "expert"))
+#+end_src
+
+Keytar package is required to login into grammarly account.
+#+begin_src emacs-lisp
+(use-package! keytar
+  :defer 5
+  :after lsp-grammarly
   :config
-  (setq guess-language-languages '(en pt)
-        guess-language-langcodes
-        '((en . ("en_US" "English"))
-          (pt . ("pt_BR" "Portuguese")))))
+  (require 'keytar))
 #+end_src
 
-Langtool is very useful to not native English speakers. You can download the jar from [[curl -o langtool.zip https://languagetool.org/download/LanguageTool-stable.zip && unzip langtool.zip][here]]
+** Define it
+
 #+begin_src emacs-lisp
-(setq langtool-language-tool-jar "~/Downloads/LanguageTool-5.5/languagetool-commandline.jar")
+(use-package! define-it
+  :defer t
+  :commands define-it-at-point
+  :config
+  (setq define-it-show-google-translate t
+        define-it-show-header nil
+        google-translate-default-source-language "auto"
+        google-translate-default-target-language "pt_BR"))
 #+end_src
 
+Jump to buffer when results are fetched
+#+begin_src emacs-lisp
+(defun define-it--find-buffer (x)
+  (let ((buf (format define-it--buffer-name-format define-it--current-word)))
+    (pop-to-buffer buf)))
+
+(advice-add 'define-it--in-buffer :after #'define-it--find-buffer)
+#+end_src
+
+Set popup rule to =define-it= buffer
+#+begin_src emacs-lisp
+(after! define-it
+  (set-popup-rule! "\\*define-it:" :side 'right))
+#+end_src
+
+** Google translate
+
+Fix bug in the package
+#+begin_src emacs-lisp
+(use-package google-translate
+  :ensure t
+  :custom
+  (google-translate-backend-method 'curl)
+  :config
+  (defun google-translate--search-tkk () "Search TKK." (list 430675 2721866130)))
+
+#+end_src
+
+** Language Tool
+Langtool is very useful to not native English speakers. You can download the jar
+
+#+begin_src shell :tangle no
+curl -o langtool.zip https://languagetool.org/download/LanguageTool-stable.zip && unzip langtool.zip
+#+end_src
+
+#+begin_src emacs-lisp
+(setq langtool-language-tool-jar "~/LanguageTool-5.5/languagetool-commandline.jar")
+#+end_src
+
+** Functions
 Change dictionary of Ispell
 #+begin_src emacs-lisp
 (defun bk/dict-pt ()
@@ -1328,10 +1410,22 @@ Let you screenshot and yank images from the web into your org buffer.
 #+begin_src emacs-lisp
 (use-package! org-download
   :after org
+  :init
+  (setq org-download-method 'directory
+        org-download-image-dir "~/org/images")
   :bind
   (:map org-mode-map
    (("s-Y" . org-download-screenshot)
     ("s-y" . org-download-yank))))
+#+end_src
+
+Function to insert header to resize images in Org buffers
+#+begin_src emacs-lisp
+(defun bk/org-resize-header ()
+  (interactive)
+  (insert "#+attr_latex: :width 500px")
+  (org-toggle-inline-images)
+  (org-toggle-inline-images))
 #+end_src
 
 ** Spaced Repetition
@@ -1472,10 +1566,17 @@ I'm the maintainer of this package
 
 * Key bindings
 
-Minor default changes
+Only display which-key panel on =C-h=
 #+begin_src emacs-lisp
-(setq which-key-idle-delay 0.4
-      tab-always-indent 'complete)
+(use-package! which-key
+  :config
+  (setq which-key-idle-delay 0.6
+        which-key-idle-secondary-delay 0.2))
+#+end_src
+
+Complete on tab.
+#+begin_src emacs-lisp
+(setq tab-always-indent 'complete)
 #+end_src
 
 Disabling =C-x p= because I really like to pop to mark with these keys.
@@ -1636,7 +1737,6 @@ recording GIFs to reproduce feature behaviors to new users a lot.
         gif-screencast-capture-format "ppm"))
 #+end_src
 
-
 ** PlantUML
 
 Drawing diagrams to put some form to your system design ideas? Yeap!
@@ -1644,7 +1744,6 @@ Drawing diagrams to put some form to your system design ideas? Yeap!
 #+begin_src emacs-lisp
 (setq plantuml-jar-path "~/code/dotfiles/plantuml.jar")
 #+end_src
-
 
 ** Keyfreq
 
@@ -1662,7 +1761,6 @@ the long run. More tips [[https://github.com/wandersoncferreira/vim-mindset-appl
   (keyfreq-autosave-mode +1))
 #+end_src
 
-
 ** VLF
 
 Help opening very large files.
@@ -1674,7 +1772,6 @@ Help opening very large files.
   (custom-set-variables
    '(vlf-application 'dont-ask)))
 #+end_src
-
 
 ** IRC
 
@@ -1711,7 +1808,6 @@ Get an oauth token from this website https://twitchapps.com/tmi/."
              :nick user
              :password pwd)))
 #+end_src
-
 
 ** Ledger
 
@@ -1769,6 +1865,14 @@ Formatting the whole ledger buffer to keep time sorting.
       (let ((curr-line (line-number-at-pos)))
         (ledger-mode-clean-buffer)
         (line-move (- curr-line 1)))))
+#+end_src
+
+** Hacker News
+
+A simple Hacker News Emacs client.
+#+begin_src emacs-lisp
+(use-package! hackernews
+  :commands hackernews)
 #+end_src
 
 * Authentication
@@ -1850,9 +1954,7 @@ If NOERROR is non-nil, don't throw an error if the file doesn't exist."
 
 * Work
 
-Every now and then I have to write some elisp code to help me in my work. I like
-to keep them organized to keep at least some context to where/why the function
-came to existence.
+Every so often I have to write some Elisp code to help me keep work more sane.
 
 ** App Sauce
 
