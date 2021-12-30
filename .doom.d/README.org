@@ -33,6 +33,7 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#bindings][Bindings]]
   - [[#abbreviations][Abbreviations]]
 - [[#search][Search]]
+  - [[#search-engines][Search Engines]]
 - [[#writing][Writing]]
   - [[#spell-fu-improvements][Spell fu improvements]]
   - [[#grammarly][Grammarly]]
@@ -62,8 +63,9 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#clojure][Clojure]]
   - [[#java][Java]]
   - [[#typescript][TypeScript]]
-- [[#org-mode][Org mode]]
   - [[#defaults][Defaults]]
+  - [[#agenda][Agenda]]
+  - [[#svg-tags][Svg tags]]
   -  [[#blog][Blog]]
   -  [[#roam][Roam]]
   - [[#org-ref][Org-ref]]
@@ -194,13 +196,6 @@ UTF-8
 Delete selection
 #+begin_src emacs-lisp
 (delete-selection-mode +1)
-#+end_src
-
-Group digits to ease reading large numbers
-#+begin_src emacs-lisp
-(use-package! digit-groups
-  :config
-  (digit-groups-global-mode t))
 #+end_src
 
 #+begin_quote
@@ -374,6 +369,40 @@ Workaround to make =deadgrep= consider hidden folders and symlinks
 (advice-add 'deadgrep--arguments :filter-return #'deadgrep--include-args)
 #+end_src
 
+** Search Engines
+
+Minor mode for defining and querying search engines through Emacs.
+
+#+begin_src emacs-lisp
+(use-package! engine-mode
+  :init
+  (engine-mode t)
+  :config
+  (defengine google
+    "https://www.google.com/search?q=%s"
+    :keybinding "g")
+
+  (defengine twitter
+    "https://twitter.com/search?q=%s"
+    :keybinding "t")
+
+  (defengine clojure
+    "https://clojuredocs.org/search?q=%s"
+    :keybinding "c")
+
+  (defengine libgen
+    "https://libgen.is/search.php?req=%s"
+    :keybinding "l")
+
+  (defengine rfcs
+    "https://pretty-rfc.herokuapp.com/search?q=%s"
+    :keybinding "r")
+
+  (defengine wikipedia
+    "http://www.wikipedia.org/search-redirect.php?language=en&go=Go&search=%s"
+    :keybinding "w"))
+#+end_src
+
 * Writing
 
 ** Spell fu improvements
@@ -404,11 +433,6 @@ Add the binding to the default =C-;=
 #+begin_src emacs-lisp
 (map!
  "C-;" #'bk/spell-fu-correct-previous)
-#+end_src
-
-Set my personal dictionary file path.
-#+begin_src emacs-lisp
-(setq ispell-personal-dictionary "~/code/dotfiles/spell-fu-personal-dict")
 #+end_src
 
 ** Grammarly
@@ -852,6 +876,13 @@ work.
 (add-hook 'org-shiftright-final-hook 'windmove-right)
 #+end_src
 
+Revert C-x 1 (=delete-other-window=) by pressing C-x 1 again
+#+begin_src emacs-lisp
+(use-package! zygospore
+  :config
+  (map! "C-x 1" #'zygospore-toggle-delete-other-windows))
+#+end_src
+
 ** Scroll
 
 Scrolling whole screens seems so weird to me. I like a predefined number of
@@ -1286,7 +1317,8 @@ This auto formatting is not good :/
 (setq-hook! 'typescript-mode-hook +format-with-lsp nil)
 #+end_src
 
-* Org mode
+*
+Org mode
 
 *You life in plain text*
 
@@ -1300,16 +1332,90 @@ more — in a fast and effective plain text system.
 
 #+begin_src emacs-lisp
 (use-package! org
-  :init
+  :config
   (setq org-return-follows-link t
         org-directory "~/org/"
         org-fontify-quote-and-verse-blocks nil
         org-fontify-whole-heading-line nil
-        org-hide-leading-stars nil
-        org-startup-indented nil
-        org-agenda-files (list "~/agenda/todo.org"))
+        org-startup-indented nil))
+#+end_src
+
+Create new keyword state
+#+begin_src emacs-lisp
+(setq org-todo-keywords
+      '((sequence "TODO(t)"
+                  "STARTED(s)"
+                  "NEXT(n)"
+                  "WAIT(w)"
+                  "TODAY(o)"
+                  "TO-READ"
+                  "|"
+                  "DONE(d)"
+                  "INACTIVE(i)"
+                  "FAIL(f)"
+                  "READ(r)"
+                  "CANCELED(c)")))
+#+end_src
+
+Set some colors to the new keywords
+#+begin_src emacs-lisp
+(setq org-todo-keyword-faces
+      '(("TODAY" . "purple")
+        ("TO-READ" . "deep sky blue")
+        ("NEXT" . "pink")
+        ("WAIT" . +org-todo-onhold)
+        ("CANCELED" . +org-todo-cancel)))
+#+end_src
+
+** Agenda
+
+Define the files containing agenda items.
+#+begin_src emacs-lisp
+(after! org
+  (setq org-agenda-files '("~/org/todo.org"
+                           "~/org/projects.org")))
+#+end_src
+
+Configure groups in org super agenda.
+#+begin_src emacs-lisp
+(use-package! org-super-agenda
+  :init
+  (setq org-super-agenda-groups
+        '((:name "Today"
+           :time-grid t
+           :todo "TODAY")
+          (:name "Important"
+           :tag "bills"
+           :priority "A")
+          (:name "To read"
+           :todo "TO-READ")))
+  :hook (org-agenda-mode . org-super-agenda-mode))
+#+end_src
+
+Use a dash to separate blocks in org agenda view.
+#+begin_src emacs-lisp
+(setq org-agenda-block-separator nil
+      org-agenda-skip-scheduled-if-done t
+      org-agenda-skip-deadline-if-done t
+      org-agenda-include-deadlines t
+      org-agenda-include-diary t)
+#+end_src
+
+** Svg tags
+
+A minor mode to replace keywords or regular expression with SVG tags.
+
+#+begin_src emacs-lisp
+(use-package! svg-tag-mode
+  :hook ((org-mode . svg-tag-mode))
   :config
-  (remove-hook 'org-mode-hook #'org-superstar-mode))
+  (setq svg-tag-tags
+        '(("\\(:[A-Z]+\\)\|[a-zA-Z#0-9]+:" . ((lambda (tag)
+                                                (svg-tag-make tag :beg 1 :inverse t
+                                                              :margin 1 :crop-right t))))
+          (":[A-Z]+\\(\|[a-zA-Z#0-9]+:\\)" . ((lambda (tag)
+                                                (svg-tag-make tag :beg 1 :end -1
+                                                              :margin 1 :crop-left t)))))))
 #+end_src
 
 **  Blog
@@ -1575,6 +1681,8 @@ Enabling disabled commands
 (set-register ?l '(file . "/Users/wferreir/ledger"))
 (set-register ?b '(file . "/Users/wferreir/code/dotfiles/macos/Brewfile"))
 (set-register ?c '(file . "/Users/wferreir/code/dotfiles/.doom.d/README.org"))
+(set-register ?t '(file . "/Users/wferreir/org/todo.org"))
+(set-register ?p '(file . "/Users/wferreir/org/projects.org"))
 #+end_src
 
 ** General

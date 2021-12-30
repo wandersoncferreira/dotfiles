@@ -18,6 +18,7 @@
 (package! ripgrep)
 (package! ag)
 (package! deadgrep)
+(package! engine-mode)
 
 ;; editor & movement
 (package! paredit)
@@ -35,6 +36,7 @@
 (package! rotate)
 (package! switch-buffer-functions)
 (package! windresize)
+(package! zygospore)
 
 ;; network
 (package! httprepl)
@@ -53,6 +55,7 @@
 (package! theme-changer)
 (package! kaolin-themes)
 (package! treemacs-all-the-icons)
+(package! svg-tag-mode)
 
 ;; dired
  (package! dired-imenu)
@@ -94,6 +97,7 @@
 (package! org-noter-pdftools)
 (package! org-ref)
 (package! org-roam-bibtex)
+(package! org-super-agenda)
 
 ;; mode
 (package! graphql-mode)
@@ -109,6 +113,6 @@
 (package! keyfreq)
 
 ;;; spell
- (package! lsp-grammarly)
+(package! lsp-grammarly)
 (package! keytar)
 (package! define-it)
