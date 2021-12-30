@@ -63,6 +63,7 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#clojure][Clojure]]
   - [[#java][Java]]
   - [[#typescript][TypeScript]]
+- [[#org-mode][Org mode]]
   - [[#defaults][Defaults]]
   - [[#agenda][Agenda]]
   - [[#svg-tags][Svg tags]]
@@ -1317,8 +1318,7 @@ This auto formatting is not good :/
 (setq-hook! 'typescript-mode-hook +format-with-lsp nil)
 #+end_src
 
-*
-Org mode
+* Org mode
 
 *You life in plain text*
 
