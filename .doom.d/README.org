@@ -95,9 +95,6 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#vlf][VLF]]
   - [[#irc][IRC]]
   - [[#ledger][Ledger]]
-  - [[#easy-templates-1][Easy Templates]]
-  - [[#custom-reports][Custom Reports]]
-  - [[#recurring-transactions][Recurring transactions]]
   - [[#hacker-news][Hacker News]]
 - [[#authentication][Authentication]]
   - [[#auxiliary-functions-1][Auxiliary functions]]
@@ -1936,7 +1933,7 @@ Better popup positioning
     ("^\\*Ledger Error"  :quit t :ttl 0)))
 #+end_src
 
-** Easy Templates
+*** Easy Templates
 Easy templates to ease getting transactions right in ledger files.
 #+begin_src emacs-lisp
 (defvar bk/org-ledger-card-template "%(format-time-string \"%Y-%m-%d\" (current-time)) %^{Payee}
@@ -1956,7 +1953,7 @@ Easy templates to ease getting transactions right in ledger files.
    :immediate-finish t))
 #+end_src
 
-** Custom Reports
+*** Custom Reports
 Some queries/reports that I usually follow in my ledger
 #+begin_src emacs-lisp
 (setq
@@ -1981,7 +1978,7 @@ Some queries/reports that I usually follow in my ledger
    ("account" "%(binary) -f %(ledger-file) reg %(account)")))
 #+end_src
 
-** Recurring transactions
+*** Recurring transactions
 
 Amazing to see a 8 years old project just working!
 
