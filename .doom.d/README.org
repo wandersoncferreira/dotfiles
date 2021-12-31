@@ -1340,31 +1340,39 @@ more — in a fast and effective plain text system.
         org-startup-indented nil))
 #+end_src
 
+Hide Org markup indicators
+#+begin_src emacs-lisp
+(after! org
+  (setq org-hide-emphasis-markers t))
+#+end_src
+
 Create new keyword state
 #+begin_src emacs-lisp
-(setq org-todo-keywords
-      '((sequence "TODO(t)"
-                  "STARTED(s)"
-                  "NEXT(n)"
-                  "WAIT(w)"
-                  "TODAY(o)"
-                  "TO-READ"
-                  "|"
-                  "DONE(d)"
-                  "INACTIVE(i)"
-                  "FAIL(f)"
-                  "READ(r)"
-                  "CANCELED(c)")))
+(after! org
+  (setq org-todo-keywords
+        '((sequence "TODO(t)"
+                    "STARTED(s)"
+                    "NEXT(n)"
+                    "WAIT(w)"
+                    "TODAY(o)"
+                    "TO-READ"
+                    "|"
+                    "DONE(d)"
+                    "INACTIVE(i)"
+                    "FAIL(f)"
+                    "READ(r)"
+                    "CANCELED(c)"))))
 #+end_src
 
 Set some colors to the new keywords
 #+begin_src emacs-lisp
-(setq org-todo-keyword-faces
-      '(("TODAY" . "purple")
-        ("TO-READ" . "deep sky blue")
-        ("NEXT" . "pink")
-        ("WAIT" . +org-todo-onhold)
-        ("CANCELED" . +org-todo-cancel)))
+(after! org
+  (setq org-todo-keyword-faces
+        '(("TODAY" . "purple")
+          ("TO-READ" . "deep sky blue")
+          ("NEXT" . "pink")
+          ("WAIT" . +org-todo-onhold)
+          ("CANCELED" . +org-todo-cancel))))
 #+end_src
 
 ** Agenda
@@ -1777,7 +1785,14 @@ I prefer to change Command to =meta=.
 #+begin_src emacs-lisp
 (when IS-MAC
   (setq mac-command-modifier 'meta
+        mac-right-option-modifier 'alt
         mac-option-modifier '(:ordinary super :button 2)))
+#+end_src
+
+Disable passing Control characters to the system, to avoid that =C-M-space= launches the Character viewer instead of running =mark-sexp=
+#+begin_src emacs-lisp
+(when IS-MAC
+  (setq mac-pass-control-to-system nil))
 #+end_src
 
 
@@ -1946,8 +1961,7 @@ Easy templates to ease getting transactions right in ledger files.
 
 (add-to-list
  'org-capture-templates
- `("lc" "CreditCard" plain (file ,(format "~/org/ledger/ledger-%s.dat" 2022 ;; (format-time-string "%Y")
-                                    )),
+ `("lc" "CreditCard" plain (file ,(format "~/org/ledger/ledger-%s.dat" (format-time-string "%Y"))),
    bk/org-ledger-card-template
    :empty-lines 1
    :immediate-finish t))
@@ -1970,7 +1984,7 @@ Some queries/reports that I usually follow in my ledger
    ("creta" "ledger [[ledger-mode-flags]] -f %(ledger-file) -X R$ --current bal ^expenses:car:creta ^equity:car:creta")
    ("networth" "ledger [[ledger-mode-flags]] -f %(ledger-file) -X R$ --current bal ^assets liabilities")
    ("spent-vs-earned" "ledger [[ledger-mode-flags]] -f %(ledger-file) bal -X BRL --period=\"last 4 weeks\" ^Expenses ^Income --invert -S amount")
-   ("budget" "ledger [[ledger-mode-flags]] -f %(ledger-file) -X R$ --current bal ^assets:bank:checking:budget liabilities:card")
+   ("budget" "ledger [[ledger-mode-flags]] -f %(ledger-file) -X R$ --current bal ^assets:bank:checking:budget liabilities:creditcard")
    ("taxes" "ledger [[ledger-mode-flags]] -f %(ledger-file) -R -X R$ --current bal ^expenses:taxes")
    ("bal" "%(binary) -f %(ledger-file) bal")
    ("reg" "%(binary) -f %(ledger-file) reg")
@@ -1989,7 +2003,6 @@ Amazing to see a 8 years old project just working!
   :config
   (add-hook 'ledger-mode-hook 'dklrt-AppendRecurringMaybe))
 #+end_src
-
 
 *** Functions
 
