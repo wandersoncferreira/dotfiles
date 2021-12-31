@@ -116,3 +116,6 @@
 (package! lsp-grammarly)
 (package! keytar)
 (package! define-it)
+
+;;; finance
+(package! dklrt)
