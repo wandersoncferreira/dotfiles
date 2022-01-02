@@ -98,6 +98,7 @@
 (package! org-ref)
 (package! org-roam-bibtex)
 (package! org-super-agenda)
+(package! citeproc-org)
 
 ;; mode
 (package! graphql-mode)

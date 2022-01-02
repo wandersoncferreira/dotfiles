@@ -1435,9 +1435,50 @@ A minor mode to replace keywords or regular expression with SVG tags.
 Using hugo to blog from time to time.
 
 #+begin_src emacs-lisp
-(setq org-hugo-base-dir "~/wandersoncferreira.github.io"
-      org-hugo-section "items"
-      org-hugo-front-matter-format "yaml")
+(after! org
+  (setq org-hugo-base-dir "~/code/wandersoncferreira.github.io"
+        org-hugo-section "items"
+        org-hugo-front-matter-format "yaml"))
+#+end_src
+
+I am using =org-roam= to write my blog posts directly from there. However, I don't
+want to cross-reference other org roam notes. The next advice function will
+change every cross-reference to a bold statement. For the readers of the blog,
+these references are equivalent to things that I want to shout.
+#+begin_src emacs-lisp
+(defun bk/handle-org-roam-link-as-bold (orig &rest args)
+  (let* ((link (car args))
+         (raw-path (org-element-property :path link))
+         (desc (cadr args))
+         (info (caddr args))
+         (type (org-element-property :type link)))
+    (setq testando args)
+    (cond
+     ((member type '("custom-id" "id"))
+      (let ((destination (org-export-resolve-id-link link info)))
+        (prin1 (format "DESTI: %s\n" (string-equal
+                                      (file-name-directory (org-id-find-id-file raw-path))
+                                      (expand-file-name org-hugo-base-dir))))
+        (pcase (org-element-type destination)
+          (`plain-text
+           (if (not (string-equal (file-name-directory (org-id-find-id-file raw-path))
+                                  (expand-file-name org-hugo-base-dir)))
+               (format "**%s**" desc)
+             (apply orig args)))
+          (t
+           (apply orig args)))))
+     (t
+      (apply orig args)))))
+
+(advice-add 'org-hugo-link :around #'bk/handle-org-roam-link-as-bold)
+#+end_src
+
+Export org-ref citations to hugo compatible markdown via =citeproc-org=
+#+begin_src emacs-lisp
+(use-package! citeproc-org
+  :after ox-hugo
+  :config
+  (citeproc-org-setup))
 #+end_src
 
 **  Roam

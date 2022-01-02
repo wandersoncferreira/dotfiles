@@ -9,7 +9,7 @@
  :input
 
  :completion
- company
+ (company +childframe)
  (vertico +icons)
 
  :ui
@@ -32,7 +32,7 @@
  snippets
 
  :emacs
- dired
+ (dired +icons)
  electric
  vc
 
@@ -40,7 +40,7 @@
  eshell
 
  :checkers
- syntax
+ (syntax +childframe)
  (spell
   +aspell
   +everywhere)
@@ -74,7 +74,8 @@
   +roam2
   +present
   +pretty
-  +dragndrop)
+  +dragndrop
+  +hugo)
  plantuml
  rest
  sh
