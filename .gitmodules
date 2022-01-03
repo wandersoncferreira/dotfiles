@@ -7,3 +7,6 @@
 [submodule ".doom.d/sources/github-review"]
 	path = .doom.d/sources/github-review
 	url = git@github.com:wandersoncferreira/github-review.git
+[submodule ".doom.d/sources/goto-chg"]
+	path = .doom.d/sources/goto-chg
+	url = git@github.com:wandersoncferreira/goto-chg.git

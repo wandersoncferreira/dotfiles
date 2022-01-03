@@ -29,7 +29,8 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#enable-the-disabled-commands][Enable the disabled commands]]
 - [[#editing][Editing]]
   - [[#iedit][iEdit]]
-  - [[#auxiliary-functions][Auxiliary Functions]]
+  - [[#goto-chg][Goto chg]]
+  - [[#functions][Functions]]
   - [[#bindings][Bindings]]
   - [[#abbreviations][Abbreviations]]
 - [[#search][Search]]
@@ -40,18 +41,18 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#define-it][Define it]]
   - [[#google-translate][Google translate]]
   - [[#language-tool][Language Tool]]
-  - [[#functions][Functions]]
+  - [[#functions-1][Functions]]
 - [[#project][Project]]
   - [[#projectile][Projectile]]
 - [[#dired][Dired]]
-  - [[#functions-1][Functions]]
+  - [[#functions-2][Functions]]
 - [[#completion][Completion]]
   - [[#vertico][Vertico]]
   - [[#company][Company]]
 - [[#appearance][Appearance]]
   - [[#fonts][Fonts]]
   - [[#modeline][Modeline]]
-  - [[#extra-functions][Extra functions]]
+  - [[#functions-3][Functions]]
 - [[#window][Window]]
   - [[#moving-between-windows][Moving between windows]]
   - [[#scroll][Scroll]]
@@ -86,7 +87,7 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#parenthesis][Parenthesis]]
 - [[#shell][Shell]]
   - [[#eshell][Eshell]]
-- [[#macos-specifics][MacOS specifics]]
+- [[#macos][MacOS]]
   - [[#homebrew][Homebrew]]
 - [[#apps][Apps]]
   - [[#gif][Gif]]
@@ -97,7 +98,7 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#ledger][Ledger]]
   - [[#hacker-news][Hacker News]]
 - [[#authentication][Authentication]]
-  - [[#auxiliary-functions-1][Auxiliary functions]]
+  - [[#auxiliary-functions][Auxiliary functions]]
 - [[#patches][Patches]]
   - [[#doom][Doom]]
 - [[#work][Work]]
@@ -258,7 +259,22 @@ Copy and cut single line when no region available.
   ("C-." . iedit-mode))
 #+end_src
 
-** Auxiliary Functions
+** Goto chg
+
+Goto last change in current buffer. Repeat to go to earlier changes. Negative
+arg to go back to more recent changes. With argument 0 (=C-u 0=) you get a
+description of the change that was done at every changed position.
+
+#+begin_src emacs-lisp
+(use-package! goto-chg
+  :load-path "~/.doom.d/sources/goto-chg"
+  :config
+  (map!
+   "C-." #'goto-last-change
+   "C-," #'goto-last-change-reverse))
+#+end_src
+
+** Functions
 
 #+begin_src emacs-lisp
 (defun bk/point-to-register ()
@@ -326,7 +342,7 @@ Default global table
     ))
 #+end_src
 
-*** Auxiliary Functions
+*** Functions
 
 #+begin_src emacs-lisp
 (defun bk/add-region-local-abbrev (start end)
@@ -722,15 +738,15 @@ Show size indication
 
 ** Fonts
 
-Set default fonts in Doom
+Download font using homebrew =brew install font-libre-baskerville=
+
+Set default fonts in Doom.
 #+begin_src emacs-lisp
 (setq doom-font (font-spec :family "Monaco" :size 14)
-      doom-variable-pitch-font (font-spec :family "Roboto"
-                                          :style "Regular"
-                                          :size 14
-                                          :weight 'regular)
+      doom-variable-pitch-font (font-spec :family "Libre Baskerville")
       doom-unicode-font (font-spec :family "Apple Color Emoji"))
 #+end_src
+
 
 Use proportional fonts
 #+begin_src emacs-lisp
@@ -782,7 +798,7 @@ enabled.
              (dtrt-indent-mode nil dtrt-indent))))
 #+end_src
 
-** Extra functions
+** Functions
 
 In some moods I like to have some level of transparency while coding.
 #+begin_src emacs-lisp
@@ -1205,10 +1221,10 @@ isolation.
   (add-hook 'prog-mode-hook #'symbol-focus-mode)
 
   (map! :map symbol-focus-mode-map
-      "C-s-b" #'sf/back
-      "C-s-n" #'sf/next
-      "C-s-p" #'sf/prev
-      "C-s-r" #'sf/reset))
+        "C-s-b" #'sf/back
+        "C-s-n" #'sf/next
+        "C-s-p" #'sf/prev
+        "C-s-r" #'sf/reset))
 #+end_src
 
 *** Snippets
@@ -1335,8 +1351,8 @@ more — in a fast and effective plain text system.
   :config
   (setq org-return-follows-link t
         org-directory "~/org/"
-        org-fontify-quote-and-verse-blocks nil
-        org-fontify-whole-heading-line nil
+        org-fontify-quote-and-verse-blocks t
+        org-fontify-whole-heading-line t
         org-startup-indented nil))
 #+end_src
 
@@ -1571,7 +1587,7 @@ Function to insert header to resize images in Org buffers
 
 We can produce cards to perform spaced repetition study technique
 #+begin_src emacs-lisp
-(use-package org-fc
+(use-package! org-fc
   :load-path "~/.doom.d/sources/org-fc"
   :custom (org-fc-directories '("~/roam-v2"))
   :config
@@ -1680,7 +1696,7 @@ I hack-ed my way out of Forge to create Draft PullRequests too
 *** Notifications
 
 #+begin_src emacs-lisp
-(use-package gh-notify
+(use-package! gh-notify
   :load-path "~/.doom.d/sources/gh-notify"
   :config
   (setq gh-notify-redraw-on-visit t))
@@ -1690,17 +1706,17 @@ I hack-ed my way out of Forge to create Draft PullRequests too
 
 I'm the maintainer of this package
 #+begin_src emacs-lisp
-(use-package code-review
+(use-package! code-review
   :load-path "~/code/code-review"
   :defer t
   :commands (code-review-start
              code-review-forge-pr-at-point)
   :config
   (map! :map forge-post-mode-map
-      "C-c C-d" #'bk/post-draft-pull-request
+        "C-c C-d" #'bk/post-draft-pull-request
 
-      :map forge-topic-mode-map
-      "C-c r" #'code-review-forge-pr-at-point))
+        :map forge-topic-mode-map
+        "C-c r" #'code-review-forge-pr-at-point))
 #+end_src
 
 * Key bindings
@@ -1730,6 +1746,37 @@ Enabling disabled commands
 
 ** Registers
 
+Emacs registers are compartments where you can save text, rectangles, positions,
+and other things for later use. Once you save text or rectangle in a register,
+you can copy it into the buffer once or many times, once you save a position in
+a register, you can jump back to that position once or many times.
+
+For more information =C-h r i=.
+
+| command             | description                         |
+|---------------------+-------------------------------------|
+| M-x view-register R | see what register R contains        |
+| C-x r s             | save region to register             |
+| C-x r i             | insert text from a register         |
+| C-x r n             | record a number defaults to 0       |
+| C-x r +             | increment a number from register    |
+| C-x r SPC           | record a position into register     |
+| C-x r j             | jump to positions or windows config |
+| C-x r w             | save a window configuration         |
+| C-x r f             | save a frame configuration          |
+
+The way to specify a number is to use an universal argument e.g. =C-u <number>
+C-x n=
+
+Clean all the registers you saved.
+#+begin_src emacs-lisp
+(defun bk/clear-registers ()
+  "Remove all saved registers."
+  (interactive)
+  (setq register-alist nil))
+#+end_src
+
+Default registers that are very useful to my daily usage.
 #+begin_src emacs-lisp
 (set-register ?l `(file . ,(format "/Users/wferreir/org/ledger/ledger-%s.dat" (format-time-string "%Y"))))
 (set-register ?b '(file . "/Users/wferreir/code/dotfiles/macos/Brewfile"))
@@ -1775,11 +1822,7 @@ Enabling disabled commands
 
  ;; movement
  "C-:" #'avy-goto-char
- "M-g w" #'avy-goto-word-1
-
- ;; completion
- "C-." #'completion-at-point
- )
+ "M-g w" #'avy-goto-word-1)
 #+end_src
 
 ** Parenthesis
@@ -1819,10 +1862,9 @@ Clean buffer with =C-l=
             (local-set-key (kbd "C-l") 'eshell-clear-buffer)))
 #+end_src
 
-* MacOS specifics
+* MacOS
 
 I prefer to change Command to =meta=.
-
 #+begin_src emacs-lisp
 (when IS-MAC
   (setq mac-command-modifier 'meta
@@ -1835,7 +1877,6 @@ Disable passing Control characters to the system, to avoid that =C-M-space= laun
 (when IS-MAC
   (setq mac-pass-control-to-system nil))
 #+end_src
-
 
 ** Homebrew
 

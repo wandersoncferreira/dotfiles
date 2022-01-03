@@ -9,7 +9,7 @@
  :input
 
  :completion
- (company +childframe)
+ (company)
  (vertico +icons)
 
  :ui
@@ -40,7 +40,7 @@
  eshell
 
  :checkers
- (syntax +childframe)
+ (syntax)
  (spell
   +aspell
   +everywhere)
