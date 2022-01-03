@@ -1,0 +1,30 @@
+* Blogs                                                               :blogs:
+  :PROPERTIES:
+  :ID:       elfeed
+  :END:
+
+** Software Development                                                 :dev:
+*** General                                                         :general:
+**** [[https://eli.thegreenplace.net/feeds/all.atom.xml][The Green Place]]
+**** [[http://feeds.feedburner.com/thoughtsfromtheredplanet?format=xml][Thoughts from the red planet]]
+
+*** Emacs                                                    :emacs:mustread:
+**** [[http://planet.emacsen.org/atom.xml][Planet Emacsen]]
+**** [[https://nullprogram.com/feed/][Null Program]]
+**** [[https://www.youtube.com/feeds/videos.xml?channel_id=UC0uTPqBCFIpZxlz_Lv1tk_g][Protesilaos]]                                                    :youtube:
+**** [[http://sachachua.com/blog/category/emacs/feed][Sacha]]
+
+*** Clojure                                                         :clojure:
+**** [[http://tonsky.me/blog/atom.xml][Nikita]]
+**** [[https://betweentwoparens.com/rss.xml][Between Two Parens]]
+
+** Comics                                                            :comics:
+*** [[https://xkcd.com/atom.xml][XKCD]]
+
+** Finance                                                          :finance:
+*** [[https://www.npr.org/rss/podcast.php?id=510289][Planet Money]]                                                    :podcast:
+
+** Cinema                                                           :cultura:
+*** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCErSSa3CaP_GJxmFpdjG9Jw][Lessons from the Screen Play]]                                    :youtube:
+
+** News                                                                :news:

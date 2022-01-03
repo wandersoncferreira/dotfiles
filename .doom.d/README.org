@@ -97,6 +97,7 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#irc][IRC]]
   - [[#ledger][Ledger]]
   - [[#hacker-news][Hacker News]]
+  - [[#rss][RSS]]
 - [[#authentication][Authentication]]
   - [[#auxiliary-functions][Auxiliary functions]]
 - [[#patches][Patches]]
@@ -2117,6 +2118,18 @@ A simple Hacker News Emacs client.
 #+begin_src emacs-lisp
 (use-package! hackernews
   :commands hackernews)
+#+end_src
+
+** RSS
+
+I like to read about programming, but Emacs and Clojure are by far the most
+interesting communities I know so far, therefore, my feeds have many links about
+these subjects.
+
+#+begin_src emacs-lisp
+(after! elfeed
+  (setq rmh-elfeed-org-files (list "~/.doom.d/elfeed.org")
+        rmh-elfeed-org-tree-id "elfeed"))
 #+end_src
 
 * Authentication
