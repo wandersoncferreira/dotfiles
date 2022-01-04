@@ -2,6 +2,13 @@
   :PROPERTIES:
   :ID:       elfeed
   :END:
+** General
+*** [[https://shkspr.mobi/blog/feed/atom/][Terence Eden]]
+*** [[https://edwardsnowden.substack.com/feed][Continuing Ed]]
+*** [[https://fasterthanli.me/index.xml][Faster Than Li.me]]
+*** [[https://danluu.com/atom.xml][Dan Luu]]
+*** [[https://mjtsai.com/blog/feed/][Michael Tsai]]
+*** [[https://desmondrivet.com/feeds/blog.rss][Desmond Rivet]]
 
 ** Software Development                                                 :dev:
 *** General                                                         :general:
@@ -26,5 +33,3 @@
 
 ** Cinema                                                           :cultura:
 *** [[https://www.youtube.com/feeds/videos.xml?channel_id=UCErSSa3CaP_GJxmFpdjG9Jw][Lessons from the Screen Play]]                                    :youtube:
-
-** News                                                                :news:
