@@ -71,6 +71,7 @@ Talk to your kids about Emacs... before somebody else does.
   -  [[#blog][Blog]]
   -  [[#roam][Roam]]
   - [[#org-ref][Org-ref]]
+  - [[#habits][Habits]]
   - [[#download][Download]]
   - [[#spaced-repetition][Spaced Repetition]]
   - [[#latex-fragments][Latex fragments]]
@@ -1559,6 +1560,36 @@ hyper-functional links into org files.
   (:map org-mode-map
    (("C-c ]" . org-ref-insert-link))))
 #+end_src
+
+** Habits
+
+Emacs org-habits function enables you to:
+
+- specify any number of habits, each with different, sometimes less regular frequencies
+- track when you perform a habit and when you should next perform it and finally
+- to visualize if you are performing according to the specifications you have set
+
+  #+begin_src emacs-lisp
+(add-to-list 'org-modules 'org-habit t)
+  #+end_src
+
+Highlights from the official documentation on [[https://orgmode.org/manual/Repeated-tasks.html][repeated tasks]]. Some tasks need to
+be repeated again and again, org helps to organize such tasks using a so-called repeater in a =DEADLINE=, =SCHEDULE= or plain timestamps.
+
+#+begin_quote
+ ** TODO Pay the rent
+    DEADLINE: <2020-04-21 Tue +1m>
+#+end_quote
+
+The =+1m= is repeater; the intended interpretation is that the task has a deadline
+on 2020/04/21 and repeats itself every (one) month.
+
+| repeater | periodicity |
+|----------+-------------|
+| y        | yearly      |
+| w        | weekly      |
+| d        | daily       |
+| h        | hourly      |
 
 ** Download
 
