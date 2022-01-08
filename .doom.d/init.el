@@ -14,6 +14,8 @@
 
  :ui
  doom
+ doom-dashboard
+ modeline
  (emoji +github)
  hl-todo
  (popup
@@ -22,7 +24,6 @@
  (treemacs +lsp)
  vc-gutter
  (window-select +numbers)
- workspaces
 
  :editor
  file-templates

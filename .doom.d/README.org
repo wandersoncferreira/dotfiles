@@ -46,13 +46,18 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#projectile][Projectile]]
 - [[#dired][Dired]]
   - [[#functions-2][Functions]]
+- [[#tabs][Tabs]]
+  - [[#better-ui][Better UI]]
+  - [[#fix-vertico-switch-buffer][Fix Vertico switch-buffer]]
+  - [[#fix-doom-modeline][Fix Doom Modeline]]
+  - [[#functions-3][Functions]]
 - [[#completion][Completion]]
   - [[#vertico][Vertico]]
   - [[#company][Company]]
 - [[#appearance][Appearance]]
   - [[#fonts][Fonts]]
   - [[#modeline][Modeline]]
-  - [[#functions-3][Functions]]
+  - [[#functions-4][Functions]]
 - [[#window][Window]]
   - [[#moving-between-windows][Moving between windows]]
   - [[#scroll][Scroll]]
@@ -621,6 +626,282 @@ fix the cursor positioning when we hit =C-<= and =C->= to beg/end of buffer.
       "M->" #'bk/dired-back-to-bottom)
 #+end_src
 
+* Tabs
+
+I will try to make =tab-bar-mode= works with my configuration. Seems promising but
+also requires a lot of manual configuration.
+
+
+#+begin_src emacs-lisp
+(use-package! tab-bar
+  :if (not (version< emacs-version "27.0"))
+  :commands (tab-bar-new-tab
+             tab-bar-switch-to-next-tab
+             tab-bar-switch-to-prev-tab)
+  :hook ((after-init . bk/tab-bar-setup))
+  :custom-face (tab-bar-tab ((t (:inherit doom-modeline-panel
+                                 :foreground nil
+                                 :background nil))))
+  :init
+  (setq tab-bar-show t
+        tab-bar-new-button-show nil
+        tab-bar-close-button-show nil
+        tab-bar-tab-hints nil
+        tab-bar-separator "  "
+        tab-bar-new-tab-choice "*scratch*"
+        tab-bar-new-tab-to 'rightmost
+        tab-bar-tab-name-function #'bk/name-tab-by-project-or-default)
+  :bind
+  (("C-x t c" . bk/tab-bar-create)
+   ("C-x t n" . tab-next)
+   ("C-x t p" . tab-previous)
+   ("C-x b" . bk/switch-tab-bar-buffer)
+   ("C-x B" . bk/tab-bar-find-buffer-in-tabs))
+  :config
+  (tab-bar-mode +1)
+  (tab-bar-history-mode +1))
+#+end_src
+
+And this will be my initial tab bar setup.
+#+begin_src emacs-lisp
+(defun bk/tab-bar-setup ()
+  ;; Tab 1
+  (when (get-buffer "*Messages*")
+    (set-frame-parameter nil
+                         'buffer-list
+                         (cons (get-buffer "*Messages*")
+                               (frame-parameter nil 'buffer-list))))
+  ;; Tab 2
+  (progn (bk/tab-bar-create)
+         (tab-bar-rename-tab "EmacsConf")
+         (find-file (concat doom-private-dir "README.org")))
+
+  ;; Tab 3
+  (progn (bk/tab-bar-create)
+         (tab-bar-rename-tab "Agenda")
+         (org-agenda nil "a"))
+
+  (bk/tab-bar-select-tab-3))
+#+end_src
+
+#+begin_src emacs-lisp
+(defvar bk/tab-bar-create-permitted-buffer-names
+  '("*scratch*" "*Messages*")
+  "List of buffer names kept by `bk/tab-bar-create'.")
+#+end_src
+
+#+begin_src emacs-lisp
+(defun bk/tab-bar-create (&optional arg)
+  "Create a new tab with cleaned buffer lists.
+ARG is directly passed to `tab-bar-new-tab'.
+Only buffers in `bk/tab-bar-create-permitted-buffer-names'
+are kept kept in the `buffer-list' and `buried-buffer-list'."
+  (interactive)
+  (tab-bar-new-tab arg)
+  ;; https://www.gnu.org/software/emacs/manual/html_node/elisp/Current-Buffer.html
+  ;; The current-tab uses `buffer-list' and `buried-buffer-list'.
+  ;; A hidden tab keeps these as `wc-bl' and `wc-bbl'.
+  (set-frame-parameter nil
+                       'buffer-list
+                       (seq-filter (lambda (buffer)
+                                     (member (buffer-name buffer)
+                                             bk/tab-bar-create-permitted-buffer-names))
+                                   (frame-parameter nil 'buffer-list)))
+  (set-frame-parameter nil
+                       'buried-buffer-list
+                       (seq-filter (lambda (buffer)
+                                     (member (buffer-name buffer)
+                                             bk/tab-bar-create-permitted-buffer-names))
+                                   (frame-parameter nil 'buried-buffer-list))))
+#+end_src
+
+#+begin_src emacs-lisp
+(defun bk/create-tab-bar-select-tab (num)
+  `(lambda ()
+     (interactive)
+     (tab-bar-select-tab ,num)))
+#+end_src
+
+#+begin_src emacs-lisp
+(setf (symbol-function 'bk/tab-bar-select-tab-1) (bk/create-tab-bar-select-tab 1))
+(setf (symbol-function 'bk/tab-bar-select-tab-2) (bk/create-tab-bar-select-tab 2))
+(setf (symbol-function 'bk/tab-bar-select-tab-3) (bk/create-tab-bar-select-tab 3))
+#+end_src
+
+Using project name as tab name if the new buffer is in a project.
+#+begin_src emacs-lisp
+(defun bk/name-tab-by-project-or-default ()
+  "Return project name if in a project."
+  (let ((project-name (projectile-project-name)))
+    (if (string= "-" project-name)
+        (tab-bar-tab-name-current)
+      project-name)))
+#+end_src
+
+** Better UI
+
+Change the default colors from the tab-bar panel in the topmost portion of the
+buffer to get better visual information on what tab is current selected.
+
+This is very hacky! The version of emacs I use do not have the new variable
+called =tab-bar-tab-name-format-function= used to format the shape of the string
+displayed as the tab name, therefore I am overwriting the entire function
+responsible for that in my current version.
+
+FIXME: Verify if I can remove this function in favor of
+=tab-bar-tab-name-format-function= in future Emacs MacPort releases.
+#+begin_src emacs-lisp
+(after! tab-bar
+  (defun tab-bar-make-keymap-1 ()
+    "Generate an actual keymap from `tab-bar-map', without caching."
+    (let* ((separator (or tab-bar-separator (if window-system " " "|")))
+           (i 0)
+           (tabs (funcall tab-bar-tabs-function)))
+      (append
+       '(keymap (mouse-1 . tab-bar-handle-mouse))
+       (when tab-bar-history-mode
+         `((sep-history-back menu-item ,separator ignore)
+           (history-back
+            menu-item ,tab-bar-back-button tab-bar-history-back
+            :help "Click to go back in tab history")
+           (sep-history-forward menu-item ,separator ignore)
+           (history-forward
+            menu-item ,tab-bar-forward-button tab-bar-history-forward
+            :help "Click to go forward in tab history")))
+       (mapcan
+        (lambda (tab)
+          (setq i (1+ i))
+          (append
+           `((,(intern (format "sep-%i" i)) menu-item ,separator ignore))
+           (cond
+            ((eq (car tab) 'current-tab)
+             `((current-tab
+                menu-item
+                ,(propertize (concat (if tab-bar-tab-hints (format "%d " i) "")
+                                     "🔥"
+                                     (alist-get 'name tab)
+                                     (or (and tab-bar-close-button-show
+                                              (not (eq tab-bar-close-button-show
+                                                       'non-selected))
+                                              tab-bar-close-button) ""))
+                             'face 'tab-bar-tab)
+                ignore
+                :help "Current tab")))
+            (t
+             `((,(intern (format "tab-%i" i))
+                menu-item
+                ,(propertize (concat (if tab-bar-tab-hints (format "%d " i) "")
+                                     (alist-get 'name tab)
+                                     (or (and tab-bar-close-button-show
+                                              (not (eq tab-bar-close-button-show
+                                                       'selected))
+                                              tab-bar-close-button) ""))
+                             'face 'tab-bar-tab-inactive)
+                ,(or
+                  (alist-get 'binding tab)
+                  `(lambda ()
+                     (interactive)
+                     (tab-bar-select-tab ,i)))
+                :help "Click to visit tab"))))
+           `((,(if (eq (car tab) 'current-tab) 'C-current-tab (intern (format "C-tab-%i" i)))
+              menu-item ""
+              ,(or
+                (alist-get 'close-binding tab)
+                `(lambda ()
+                   (interactive)
+                   (tab-bar-close-tab ,i)))))))
+        tabs)
+       `((sep-add-tab menu-item ,separator ignore))
+       (when (and tab-bar-new-button-show tab-bar-new-button)
+         `((add-tab menu-item ,tab-bar-new-button tab-bar-new-tab
+                    :help "New tab")))))))
+#+end_src
+
+** Fix Vertico switch-buffer
+
+Make vertico consider only buffers opened in the current tab.
+#+begin_src emacs-lisp
+(defun bk/vertico-tab-source ()
+  (setq buffer-names-to-keep
+        (append (mapcar #'buffer-name (alist-get 'wc-bl (tab-bar--tab)))
+                (mapcar #'buffer-name (alist-get 'wc-bbl (tab-bar--tab)))))
+  `(:name ,(a-get (cdr (tab-bar--current-tab)) 'name)
+    :hidden nil
+    :narrow ?0
+    :category buffer
+    :state ,#'consult--buffer-state
+    :items ,(lambda ()
+              (consult--buffer-query
+               :sort 'visibility
+               :as #'buffer-name
+               :predicate (lambda (buf)
+                            (when (member (buffer-name buf) buffer-names-to-keep)
+                              t))))))
+
+
+(defun bk/switch-tab-bar-buffer ()
+  "Switch to another buffer in the same tab-bar."
+  (interactive)
+  (when-let (buffer (consult--multi (list (bk/vertico-tab-source))
+                                    :require-match
+                                    (confirm-nonexistent-file-or-buffer)
+                                    :prompt (format "Switch to buffer (%s): "
+                                                    (a-get (cdr (tab-bar--current-tab)) 'name))
+                                    :history 'consult--buffer-history
+                                    :sort nil))
+    (unless (cdr buffer)
+      (funcall consult--buffer-display (car buffer)))))
+#+end_src
+
+
+** Fix Doom Modeline
+
+Fix the doom modeline to show the tab-name correctly when the tab is renamed by
+the =bk/name-tab-by-project-or-default=.
+#+begin_src emacs-lisp
+(after! doom-modeline
+  (doom-modeline-def-segment workspace-name
+    "The current workspace name or number.
+Requires `eyebrowse-mode' or `tab-bar-mode' to be enabled."
+    (when doom-modeline-workspace-name
+      (when-let
+          ((name (cond
+                  ((and (bound-and-true-p eyebrowse-mode)
+                        (< 1 (length (eyebrowse--get 'window-configs))))
+                   (assq-delete-all 'eyebrowse-mode mode-line-misc-info)
+                   (when-let*
+                       ((num (eyebrowse--get 'current-slot))
+                        (tag (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
+                     (if (< 0 (length tag)) tag (int-to-string num))))
+                  (t
+                   (let* ((current-tab (tab-bar--current-tab))
+                          (tab-index (tab-bar--current-tab-index))
+                          (explicit-name (alist-get 'name current-tab))
+                          (tab-name (alist-get 'name current-tab)))
+                     (if explicit-name tab-name (+ 1 tab-index)))))))
+        (propertize (format " %s " name) 'face
+                    (if (doom-modeline--active)
+                        'doom-modeline-buffer-major-mode
+                      'mode-line-inactive))))))
+#+end_src
+
+** Functions
+
+A nice function from Ag to find and switch to the tab that owns a selected buffer.
+#+begin_src emacs-lisp
+(defun bk/tab-bar-find-buffer-in-tabs ()
+  "Find and switch to the tab that owns selected buffer."
+  (interactive)
+  (let ((sel-buf nil))
+    (cl-letf (((symbol-function 'consult--buffer-action)
+               (lambda (b &optional _) (setq sel-buf b))))
+      (consult-buffer)
+      (when-let* ((tab (tab-bar-get-buffer-tab sel-buf)))
+        (if (eq 'current-tab (car tab))
+            (select-window (get-buffer-window sel-buf))
+          (tab-bar-switch-to-tab (alist-get 'name tab)))))))
+#+end_src
+
 * Completion
 
 #+begin_quote
@@ -1084,39 +1365,12 @@ warning message is very helpful.
 
 #+begin_src emacs-lisp
 (use-package! cider
-  :after clojure-mode
   :init
   (setq cider-jdk-src-paths '("~/Downloads/clojure-1.10.3-sources" "~/Downloads/jvm11/source")
         cider-clojure-cli-command "~/code/dotfiles/clojure/clojure-bin-enriched"
-        ;; cider-show-error-buffer t
-        ;; cider-save-file-on-load t
-        ;; cider-eldoc-display-for-symbol-at-point nil ;; use lsp
-        ;; cider-repl-use-pretty-printing nil
-        ;; cider-redirect-server-output-to-repl t
-        ;; clojure-toplevel-inside-comment-form t
-        )
+        clojure-toplevel-inside-comment-form t)
   :config
-  ;; (add-hook! 'cider-test-report-mode-hook 'toggle-truncate-lines)
-  ;; (add-hook 'cider-mode-hook
-  ;;           (lambda ()
-  ;;             ;; let's give LSP a chance.
-  ;;             (remove-hook 'completion-at-point-functions
-  ;;                          #'cider-complete-at-point)))
-
-  ;; (add-to-list
-  ;;  'display-buffer-alist
-  ;;  `(, (rx bos (or "*cider-repl"
-  ;;                  "*nrepl-server"
-  ;;                  "*cider-test-report*"
-  ;;                  "*cider-error"
-  ;;                  "*cider-result"))
-  ;;      (display-buffer-reuse-window
-  ;;       display-buffer-in-direction)
-  ;;      (direction . right)
-  ;;      (window .root)
-  ;;      (dedicated . nil)
-  ;;      (window-width . 0.25)))
-  )
+  (set-popup-rule! "*cider-test-report*" :side 'right :width 0.4))
 #+end_src
 
 Working with =+workspace= enabled in DOOM makes a new workspace to be created
@@ -1124,16 +1378,16 @@ for each project. However, if you start a CIDER REPL in any workspace the
 special buffers are not bound to the current workspace. Let's fix this
 #+begin_src emacs-lisp
 ;; include cider buffer into current workspace
-(add-hook 'cider-repl-mode-hook
-          (lambda ()
-            (persp-add-buffer (current-buffer) (get-current-persp)
-                              nil nil)))
+;; (add-hook 'cider-repl-mode-hook
+;;           (lambda ()
+;;             (persp-add-buffer (current-buffer) (get-current-persp)
+;;                               nil nil)))
 
-;; include test report buffer to current perspective too
-(add-hook 'cider-test-report-mode-hook
-          (lambda ()
-            (persp-add-buffer (current-buffer) (get-current-persp)
-                              nil nil)))
+;; ;; include test report buffer to current perspective too
+;; (add-hook 'cider-test-report-mode-hook
+;;           (lambda ()
+;;             (persp-add-buffer (current-buffer) (get-current-persp)
+;;                               nil nil)))
 #+end_src
 
 **** Patch to Hotload dependencies
@@ -1640,10 +1894,6 @@ We can produce cards to perform spaced repetition study technique
 ** Notes on PDFs
 
 Enable pdf-tools
-#+begin_src emacs-lisp
-(pdf-tools-install)
-#+end_src
-
 
 #+begin_src emacs-lisp
 (use-package! org-noter
@@ -1716,6 +1966,14 @@ I hack-ed my way out of Forge to create Draft PullRequests too
   (advice-remove 'forge--topic-parse-buffer #'bk/forge--add-draft))
 #+end_src
 
+Add forge post mode to be recognized by lsp.
+
+#+begin_src emacs-lisp
+(add-to-list
+ 'lsp-language-id-configuration
+ '("new-pullreq" . "forge-post-mode"))
+#+end_src
+
 ** Github
 *** Bug Reference
 
@@ -1739,16 +1997,20 @@ I hack-ed my way out of Forge to create Draft PullRequests too
 I'm the maintainer of this package
 #+begin_src emacs-lisp
 (use-package! code-review
-  :load-path "~/code/code-review"
   :defer t
-  :commands (code-review-start
-             code-review-forge-pr-at-point)
+  :commands (code-review-start code-review-forge-pr-at-point)
+  :init
+  (setq code-review-new-buffer-window-strategy #'switch-to-buffer)
   :config
   (map! :map forge-post-mode-map
         "C-c C-d" #'bk/post-draft-pull-request
 
         :map forge-topic-mode-map
-        "C-c r" #'code-review-forge-pr-at-point))
+        "C-c r r" #'code-review-forge-pr-at-point
+
+        :map code-review-mode-map
+        "C-c C-p" #'code-review-comment-jump-previous
+        "C-c C-n" #'code-review-comment-jump-next))
 #+end_src
 
 * Key bindings
@@ -1822,7 +2084,7 @@ Default registers that are very useful to my daily usage.
 #+begin_src emacs-lisp
 (map!
  ;; C-x keys
- "C-x b" #'+vertico/switch-workspace-buffer
+ ;; "C-x b" #'+vertico/switch-workspace-buffer
  "C-x p" #'pop-to-mark-command
  "C-x k" #'kill-this-buffer
  "C-x C-m" #'execute-extended-command
@@ -1900,7 +2162,6 @@ I prefer to change Command to =meta=.
 #+begin_src emacs-lisp
 (when IS-MAC
   (setq mac-command-modifier 'meta
-        mac-right-option-modifier 'alt
         mac-option-modifier '(:ordinary super :button 2)))
 #+end_src
 

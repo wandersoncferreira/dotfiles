@@ -82,7 +82,10 @@
         lsp-ui)
 
 ;; code review development
-(package! code-review :disable t)
+(package! code-review
+  :recipe (:local-repo "~/code/code-review"
+           :build (:not compile)))
+
 (package! a)
 (package! deferred)
 

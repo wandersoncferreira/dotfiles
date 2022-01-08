@@ -7,13 +7,15 @@
 *** [[https://edwardsnowden.substack.com/feed][Continuing Ed]]
 *** [[https://fasterthanli.me/index.xml][Faster Than Li.me]]
 *** [[https://danluu.com/atom.xml][Dan Luu]]
-*** [[https://mjtsai.com/blog/feed/][Michael Tsai]]
 *** [[https://desmondrivet.com/feeds/blog.rss][Desmond Rivet]]
+*** [[https://thiagowfx.github.io/index.xml][Thiago Perrota]]
+*** [[https://emilkirkegaard.dk/en/][Clear Language, Clear Mind]]
 
 ** Software Development                                                 :dev:
 *** General                                                         :general:
 **** [[https://eli.thegreenplace.net/feeds/all.atom.xml][The Green Place]]
 **** [[http://feeds.feedburner.com/thoughtsfromtheredplanet?format=xml][Thoughts from the red planet]]
+**** [[https://kalele.io/blog/][Vaughn Vernon]] :ddd:
 
 *** Emacs                                                    :emacs:mustread:
 **** [[http://planet.emacsen.org/atom.xml][Planet Emacsen]]
