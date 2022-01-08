@@ -123,3 +123,6 @@
 
 ;;; finance
 (package! dklrt)
+
+;;; completion
+(unpin! vertico)

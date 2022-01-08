@@ -53,6 +53,7 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#functions-3][Functions]]
 - [[#completion][Completion]]
   - [[#vertico][Vertico]]
+  - [[#consult][Consult]]
   - [[#company][Company]]
 - [[#appearance][Appearance]]
   - [[#fonts][Fonts]]
@@ -941,6 +942,23 @@ type =M-5 RET=.
   (vertico-indexed-mode t))
 #+end_src
 
+
+I do a lot of searches in the project I am current working with. Using a whole
+buffer to see the matches is a lot better than partial minibuffer portions.
+#+begin_src emacs-lisp
+(after! vertico
+  (vertico-multiform-mode +1)
+
+  (setq vertico-multiform-categories
+        '((consult-grep buffer)))
+
+  (setq vertico-multiform-commands
+        '((consult-imenu buffer)
+          (+default/search-project buffer)))
+
+  (set-popup-rule! "*vertico*" :side 'right :width 0.4))
+#+end_src
+
 Enable keybinding to activate Vertico Grid.
 #+begin_src emacs-lisp
 (after! vertico
@@ -948,7 +966,15 @@ Enable keybinding to activate Vertico Grid.
         "M-G" #'vertico-grid-mode))
 #+end_src
 
+** Consult
+
+Disable preview by default. Yeah, I am old.
+#+begin_src emacs-lisp
+(setq consult-preview-key (kbd "M-."))
+#+end_src
+
 ** Company
+
 #+begin_src emacs-lisp
 (use-package! company
   :init
