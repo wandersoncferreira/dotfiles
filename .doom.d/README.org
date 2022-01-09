@@ -2031,7 +2031,9 @@ all the data from Github incrementally.
 
 ;;; Personal config
 (setq alert-default-style 'osx-notifier
-      alert-fade-time 10)
+      alert-fade-time 10
+      alert-gh-notify-idle-period (* 1 60)
+      alert-gh-notify-periodicity (* 1 60))
 
 (defcustom alert-gh-notify-periodicity (* 10 60)
   "Periodicity in Seconds. Default 10 min."
@@ -2051,20 +2053,25 @@ all the data from Github incrementally.
 (defvar alert-gh-notify--last-ids (alert-gh-notify--get-last-ids)
   "Hold the last notification ID in the forge-db.")
 
+(defun alert-gh-notify--new-ids ()
+  (let ((notif-ids (alert-gh-notify--get-last-ids)))
+    (-filter
+     (lambda (id)
+       (not (-contains-p alert-gh-notify--last-ids id)))
+     notif-ids)))
+
 (defun alert-gh-notify--new-notifications ()
-  (emacsql-with-transaction (forge-db)
-    (let* ((raw-notifs (forge-sql
-                        [:select :*
-                         :from notification
-                         :order-by [(asc :updated)]]))
-           (forge-notifs (mapcar
-                          (lambda (it)
-                            (closql--remake-instance 'forge-notification (forge-db) it))
-                          raw-notifs)))
-      (-filter
-       (lambda (n)
-         (not (-contains-p alert-gh-notify--last-ids (oref n id))))
-       forge-notifs))))
+  (when-let (new-ids (alert-gh-notify--new-ids))
+    (emacsql-with-transaction (forge-db)
+      (let* ((raw-notifs (forge-sql
+                          [:select :*
+                           :from notification
+                           :where (in id $v1)]
+                          (vconcat new-ids))))
+        (mapcar
+         (lambda (it)
+           (closql--remake-instance 'forge-notification (forge-db) it))
+         raw-notifs)))))
 
 (defun alert-gh-notify--trigger-alert ()
   (when-let (new-notifs (alert-gh-notify--new-notifications))
@@ -2093,8 +2100,9 @@ all the data from Github incrementally.
 
 (defun alert-gh-notify--callback ()
   (alert-gh-notify--trigger-alert)
-  (with-current-buffer (get-buffer-create "*github-notifications*")
-    (call-interactively #'gh-notify-retrieve-notifications)))
+  (when (alert-gh-notify--new-ids)
+    (with-current-buffer (get-buffer-create "*github-notifications*")
+      (call-interactively #'gh-notify-retrieve-notifications))))
 
 (defun alert-gh-notify ()
   (with-current-buffer (get-buffer-create "*github-notifications*")
@@ -2126,7 +2134,7 @@ all the data from Github incrementally.
       (progn
         (cancel-timer alert-gh-notify--current-timer)
         (setq alert-gh-notify--current-timer nil)
-        (message "Timer stopped!"))
+        (message "Alert gh-notify stopped!"))
     (message "No timer running. Call `alert-gh-notify-start'")))
 
 #+end_src
