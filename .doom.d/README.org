@@ -2041,15 +2041,15 @@ all the data from Github incrementally.
   "Periodicity in Seconds. Default 2 min."
   :type 'number)
 
-(defvar alert-gh-notify--last-ids (alert-gh-notify--get-last-ids)
-  "Hold the last notification ID in the forge-db.")
-
 (defun alert-gh-notify--get-last-ids ()
   (emacsql-with-transaction (forge-db)
     (flatten-list
      (forge-sql
       [:select [id]
        :from notification]))))
+
+(defvar alert-gh-notify--last-ids (alert-gh-notify--get-last-ids)
+  "Hold the last notification ID in the forge-db.")
 
 (defun alert-gh-notify--new-notifications ()
   (emacsql-with-transaction (forge-db)
@@ -2137,6 +2137,11 @@ all the data from Github incrementally.
   :load-path "~/.doom.d/sources/gh-notify"
   :config
   (setq gh-notify-redraw-on-visit t))
+#+end_src
+
+Then start the background checker.
+#+begin_src emacs-lisp
+(alert-gh-notify-start)
 #+end_src
 
 ** Notification
