@@ -648,7 +648,7 @@ also requires a lot of manual configuration.
         tab-bar-new-button-show nil
         tab-bar-close-button-show nil
         tab-bar-tab-hints nil
-        tab-bar-separator "  "
+        tab-bar-separator " | "
         tab-bar-new-tab-choice "*scratch*"
         tab-bar-new-tab-to 'rightmost
         tab-bar-tab-name-function #'bk/name-tab-by-project-or-default)
@@ -659,8 +659,7 @@ also requires a lot of manual configuration.
    ("C-x b" . bk/switch-tab-bar-buffer)
    ("C-x B" . bk/tab-bar-find-buffer-in-tabs))
   :config
-  (tab-bar-mode +1)
-  (tab-bar-history-mode +1))
+  (tab-bar-mode +1))
 #+end_src
 
 And this will be my initial tab bar setup.
@@ -966,6 +965,23 @@ Enable keybinding to activate Vertico Grid.
         "M-G" #'vertico-grid-mode))
 #+end_src
 
+*** Backward kill in minibuffer
+
+When minibuffer is completing a file name delete up to parent folder, otherwise delete a word.
+#+begin_src emacs-lisp
+(defun bk/minibuffer-backward-kill (arg)
+  (interactive "p")
+  (if minibuffer-completing-file-name
+      (if (string-match-p "/." (minibuffer-contents))
+          (zap-up-to-char (- arg) ?/)
+        (delete-minibuffer-contents))
+    (sp-delete-word (- arg))))
+
+(after! vertico
+  (map! :map minibuffer-local-map
+        "M-h" #'bk/minibuffer-backward-kill))
+#+end_src
+
 ** Consult
 
 Disable preview by default. Yeah, I am old.
@@ -1067,44 +1083,31 @@ Use proportional fonts
 
 ** Modeline
 
-I am not using any Doom modeline as I prefer the default one. Therefore I need
-to use some package to clean the modeline from all the indicators of minor modes
-enabled.
+Some changes to the default Doom modeline.
 
 #+begin_src emacs-lisp
-(use-package! delight
+(use-package! doom-modeline
+  :init
+  (unless after-init-time
+    ;; prevent flash of unstyled modeline at startup
+    (setq-default mode-line-format nil))
   :config
-  (delight '(;; general
-             (eldoc-mode nil eldoc)
-             (gcmh-mode nil gcmh)
-             (which-key-mode nil which-key)
-             (better-jumper-local-mode nil better-jumper)
-             (company-mode nil company)
-             (paredit-mode nil paredit)
-             (git-gutter-mode nil git-gutter)
-             (abbrev-mode nil abbrev)
-             (annotate-mode nil annotate)
+  (setq doom-modeline-buffer-encoding nil
+        doom-modeline-buffer-file-name-style 'truncate-upto-project
+        doom-modeline-buffer-modification-icon t
+        doom-modeline-buffer-state-icon t
+        doom-modeline-height 18
+        doom-modeline-bar-width 6
+        inhibit-compacting-font-caches t)
+  (custom-set-faces '(mode-line ((t (:height 0.9))))
+                    '(mode-line-inactive ((t (:height 0.9))))))
+#+end_src
 
-             ;; programming
-             (lsp-lens-mode nil lsp-lens)
-             (whitespace-mode nil whitespace)
-             (ws-butler-mode nil ws-butler)
-             (yas-minor-mode nil yasnippet)
-
-             (mixed-pitch-mode nil mixed-pitch)
-
-             ;; org
-             (visual-line-mode nil simple)
-             (org-roam-mode nil org-roam)
-             (org-indent-mode nil org-indent)
-             (org-fancy-priorities-mode nil org-fancy-priorities)
-             (writegood-mode nil writegood-mode)
-             (org-roam-bibtex-mode nil org-roam-bibtex)
-
-             ;; clojure
-             (clj-refactor-mode nil clj-refactor)
-             (symbol-focus-mode nil symbol-focus)
-             (dtrt-indent-mode nil dtrt-indent))))
+Keep the modeline short
+#+begin_src emacs-lisp
+(defadvice! doom-modeline--font-height-a ()
+  :override #'doom-modeline--font-height
+  1)
 #+end_src
 
 ** Functions
