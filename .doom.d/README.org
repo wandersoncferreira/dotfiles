@@ -2084,7 +2084,8 @@ all the data from Github incrementally.
     (let ((alert-msg
            (if (= (length new-notifs) 1)
                `((msg . ,(oref (-first-item new-notifs) title))
-                 (title . ,(format "Repo: %s"
+                 (title . ,(format "New %s in repo: %s"
+                                   (oref (-first-item new-notifs) type)
                                    (-> (-first-item new-notifs)
                                        (forge-get-repository)
                                        (oref name)))))
