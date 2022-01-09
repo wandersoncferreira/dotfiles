@@ -2020,7 +2020,7 @@ the background and provide me some system wide notification (still thinking if
 notifying only in emacs would not be better.. anyway) about the new Github
 Notifications.
 
-This is my attempt to provide such feature using =run-with-idle-timer= so the next
+This is my attempt to provide such feature using =run-with-timer= so the next
 time that Emacs is idle for 2 min and the _repeat_ time is reached, then we fetch
 all the data from Github incrementally.
 #+begin_src emacs-lisp
@@ -2122,9 +2122,9 @@ all the data from Github incrementally.
       (message "There is already a timer runner. Call `alert-gh-notify-stop' first.")
     (progn
       (setq alert-gh-notify--current-timer
-            (run-with-idle-timer alert-gh-notify-idle-period
-                                 alert-gh-notify-periodicity
-                                 #'alert-gh-notify))
+            (run-with-timer alert-gh-notify-idle-period
+                            alert-gh-notify-periodicity
+                            #'alert-gh-notify))
       (message "Alert gh-notify started."))))
 
 (defun alert-gh-notify-stop ()
@@ -2149,7 +2149,7 @@ all the data from Github incrementally.
 
 Then start the background checker.
 #+begin_src emacs-lisp
-(alert-gh-notify-start)
+(add-hook 'after-init-hook #'alert-gh-notify-start)
 #+end_src
 
 ** Code Review
