@@ -87,6 +87,7 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#magit][Magit]]
   - [[#forge][Forge]]
   - [[#github][Github]]
+  - [[#notification][Notification]]
   - [[#code-review][Code Review]]
 - [[#key-bindings][Key bindings]]
   - [[#registers][Registers]]
@@ -104,6 +105,7 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#irc][IRC]]
   - [[#ledger][Ledger]]
   - [[#hacker-news][Hacker News]]
+  - [[#how-do-i][How Do I?]]
   - [[#rss][RSS]]
 - [[#authentication][Authentication]]
   - [[#auxiliary-functions][Auxiliary functions]]
@@ -2014,11 +2016,136 @@ Add forge post mode to be recognized by lsp.
 
 *** Notifications
 
+I like how =gh-notify= works, but I want something a bit more automated to run in
+the background and provide me some system wide notification (still thinking if
+notifying only in emacs would not be better.. anyway) about the new Github
+Notifications.
+
+This is my attempt to provide such feature using =run-with-idle-timer= so the next
+time that Emacs is idle for 2 min and the _repeat_ time is reached, then we fetch
+all the data from Github incrementally.
+#+begin_src emacs-lisp
+(require 'forge)
+(require 'emacsql)
+(require 'alert)
+
+;;; Personal config
+(setq alert-default-style 'osx-notifier
+      alert-fade-time 10)
+
+(defcustom alert-gh-notify-periodicity (* 10 60)
+  "Periodicity in Seconds. Default 10 min."
+  :type 'number)
+
+(defcustom alert-gh-notify-idle-period (* 2 60)
+  "Periodicity in Seconds. Default 2 min."
+  :type 'number)
+
+(defvar alert-gh-notify--last-ids (alert-gh-notify--get-last-ids)
+  "Hold the last notification ID in the forge-db.")
+
+(defun alert-gh-notify--get-last-ids ()
+  (emacsql-with-transaction (forge-db)
+    (flatten-list
+     (forge-sql
+      [:select [id]
+       :from notification]))))
+
+(defun alert-gh-notify--new-notifications ()
+  (emacsql-with-transaction (forge-db)
+    (let* ((raw-notifs (forge-sql
+                        [:select :*
+                         :from notification
+                         :order-by [(asc :updated)]]))
+           (forge-notifs (mapcar
+                          (lambda (it)
+                            (closql--remake-instance 'forge-notification (forge-db) it))
+                          raw-notifs)))
+      (-filter
+       (lambda (n)
+         (not (-contains-p alert-gh-notify--last-ids (oref n id))))
+       forge-notifs))))
+
+(defun alert-gh-notify--trigger-alert ()
+  (when-let (new-notifs (alert-gh-notify--new-notifications))
+    ;; save the latest notification id found
+    (setq alert-gh-notify--last-ids
+          (append alert-gh-notify--last-ids
+                  (mapcar
+                   (lambda (it)
+                     (oref it id))
+                   new-notifs)))
+    (let ((alert-msg
+           (if (= (length new-notifs) 1)
+               `((msg . ,(oref (-first-item new-notifs) title))
+                 (title . ,(format "Repo: %s"
+                                   (-> (-first-item new-notifs)
+                                       (forge-get-repository)
+                                       (oref name)))))
+             `((msg . ,(format "You have %s new gh notifications"
+                               (length new-notifs)))
+               (title . "*GH Notify*")))))
+
+      (let-alist alert-msg
+        (alert .msg
+               :title .title
+               :severity 'trivial)))))
+
+(defun alert-gh-notify--callback ()
+  (alert-gh-notify--trigger-alert)
+  (with-current-buffer (get-buffer-create "*github-notifications*")
+    (call-interactively #'gh-notify-retrieve-notifications)))
+
+(defun alert-gh-notify ()
+  (with-current-buffer (get-buffer-create "*github-notifications*")
+    (gh-notify-mode)
+    (call-interactively #'gh-notify-retrieve-notifications)
+    (gh-notify-forge--pull-notifications
+     'forge-github-repository
+     "github.com"
+     #'alert-gh-notify--callback)))
+
+(defvar alert-gh-notify--current-timer nil)
+
+(defun alert-gh-notify-start ()
+  "Start the timer to check for new notifications."
+  (interactive)
+  (if alert-gh-notify--current-timer
+      (message "There is already a timer runner. Call `alert-gh-notify-stop' first.")
+    (progn
+      (setq alert-gh-notify--current-timer
+            (run-with-idle-timer alert-gh-notify-idle-period
+                                 alert-gh-notify-periodicity
+                                 #'alert-gh-notify))
+      (message "Alert gh-notify started."))))
+
+(defun alert-gh-notify-stop ()
+  "Stop the timer to check for new notifications."
+  (interactive)
+  (if alert-gh-notify--current-timer
+      (progn
+        (cancel-timer alert-gh-notify--current-timer)
+        (setq alert-gh-notify--current-timer nil)
+        (message "Timer stopped!"))
+    (message "No timer running. Call `alert-gh-notify-start'")))
+
+#+end_src
+
+
 #+begin_src emacs-lisp
 (use-package! gh-notify
   :load-path "~/.doom.d/sources/gh-notify"
   :config
   (setq gh-notify-redraw-on-visit t))
+#+end_src
+
+** Notification
+
+I'm using =gh-notify= just fine! However, I need to periodically call the refresh
+function and to use the =alert= package to notify me about new msgs.
+
+#+begin_src emacs-lisp
+
 #+end_src
 
 ** Code Review
@@ -2439,6 +2566,37 @@ A simple Hacker News Emacs client.
 #+begin_src emacs-lisp
 (use-package! hackernews
   :commands hackernews)
+#+end_src
+
+Place the hacker news buffer in the right part of the window
+#+begin_src emacs-lisp
+(set-popup-rule! "^\\*hackernews" :side 'right :size 0.4)
+#+end_src
+
+** How Do I?
+
+Do you find yourself constantly Googling for how to do basic programming tasks?
+Let's use the =howdoi= cli program. Do not forget to install it e.g. macOS =brew
+install howdoi=
+
+#+begin_src emacs-lisp
+(defun bk/howdoi ()
+  (interactive)
+  (let* ((query (read-from-minibuffer "Query: "))
+         (docstring (shell-command-to-string (concat "howdoi " query)))
+         (buffer-name "*How do I do it?*"))
+    (when (get-buffer buffer-name)
+      (kill-buffer buffer-name))
+    (get-buffer-create buffer-name)
+    (with-current-buffer buffer-name (insert docstring))
+    (switch-to-buffer-other-window buffer-name)
+    (special-mode)))
+#+end_src
+
+
+Let's keep the popup buffer under control
+#+begin_src emacs-lisp
+(set-popup-rule! "*How do I do it?*" :side 'right :size 0.4)
 #+end_src
 
 ** RSS
