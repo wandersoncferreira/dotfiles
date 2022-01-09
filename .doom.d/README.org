@@ -87,7 +87,6 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#magit][Magit]]
   - [[#forge][Forge]]
   - [[#github][Github]]
-  - [[#notification][Notification]]
   - [[#code-review][Code Review]]
 - [[#key-bindings][Key bindings]]
   - [[#registers][Registers]]
@@ -2150,15 +2149,6 @@ all the data from Github incrementally.
 Then start the background checker.
 #+begin_src emacs-lisp
 (alert-gh-notify-start)
-#+end_src
-
-** Notification
-
-I'm using =gh-notify= just fine! However, I need to periodically call the refresh
-function and to use the =alert= package to notify me about new msgs.
-
-#+begin_src emacs-lisp
-
 #+end_src
 
 ** Code Review
