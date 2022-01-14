@@ -9,19 +9,17 @@
  :input
 
  :completion
- (company)
- (vertico +icons)
+ company
+ vertico
 
  :ui
  doom
- doom-dashboard
- modeline
+ (modeline +light)
  (emoji +github)
  hl-todo
  (popup
   +all
   +defaults)
- (treemacs +lsp)
  vc-gutter
  (window-select +numbers)
 
@@ -33,7 +31,7 @@
  snippets
 
  :emacs
- (dired +icons)
+ dired
  electric
  vc
 
@@ -41,14 +39,14 @@
  eshell
 
  :checkers
- (syntax)
+ syntax
  (spell
   +aspell
   +everywhere)
  grammar
 
  :tools
- (eval +overlay)
+ eval
  gist
  (lookup
   +dictionary
@@ -74,7 +72,6 @@
  (org
   +roam2
   +present
-  +pretty
   +dragndrop
   +hugo)
  plantuml

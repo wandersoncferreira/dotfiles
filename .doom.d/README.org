@@ -49,7 +49,6 @@ Talk to your kids about Emacs... before somebody else does.
 - [[#tabs][Tabs]]
   - [[#better-ui][Better UI]]
   - [[#fix-vertico-switch-buffer][Fix Vertico switch-buffer]]
-  - [[#fix-doom-modeline][Fix Doom Modeline]]
   - [[#functions-3][Functions]]
 - [[#completion][Completion]]
   - [[#vertico][Vertico]]
@@ -57,13 +56,12 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#company][Company]]
 - [[#appearance][Appearance]]
   - [[#fonts][Fonts]]
-  - [[#modeline][Modeline]]
   - [[#functions-4][Functions]]
 - [[#window][Window]]
   - [[#moving-between-windows][Moving between windows]]
   - [[#scroll][Scroll]]
   - [[#better-split][Better split]]
-  - [[#workspace][Workspace]]
+  - [[#functions-5][Functions]]
 - [[#programming][Programming]]
   - [[#lsp][LSP]]
   - [[#emacs-lisp][Emacs Lisp]]
@@ -81,7 +79,6 @@ Talk to your kids about Emacs... before somebody else does.
   - [[#download][Download]]
   - [[#spaced-repetition][Spaced Repetition]]
   - [[#latex-fragments][Latex fragments]]
-  - [[#notes-on-pdfs][Notes on PDFs]]
   - [[#easy-templates][Easy Templates]]
 - [[#version-control][Version Control]]
   - [[#magit][Magit]]
@@ -278,9 +275,10 @@ description of the change that was done at every changed position.
 (use-package! goto-chg
   :load-path "~/.doom.d/sources/goto-chg"
   :config
-  (map!
-   "C-." #'goto-last-change
-   "C-," #'goto-last-change-reverse))
+  ;; (map!
+  ;;  "C-." #'goto-last-change
+  ;;  "C-," #'goto-last-change-reverse)
+  )
 #+end_src
 
 ** Functions
@@ -641,9 +639,17 @@ also requires a lot of manual configuration.
              tab-bar-switch-to-next-tab
              tab-bar-switch-to-prev-tab)
   :hook ((after-init . bk/tab-bar-setup))
-  :custom-face (tab-bar-tab ((t (:inherit doom-modeline-panel
-                                 :foreground nil
-                                 :background nil))))
+  :custom-face
+  (tab-bar-tab ((t (:inherit ,(if (eq (car custom-enabled-themes) 'vim-colors)
+                                  nil
+                                doom-modeline-panel)
+                    :foreground nil
+                    :background ,(if (eq (car custom-enabled-themes) 'vim-colors)
+                                     "dark gray"
+                                   nil)))))
+  (tab-bar-tab-inactive ((t (:foreground nil
+                             :background nil))))
+
   :init
   (setq tab-bar-show t
         tab-bar-new-button-show nil
@@ -667,17 +673,10 @@ And this will be my initial tab bar setup.
 #+begin_src emacs-lisp
 (defun bk/tab-bar-setup ()
   ;; Tab 1
-  (when (get-buffer "*Messages*")
-    (set-frame-parameter nil
-                         'buffer-list
-                         (cons (get-buffer "*Messages*")
-                               (frame-parameter nil 'buffer-list))))
-  ;; Tab 2
-  (progn (bk/tab-bar-create)
-         (tab-bar-rename-tab "EmacsConf")
+  (progn (tab-bar-rename-tab "EmacsConf")
          (find-file (concat doom-private-dir "README.org")))
 
-  ;; Tab 3
+  ;; Tab 2
   (progn (bk/tab-bar-create)
          (tab-bar-rename-tab "Agenda")
          (org-agenda nil "a"))
@@ -855,37 +854,6 @@ Make vertico consider only buffers opened in the current tab.
 #+end_src
 
 
-** Fix Doom Modeline
-
-Fix the doom modeline to show the tab-name correctly when the tab is renamed by
-the =bk/name-tab-by-project-or-default=.
-#+begin_src emacs-lisp
-(after! doom-modeline
-  (doom-modeline-def-segment workspace-name
-    "The current workspace name or number.
-Requires `eyebrowse-mode' or `tab-bar-mode' to be enabled."
-    (when doom-modeline-workspace-name
-      (when-let
-          ((name (cond
-                  ((and (bound-and-true-p eyebrowse-mode)
-                        (< 1 (length (eyebrowse--get 'window-configs))))
-                   (assq-delete-all 'eyebrowse-mode mode-line-misc-info)
-                   (when-let*
-                       ((num (eyebrowse--get 'current-slot))
-                        (tag (nth 2 (assoc num (eyebrowse--get 'window-configs)))))
-                     (if (< 0 (length tag)) tag (int-to-string num))))
-                  (t
-                   (let* ((current-tab (tab-bar--current-tab))
-                          (tab-index (tab-bar--current-tab-index))
-                          (explicit-name (alist-get 'name current-tab))
-                          (tab-name (alist-get 'name current-tab)))
-                     (if explicit-name tab-name (+ 1 tab-index)))))))
-        (propertize (format " %s " name) 'face
-                    (if (doom-modeline--active)
-                        'doom-modeline-buffer-major-mode
-                      'mode-line-inactive))))))
-#+end_src
-
 ** Functions
 
 A nice function from Ag to find and switch to the tab that owns a selected buffer.
@@ -956,7 +924,7 @@ buffer to see the matches is a lot better than partial minibuffer portions.
         '((consult-imenu buffer)
           (+default/search-project buffer)))
 
-  (set-popup-rule! "*vertico*" :side 'right :width 0.4))
+  (set-popup-rule! "*vertico*" :side 'right :width 0.6))
 #+end_src
 
 Enable keybinding to activate Vertico Grid.
@@ -964,6 +932,20 @@ Enable keybinding to activate Vertico Grid.
 (after! vertico
   (map! :map vertico-map
         "M-G" #'vertico-grid-mode))
+#+end_src
+
+Enable vertico directory
+#+begin_src emacs-lisp
+(use-package! vertico-directory
+  :after vertico
+  :ensure nil
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+         ("RET" . vertico-directory-enter)
+         ("DEL" . vertico-directory-delete-char)
+         ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 #+end_src
 
 *** Backward kill in minibuffer
@@ -995,15 +977,20 @@ Disable preview by default. Yeah, I am old.
 #+begin_src emacs-lisp
 (use-package! company
   :init
-  (setq company-idle-delay 0.1
+  (setq company-idle-delay nil
         company-show-quick-access t
         company-icon-size 20)
   :config
   (set-company-backend! 'prog-mode nil)
   (set-company-backend! 'prog-mode
     '(:separate company-capf company-files company-dabbrev-code company-yasnippet))
-  (define-key company-active-map [(control) (meta) ?s] 'company-search-candidates)
-  (define-key company-active-map "\C-s" 'company-filter-candidates))
+
+  (map!
+   "C-." #'company-complete
+
+   :map company-active-map
+   "\C-s" #'company-filter-candidates
+   [(control) (meta) ?s] #'company-search-candidates))
 #+end_src
 
 Disable company mode in org-buffers.
@@ -1023,8 +1010,7 @@ Doom comes with some nice themes. For now, I've been using Zenburn most of the
 time.
 
 #+begin_src emacs-lisp
-(setq doom-theme 'kaolin-dark
-      doom-themes-treemacs-theme "all-the-icons"
+(setq doom-theme 'vim-colors
       fill-column 180
       display-line-numbers-type nil
       confirm-kill-emacs nil
@@ -1044,12 +1030,13 @@ Highlight numbers
 Change theme based on time of the day.
 #+begin_src emacs-lisp
 (use-package! theme-changer
+  :when nil
   :init
   (setq calendar-location-name "Sao Paulo, BR"
         calendar-latitude -23.550520
         calendar-longitude -46.633308)
   :config
-  (change-theme 'kaolin-light 'kaolin-dark))
+  (change-theme 'spacemacs-light 'spacemacs-dark))
 #+end_src
 
 Show column number in the modeline.
@@ -1082,34 +1069,6 @@ Use proportional fonts
   (setq mixed-pitch-face 'variable-pitch))
 #+end_src
 
-** Modeline
-
-Some changes to the default Doom modeline.
-
-#+begin_src emacs-lisp
-(use-package! doom-modeline
-  :init
-  (unless after-init-time
-    ;; prevent flash of unstyled modeline at startup
-    (setq-default mode-line-format nil))
-  :config
-  (setq doom-modeline-buffer-encoding nil
-        doom-modeline-buffer-file-name-style 'truncate-upto-project
-        doom-modeline-buffer-modification-icon t
-        doom-modeline-buffer-state-icon t
-        doom-modeline-height 18
-        doom-modeline-bar-width 6
-        inhibit-compacting-font-caches t)
-  (custom-set-faces '(mode-line ((t (:height 0.9))))
-                    '(mode-line-inactive ((t (:height 0.9))))))
-#+end_src
-
-Keep the modeline short
-#+begin_src emacs-lisp
-(defadvice! doom-modeline--font-height-a ()
-  :override #'doom-modeline--font-height
-  1)
-#+end_src
 
 ** Functions
 
@@ -1177,12 +1136,30 @@ Customization to specific themes
 
 (defun bk/default-black-customizations ()
   "Customizations to be used with default black theme in Doom Emacs"
+  (interactive)
   (custom-set-faces
    '(doom-modeline-buffer-path ((t (:foreground "black" :weight bold))))
    '(doom-modeline-project-dir ((t (:foreground "black" :weight bold))))
    '(doom-modeline-buffer-modified ((t (:foreground "Blue" :weight bold))))
    '(success ((t (:foreground "ForestGreen" :weight bold))))))
 #+end_src
+
+Some customizations to the =vim-colors= theme.
+#+begin_src emacs-lisp
+(defun bk/vim-colors-theme-customizations ()
+  (interactive)
+  (custom-set-faces
+   '(org-block-begin-line ((t (:underline "#A7A6AA"
+                               :foreground "#008ED1"
+                               :background "#EAEAFF"))))
+   '(org-block ((t (:background "white smoke"))))
+   '(org-block-end-line ((t (:overline "#A7A6AA"
+                             :foreground "#008ED1"
+                             :background "#EAEAFF"))))))
+
+(bk/vim-colors-theme-customizations)
+#+end_src
+
 
 * Window
 Recenter on next-error
@@ -1255,38 +1232,15 @@ Overwrite the default split bindings
       "C-x 3" #'bk/hsplit-last-buffer)
 #+end_src
 
-** Workspace
+** Functions
 
-Using a dedicated set of buffers to specific kind of work has been interesting.
-There are some annoyances along the way but we can fix it.
-
-I want to switch to a new workspace automatically if I change projectile
-projects.
 #+begin_src emacs-lisp
-(setq +workspaces-on-switch-project-behavior t)
-#+end_src
-
-Also delete the workspace automatically if there is no buffers associated anymore
-#+begin_src emacs-lisp
-(setq persp-autokill-persp-when-removed-last-buffer t)
-#+end_src
-
-*** Change modeline workspace name
-
-Overwrite the Doom function that writes to the modeline.
-#+begin_src emacs-lisp
-(setq persp-lighter
-      '(:eval
-        (format
-         (propertize
-          " #%.15s"
-          'face (let ((persp (get-current-persp)))
-                  (if persp
-                      (if (persp-contain-buffer-p (current-buffer) persp)
-                          'persp-face-lighter-default
-                        'persp-face-lighter-buffer-not-in-persp)
-                    'persp-face-lighter-nil-persp)))
-         (safe-persp-name (get-current-persp)))))
+(defun bk/message-buffer ()
+  (interactive)
+  (let ((buff (get-buffer "*Messages*")))
+    (switch-to-buffer-other-window buff)
+    (with-current-buffer buff
+      (end-of-buffer))))
 #+end_src
 
 * Programming
@@ -1406,6 +1360,8 @@ warning message is very helpful.
 Working with =+workspace= enabled in DOOM makes a new workspace to be created
 for each project. However, if you start a CIDER REPL in any workspace the
 special buffers are not bound to the current workspace. Let's fix this
+
+Disabled for now!
 #+begin_src emacs-lisp
 ;; include cider buffer into current workspace
 ;; (add-hook 'cider-repl-mode-hook
@@ -1642,6 +1598,21 @@ more — in a fast and effective plain text system.
         org-startup-indented nil))
 #+end_src
 
+Turn off all the org's eye candy that Doom emacs has
+#+begin_src emacs-lisp
+(after! org
+  (setq org-fontify-quote-and-verse-blocks nil
+        org-fontify-whole-heading-line nil
+        org-hide-leading-stars nil
+        org-hide-leading-stars-before-indent-mode nil
+        org-startup-indented nil))
+#+end_src
+
+Turn off the superstar mode
+#+begin_src emacs-lisp
+(remove-hook 'org-mode-hook #'org-superstar-mode)
+#+end_src
+
 Hide Org markup indicators
 #+begin_src emacs-lisp
 (after! org
@@ -1754,13 +1725,9 @@ these references are equivalent to things that I want to shout.
          (desc (cadr args))
          (info (caddr args))
          (type (org-element-property :type link)))
-    (setq testando args)
     (cond
      ((member type '("custom-id" "id"))
       (let ((destination (org-export-resolve-id-link link info)))
-        (prin1 (format "DESTI: %s\n" (string-equal
-                                      (file-name-directory (org-id-find-id-file raw-path))
-                                      (expand-file-name org-hugo-base-dir))))
         (pcase (org-element-type destination)
           (`plain-text
            (if (not (string-equal (file-name-directory (org-id-find-id-file raw-path))
@@ -1921,25 +1888,6 @@ We can produce cards to perform spaced repetition study technique
   :hook (org-mode . org-fragtog-mode))
 #+end_src
 
-** Notes on PDFs
-
-Enable pdf-tools
-
-#+begin_src emacs-lisp
-(use-package! org-noter
-  :after (:any org pdf-view)
-  :config (setq org-noter-hide-other nil
-                org-noter-notes-search-path (list "~/roam-v2")))
-
-(use-package! org-pdftools
-  :hook (org-load . org-pdftools-setup-link))
-
-(use-package! org-noter-pdftools
-  :after org-noter
-  :config
-  (with-eval-after-load 'pdf-annot
-    (add-hook 'pdf-annot-activate-handler-functions #'org-noter-pdftools-jump-to-note)))
-#+end_src
 
 ** Easy Templates
 
@@ -2100,6 +2048,7 @@ all the data from Github incrementally.
 
 (defun alert-gh-notify--callback ()
   (alert-gh-notify--trigger-alert)
+  (setq gh-notify--forge-last-timestamp (format-time-string "%Y-%m-%dT%H:%M:%SZ"))
   (when (alert-gh-notify--new-ids)
     (with-current-buffer (get-buffer-create "*github-notifications*")
       (call-interactively #'gh-notify-retrieve-notifications))))
@@ -2107,11 +2056,11 @@ all the data from Github incrementally.
 (defun alert-gh-notify ()
   (with-current-buffer (get-buffer-create "*github-notifications*")
     (gh-notify-mode)
-    (call-interactively #'gh-notify-retrieve-notifications)
+    ;; (call-interactively #'gh-notify-retrieve-notifications)
     (gh-notify-forge--pull-notifications
      'forge-github-repository
      "github.com"
-     #'alert-gh-notify--callback)))
+     #'alert-gh-notify--trigger-alert)))
 
 (defvar alert-gh-notify--current-timer nil)
 
@@ -2149,7 +2098,7 @@ all the data from Github incrementally.
 
 Then start the background checker.
 #+begin_src emacs-lisp
-(add-hook 'after-init-hook #'alert-gh-notify-start)
+;; (add-hook 'after-init-hook #'alert-gh-notify-start)
 #+end_src
 
 ** Code Review
@@ -2244,7 +2193,6 @@ Default registers that are very useful to my daily usage.
 #+begin_src emacs-lisp
 (map!
  ;; C-x keys
- ;; "C-x b" #'+vertico/switch-workspace-buffer
  "C-x p" #'pop-to-mark-command
  "C-x k" #'kill-this-buffer
  "C-x C-m" #'execute-extended-command
@@ -2717,7 +2665,7 @@ experience!
 (defun bk/delete-worktree ()
   "Delete worktree and all its open buffers."
   (interactive)
-  (let ((worktree (ido-completing-read "Choose worktree: " (magit-list-worktrees))))
+  (let ((worktree (completing-read "Choose worktree: " (magit-list-worktrees))))
     (mapc (lambda (buffer)
             (with-current-buffer buffer
               (let ((worktree-name (file-name-base worktree)))

@@ -2,7 +2,7 @@
 #_(
    #_DEPS is same format as deps.edn. Multiline is okay.
    DEPS='
-   {:deps {mx.cider/enrich-classpath {:mvn/version "1.4.1"}
+   {:deps {mx.cider/enrich-classpath {:mvn/version "1.6.2"}
            clj-commons/pomegranate {:mvn/version "1.2.0"}
            leiningen-core/leiningen-core {:mvn/version "2.9.6"}
            babashka/process {:mvn/version "0.0.2"}}}

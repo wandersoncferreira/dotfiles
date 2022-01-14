@@ -47,7 +47,6 @@
 (package! gif-screencast)
 
 ;; ui
-(package! delight)
 (package! alect-themes)
 (package! sublime-themes)
 (package! spacemacs-theme)
@@ -97,7 +96,6 @@
 (package! org-roam-ui)
 (package! mixed-pitch)
 (package! org-fragtog)
-(package! org-noter-pdftools)
 (package! org-ref)
 (package! org-roam-bibtex)
 (package! org-super-agenda)
