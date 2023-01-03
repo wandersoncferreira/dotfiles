@@ -54,11 +54,7 @@ cask "hey"
 cask "iterm2"
 cask "postman"
 cask "slack"
-cask "datagrip"
 cask "mactex-no-gui"
-cask "kindle"
-cask "wireshark"
-cask "zulip"
 cask "dash"
 cask "docker"
 
@@ -96,10 +92,6 @@ brew "clang-format"
 brew "stack"
 brew "haskell-language-server"
 brew "ghc"
-brew "cabal"
-
-# * virtualization
-cask "utm"
 
 # * ruby
 brew "rbenv"
@@ -119,7 +111,6 @@ brew "act"
 
 # * fonts
 brew "svn"
-brew "font-roboto"
 
 # * c
 brew "rcm"
