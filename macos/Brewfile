@@ -29,7 +29,6 @@ brew "plantuml"
 brew "ledger"
 brew "pngpaste"
 brew "youtube-dl"
-brew "mplayer", args: ["with-mac-metal"]
 brew "gawk"
 brew "findutils"
 brew "cloc"
@@ -50,7 +49,6 @@ brew "zsh-autosuggestions"
 
 # * casks
 cask "spectacle"
-cask "telegram-desktop"
 cask "phantomjs"
 cask "hey"
 cask "iterm2"
@@ -65,8 +63,14 @@ cask "dash"
 cask "docker"
 
 # * emacs
-tap "railwaycat/emacsmacport"
-brew "railwaycat/emacsmacport/emacs-mac", args: ["with-mac-metal", "with-starter"]
+tap "d12frosted/emacs-plus"
+brew "emacs-plus@28", args: ["with-xwidgets",
+                             "with-no-titlebar-and-round-corners",
+                             "with-no-frame-refocus",
+                             "with-dbus",
+                             "with-imagemagick",
+                             "with-mailutils",
+                             "with-native-comp"]
 brew "fd" # required by Doom to speedup searches
 brew "shellcheck" # required by sh spell checking
 
